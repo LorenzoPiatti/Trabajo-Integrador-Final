@@ -1,5 +1,7 @@
-# Logs
-logs
+#################################
+# 🔴 LOGS
+#################################
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,18 +9,57 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+#################################
+# 🔴 NODE / FRONTEND
+#################################
+node_modules/
+dist/
+dist-ssr/
 *.local
+.vite/
 
-# Editor directories and files
+#################################
+# 🔴 .NET / VISUAL STUDIO
+#################################
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# EF Core / migrations
+*.db
+*.sqlite
+*.db-wal
+*.db-shm
+
+#################################
+# 🔴 IDEs
+#################################
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
+.idea/
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+
+#################################
+# 🔴 SISTEMA
+#################################
+.DS_Store
+Thumbs.db
+
+#################################
+# 🔴 SECRETS / ENV
+#################################
+.env
+.env.*
+!.env.example
+
+#################################
+# 🔴 BUILD OUTPUTS
+#################################
+build/
+out/
