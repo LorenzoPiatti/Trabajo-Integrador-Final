@@ -1,0 +1,675 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F86F889A-18E2-7631-E0A8-A2D63E0ABC04}|VetControl.API\\VetControl.API.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F86F889A-18E2-7631-E0A8-A2D63E0ABC04}|VetControl.API\\VetControl.API.csproj|solutionrelative:vetcontrol.api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\dtos\\auth\\loginrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\dtos\\auth\\loginrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\interfaces\\ijwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\interfaces\\ijwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\dtos\\auth\\verifyemailrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\dtos\\auth\\verifyemailrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\dtos\\auth\\resetpasswordrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\dtos\\auth\\resetpasswordrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\dtos\\auth\\registerrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\dtos\\auth\\registerrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\dtos\\auth\\forgotpasswordrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\dtos\\auth\\forgotpasswordrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F86F889A-18E2-7631-E0A8-A2D63E0ABC04}|VetControl.API\\VetControl.API.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F86F889A-18E2-7631-E0A8-A2D63E0ABC04}|VetControl.API\\VetControl.API.csproj|solutionrelative:vetcontrol.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/VetControlDb/True/SqlTable/dbo.Users.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\vetcontrol.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\vetcontrol.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\vetcontrol.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\vetcontrol.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F86F889A-18E2-7631-E0A8-A2D63E0ABC04}|VetControl.API\\VetControl.API.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.api\\vetcontrol.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F86F889A-18E2-7631-E0A8-A2D63E0ABC04}|VetControl.API\\VetControl.API.csproj|solutionrelative:vetcontrol.api\\vetcontrol.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.application\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903862D7-FB62-2E47-76B2-F54BB8EFB880}|VetControl.Application\\VetControl.Application.csproj|solutionrelative:vetcontrol.application\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\reminderconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\reminderconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\entities\\administeredvaccine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\entities\\administeredvaccine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\entities\\appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\entities\\appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\entities\\reminder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\entities\\reminder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Migrations\\20260616004155_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:VetControl.Infrastructure\\Migrations\\20260616004155_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\data\\vetcontroldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\data\\vetcontroldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\enums\\remindertype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\enums\\remindertype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\administeredvaccineconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\administeredvaccineconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\vaccineconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\vaccineconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\medicalrecordconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\medicalrecordconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\entities\\pet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\entities\\pet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\appointmentconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\appointmentconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\petconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\petconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\ownerconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\ownerconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.infrastructure\\configurations\\userconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B49E2EEB-7B58-3BE9-086C-124F339C2DBC}|VetControl.Infrastructure\\VetControl.Infrastructure.csproj|solutionrelative:vetcontrol.infrastructure\\configurations\\userconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\entities\\medicalrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\entities\\medicalrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\entities\\vaccine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\entities\\vaccine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|c:\\users\\emili\\desktop\\tif-vetcontrol\\vetcontrol.api\\vetcontrol.domain\\enums\\appointmentstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{141BC588-88D3-3DC9-E4D2-C6D9B7471F60}|VetControl.Domain\\VetControl.Domain.csproj|solutionrelative:vetcontrol.domain\\enums\\appointmentstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.API\\appsettings.json",
+              "RelativeDocumentMoniker": "VetControl.API\\appsettings.json",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.API\\appsettings.json",
+              "RelativeToolTip": "VetControl.API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-16T00:30:09.05Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.API\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "VetControl.API\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.API\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "VetControl.API\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAHIAAAAAAAAAAAAqwIQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:08:20.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LoginRequestDto.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\LoginRequestDto.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\DTOs\\Auth\\LoginRequestDto.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\LoginRequestDto.cs",
+              "RelativeToolTip": "VetControl.Application\\DTOs\\Auth\\LoginRequestDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T22:27:10.17Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Entities\\User.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\User.cs",
+              "RelativeToolTip": "VetControl.Domain\\Entities\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-26T03:32:08.169Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ResetPasswordRequestDto.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\ResetPasswordRequestDto.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\DTOs\\Auth\\ResetPasswordRequestDto.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\ResetPasswordRequestDto.cs",
+              "RelativeToolTip": "VetControl.Application\\DTOs\\Auth\\ResetPasswordRequestDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-25T12:31:09.602Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "VerifyEmailRequestDto.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\VerifyEmailRequestDto.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\DTOs\\Auth\\VerifyEmailRequestDto.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\VerifyEmailRequestDto.cs",
+              "RelativeToolTip": "VetControl.Application\\DTOs\\Auth\\VerifyEmailRequestDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T22:33:39.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IJwtService.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Interfaces\\IJwtService.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\Interfaces\\IJwtService.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Interfaces\\IJwtService.cs",
+              "RelativeToolTip": "VetControl.Application\\Interfaces\\IJwtService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-25T14:05:20.074Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "JwtService.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Services\\JwtService.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Services\\JwtService.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Services\\JwtService.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Services\\JwtService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-25T14:04:09.106Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "RegisterRequestDto.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\RegisterRequestDto.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\DTOs\\Auth\\RegisterRequestDto.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\RegisterRequestDto.cs",
+              "RelativeToolTip": "VetControl.Application\\DTOs\\Auth\\RegisterRequestDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-26T03:28:23.679Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ForgotPasswordRequestDto.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\ForgotPasswordRequestDto.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\DTOs\\Auth\\ForgotPasswordRequestDto.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\DTOs\\Auth\\ForgotPasswordRequestDto.cs",
+              "RelativeToolTip": "VetControl.Application\\DTOs\\Auth\\ForgotPasswordRequestDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-25T12:30:31.879Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Services\\AuthService.cs",
+              "RelativeToolTip": "VetControl.Application\\Services\\AuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-26T03:27:13.584Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "dbo.Users [Datos]",
+              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/VetControlDb/True/SqlTable/dbo.Users.sql",
+              "ToolTip": "dbo.Users [Datos]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-06-25T02:22:40.592Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "VetControl.Infrastructure.csproj",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\VetControl.Infrastructure.csproj",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\VetControl.Infrastructure.csproj",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\VetControl.Infrastructure.csproj",
+              "RelativeToolTip": "VetControl.Infrastructure\\VetControl.Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-25T13:56:23.28Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "VetControl.Application.csproj",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\VetControl.Application.csproj",
+              "RelativeDocumentMoniker": "VetControl.Application\\VetControl.Application.csproj",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\VetControl.Application.csproj",
+              "RelativeToolTip": "VetControl.Application\\VetControl.Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-25T13:03:09.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Repositories\\UserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-24T16:23:01.095Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Interfaces\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\Interfaces\\IUserRepository.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Interfaces\\IUserRepository.cs",
+              "RelativeToolTip": "VetControl.Application\\Interfaces\\IUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T23:32:49.257Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "VetControl.API.csproj",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.API\\VetControl.API.csproj",
+              "RelativeDocumentMoniker": "VetControl.API\\VetControl.API.csproj",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.API\\VetControl.API.csproj",
+              "RelativeToolTip": "VetControl.API\\VetControl.API.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-12T19:45:18.777Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Interfaces\\IAuthService.cs",
+              "RelativeDocumentMoniker": "VetControl.Application\\Interfaces\\IAuthService.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Application\\Interfaces\\IAuthService.cs",
+              "RelativeToolTip": "VetControl.Application\\Interfaces\\IAuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T22:51:35.577Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Reminder.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Reminder.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Entities\\Reminder.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Reminder.cs",
+              "RelativeToolTip": "VetControl.Domain\\Entities\\Reminder.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:11:39.633Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "ReminderConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\ReminderConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\ReminderConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\ReminderConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\ReminderConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:07:34.978Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Appointment.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Appointment.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Entities\\Appointment.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Appointment.cs",
+              "RelativeToolTip": "VetControl.Domain\\Entities\\Appointment.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:09:27.051Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "AdministeredVaccine.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\AdministeredVaccine.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Entities\\AdministeredVaccine.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\AdministeredVaccine.cs",
+              "RelativeToolTip": "VetControl.Domain\\Entities\\AdministeredVaccine.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:11:02.552Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "20260616004155_InitialCreate.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Migrations\\20260616004155_InitialCreate.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Migrations\\20260616004155_InitialCreate.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Migrations\\20260616004155_InitialCreate.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Migrations\\20260616004155_InitialCreate.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-16T00:41:55.946Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "VetControlDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Data\\VetControlDbContext.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Data\\VetControlDbContext.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Data\\VetControlDbContext.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Data\\VetControlDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:34:43.563Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "AdministeredVaccineConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\AdministeredVaccineConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\AdministeredVaccineConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\AdministeredVaccineConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\AdministeredVaccineConfiguration.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAADwvyMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:07:18.248Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "ReminderType.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Enums\\ReminderType.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Enums\\ReminderType.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Enums\\ReminderType.cs",
+              "RelativeToolTip": "VetControl.Domain\\Enums\\ReminderType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:30:07.183Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "VaccineConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\VaccineConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\VaccineConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\VaccineConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\VaccineConfiguration.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAADwvxoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:06:52.913Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "MedicalRecordConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\MedicalRecordConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\MedicalRecordConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\MedicalRecordConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\MedicalRecordConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:06:22.863Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Pet.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Pet.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Entities\\Pet.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Pet.cs",
+              "RelativeToolTip": "VetControl.Domain\\Entities\\Pet.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAuwBEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:08:56.328Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "AppointmentConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\AppointmentConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\AppointmentConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\AppointmentConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\AppointmentConfiguration.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAADwvyEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:06:03.774Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "PetConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\PetConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\PetConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\PetConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\PetConfiguration.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAADwvxkAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:05:27.672Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "OwnerConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\OwnerConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\OwnerConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\OwnerConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\OwnerConfiguration.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAADwvxcAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:05:02.789Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "UserConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\UserConfiguration.cs",
+              "RelativeDocumentMoniker": "VetControl.Infrastructure\\Configurations\\UserConfiguration.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Infrastructure\\Configurations\\UserConfiguration.cs",
+              "RelativeToolTip": "VetControl.Infrastructure\\Configurations\\UserConfiguration.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAgwB8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T19:04:06.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Enums\\UserRole.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Enums\\UserRole.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Enums\\UserRole.cs",
+              "RelativeToolTip": "VetControl.Domain\\Enums\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:27:48.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "MedicalRecord.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\MedicalRecord.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Entities\\MedicalRecord.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\MedicalRecord.cs",
+              "RelativeToolTip": "VetControl.Domain\\Entities\\MedicalRecord.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:09:54.161Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "Vaccine.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Vaccine.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Entities\\Vaccine.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Entities\\Vaccine.cs",
+              "RelativeToolTip": "VetControl.Domain\\Entities\\Vaccine.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAkwBIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:10:23.215Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "AppointmentStatus.cs",
+              "DocumentMoniker": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Enums\\AppointmentStatus.cs",
+              "RelativeDocumentMoniker": "VetControl.Domain\\Enums\\AppointmentStatus.cs",
+              "ToolTip": "C:\\Users\\emili\\Desktop\\TIF-VetControl\\VetControl.API\\VetControl.Domain\\Enums\\AppointmentStatus.cs",
+              "RelativeToolTip": "VetControl.Domain\\Enums\\AppointmentStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T18:28:52.748Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

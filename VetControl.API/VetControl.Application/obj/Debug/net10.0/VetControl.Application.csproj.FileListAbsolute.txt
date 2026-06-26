@@ -1,0 +1,15 @@
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\bin\Debug\net10.0\VetControl.Application.deps.json
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\bin\Debug\net10.0\VetControl.Application.dll
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\bin\Debug\net10.0\VetControl.Application.pdb
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\bin\Debug\net10.0\VetControl.Domain.dll
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\bin\Debug\net10.0\VetControl.Domain.pdb
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetControl.Application.csproj.AssemblyReference.cache
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetControl.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetControl.Application.AssemblyInfoInputs.cache
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetControl.Application.AssemblyInfo.cs
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetControl.Application.csproj.CoreCompileInputs.cache
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetContr.F66A30B9.Up2Date
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetControl.Application.dll
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\refint\VetControl.Application.dll
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\VetControl.Application.pdb
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Application\obj\Debug\net10.0\ref\VetControl.Application.dll

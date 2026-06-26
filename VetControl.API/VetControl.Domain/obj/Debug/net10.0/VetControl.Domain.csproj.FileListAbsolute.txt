@@ -1,0 +1,11 @@
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\bin\Debug\net10.0\VetControl.Domain.deps.json
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\bin\Debug\net10.0\VetControl.Domain.dll
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\bin\Debug\net10.0\VetControl.Domain.pdb
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\VetControl.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\VetControl.Domain.AssemblyInfoInputs.cache
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\VetControl.Domain.AssemblyInfo.cs
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\VetControl.Domain.csproj.CoreCompileInputs.cache
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\VetControl.Domain.dll
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\refint\VetControl.Domain.dll
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\VetControl.Domain.pdb
+C:\Users\emili\Desktop\TIF-VetControl\VetControl.API\VetControl.Domain\obj\Debug\net10.0\ref\VetControl.Domain.dll

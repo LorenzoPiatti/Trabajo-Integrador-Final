@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="VetControl.API/VetControl.API.csproj" />
+  <Project Path="VetControl.Application/VetControl.Application.csproj" />
+  <Project Path="VetControl.Domain/VetControl.Domain.csproj" />
+  <Project Path="VetControl.Infrastructure/VetControl.Infrastructure.csproj" />
+</Solution>
