@@ -45,7 +45,7 @@ public class AuthController : ControllerBase
 
             return Ok(new
             {
-                message = "Email verificado correctamente."
+                message = "Email verificado correctamente." 
             });
         }
         catch (Exception ex)

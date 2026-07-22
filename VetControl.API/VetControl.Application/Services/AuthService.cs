@@ -9,13 +9,16 @@ public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtService _jwtService;
+    private readonly IEmailService _emailService;
 
     public AuthService(
         IUserRepository userRepository,
-        IJwtService jwtService)
+        IJwtService jwtService,
+        IEmailService emailService)
     {
         _userRepository = userRepository;
         _jwtService = jwtService;
+        _emailService = emailService;
     }
 
     public async Task RegisterAsync(RegisterRequestDto request)
@@ -44,6 +47,10 @@ public class AuthService : IAuthService
         await _userRepository.AddAsync(user);
 
         await _userRepository.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync( user.Email,
+    "Verificación de cuenta VetControl",
+    $"Tu código de verificación es: {user.VerificationCode}");
     }
 
     public async Task VerifyEmailAsync(
@@ -115,6 +122,10 @@ public class AuthService : IAuthService
         await _userRepository.UpdateAsync(user);
 
         await _userRepository.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync( user.Email,
+    "Recuperación de contraseña VetControl",
+    $"Tu código de recuperación es: {user.VerificationCode}");
     }
 
     public async Task ResetPasswordAsync(
