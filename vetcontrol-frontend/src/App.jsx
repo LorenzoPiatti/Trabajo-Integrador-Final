@@ -4,6 +4,7 @@ import RegisterPage from "./modules/auth/pages/Register";
 import VerifyEmail from "./modules/auth/pages/VerifyEmail";
 import ForgotPassword from "./modules/auth/pages/ForgotPassword";
 import ResetPassword from "./modules/auth/pages/ResetPassword";
+import Dashboard from "./modules/dashboard/pages/Dashboard";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
   );
 }
