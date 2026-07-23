@@ -57,7 +57,7 @@ function LoginForm() {
                 token
             );
 
-            navigate("/home");
+            navigate("/dashboard");
         }
         catch (error) {
 
