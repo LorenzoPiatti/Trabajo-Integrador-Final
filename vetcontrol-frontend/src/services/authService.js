@@ -1,7 +1,9 @@
-const API_URL = "http://localhost:5169/api/auth";
+import API_URL from "./api";
+
+const AUTH_URL = `${API_URL}/auth`;
 
 export const login = async (email, password) => {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${AUTH_URL}/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -21,7 +23,7 @@ export const login = async (email, password) => {
 };
 
 export const register = async (email, password) => {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${AUTH_URL}/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -44,18 +46,16 @@ export const verifyEmail = async (
     email,
     verificationCode
 ) => {
-    const response = await fetch(
-        `${API_URL}/verify-email`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                verificationCode
-            })
-        });
+    const response = await fetch(`${AUTH_URL}/verify-email`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email,
+            verificationCode
+        })
+    });
 
     if (!response.ok) {
         const error = await response.text();
@@ -66,17 +66,15 @@ export const verifyEmail = async (
 };
 
 export const forgotPassword = async (email) => {
-    const response = await fetch(
-        `${API_URL}/forgot-password`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email
-            })
-        });
+    const response = await fetch(`${AUTH_URL}/forgot-password`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email
+        })
+    });
 
     if (!response.ok) {
         const error = await response.text();
@@ -91,19 +89,17 @@ export const resetPassword = async (
     verificationCode,
     newPassword
 ) => {
-    const response = await fetch(
-        `${API_URL}/reset-password`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                verificationCode,
-                newPassword
-            })
-        });
+    const response = await fetch(`${AUTH_URL}/reset-password`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email,
+            verificationCode,
+            newPassword
+        })
+    });
 
     if (!response.ok) {
         const error = await response.text();
