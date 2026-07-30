@@ -38,10 +38,14 @@ function RegisterForm() {
 
         try {
 
-            await register(
-                formData.email,
-                formData.password
-            );
+            await register({
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                phone: formData.phone,
+                address: formData.address,
+                password: formData.password
+            });
 
             localStorage.setItem(
                 "verificationEmail",

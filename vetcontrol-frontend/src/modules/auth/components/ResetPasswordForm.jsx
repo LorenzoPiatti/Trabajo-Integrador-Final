@@ -12,7 +12,6 @@ function ResetPasswordForm() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState(false);
 
     const navigate = useNavigate();
 
@@ -134,12 +133,6 @@ function ResetPasswordForm() {
             {error && (
                 <p className="error">
                     {error}
-                </p>
-            )}
-
-            {success && (
-                <p className="success">
-                    Contraseña actualizada correctamente
                 </p>
             )}
 
