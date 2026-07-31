@@ -1,0 +1,48 @@
+.panel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+
+.panel-header h3{
+
+    margin:0;
+
+    color:#444;
+
+    font-size:22px;
+
+    font-weight:600;
+
+}
+
+
+.panel-header button{
+
+    border:none;
+
+    background:transparent;
+
+    color:#A3C1AD;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+
+.panel-header button:hover{
+
+    opacity:.8;
+
+}

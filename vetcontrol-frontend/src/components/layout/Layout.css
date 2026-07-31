@@ -15,7 +15,7 @@
 
     flex-direction:column;
 
-    overflow:hidden;
+     transition:all .30s ease;
 }
 
 .layout-main{

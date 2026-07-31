@@ -10,7 +10,7 @@
 
     top:0;
 
-    background:white;
+    background:#fff;
 
     border-right:1px solid #ececec;
 
@@ -20,35 +20,109 @@
 
     justify-content:space-between;
 
-    padding:30px 22px;
+    padding:24px 18px;
+
+    transition:width .30s ease,
+        min-width .30s ease,
+        padding .30s ease;
+}
+
+.sidebar.collapsed{
+
+    width:80px;
+
+    min-width:80px;
+
+    padding:24px 12px;
+}
+
+.sidebar-header{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    margin-bottom:40px;
+}
+
+.sidebar.collapsed .sidebar-header{
+
+    justify-content:center;
+
+    gap:0;
+}
+
+.collapse-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#f4f4f4;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    flex-shrink:0;
+
+    transition:.25s;
+}
+
+.sidebar.collapsed .collapse-btn{
+
+    margin:0 auto;
+}
+
+.collapse-btn:hover{
+
+    background:#A3C1AD;
+
+    color:white;
 }
 
 .sidebar-logo h2{
 
+    margin:0;
+
     color:#A3C1AD;
 
-    font-size:30px;
+    font-size:28px;
 
     font-weight:700;
-
-    margin-bottom:6px;
 }
 
 .sidebar-logo span{
 
     color:#8a8a8a;
 
-    font-size:14px;
+    font-size:13px;
 }
 
 .sidebar-nav{
 
-    margin-top:45px;
+    margin-top:10px;
 }
 
 .sidebar-nav ul{
 
     list-style:none;
+
+    margin:0;
+
+    padding:0;
 
     display:flex;
 
@@ -65,11 +139,9 @@
 
     gap:14px;
 
-    padding:14px 18px;
+    padding:14px 16px;
 
     border-radius:14px;
-
-    cursor:pointer;
 
     color:#555;
 
@@ -94,6 +166,18 @@
     font-weight:600;
 }
 
+.sidebar.collapsed .sidebar-nav a{
+
+    justify-content:center;
+
+    padding:14px 0;
+}
+
+.sidebar.collapsed .sidebar-nav span{
+
+    display:none;
+}
+
 .logout-btn{
 
     width:100%;
@@ -106,8 +190,6 @@
 
     padding:14px;
 
-    cursor:pointer;
-
     display:flex;
 
     justify-content:center;
@@ -115,6 +197,8 @@
     align-items:center;
 
     gap:10px;
+
+    cursor:pointer;
 
     transition:.25s;
 }
@@ -124,4 +208,16 @@
     background:#A3C1AD;
 
     color:white;
+}
+
+.sidebar.collapsed .logout-btn{
+
+    justify-content:center;
+
+    padding:14px 0;
+}
+
+.sidebar.collapsed .logout-btn span{
+
+    display:none;
 }

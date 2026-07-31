@@ -1,39 +1,68 @@
+import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
 import "./Header.css";
-import { Bell, CircleUserRound } from "lucide-react";
 
 function Header({
     title = "Dashboard",
     subtitle = "Bienvenido a VetControl"
 }) {
+    const [currentDate, setCurrentDate] = useState(new Date());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentDate(new Date());
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const date = currentDate.toLocaleDateString("es-AR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+
+    const time = currentDate.toLocaleTimeString("es-AR", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
     return (
         <header className="header">
-
             <div className="header-title">
-
                 <h1>{title}</h1>
 
-                <p>
-                    {subtitle}
-                </p>
+                <p>{subtitle}</p>
 
+                <span>
+                    {date} - {time} hs
+                </span>
             </div>
 
             <div className="header-actions">
+                <button type="button" className="header-icon">
+                    <Bell size={20} />
 
-                <button className="header-icon">
-                    <Bell size={22} />
+                    <span className="notification-badge">
+                        2
+                    </span>
                 </button>
 
-                <button className="header-user">
+                <div className="header-divider"></div>
 
-                    <CircleUserRound size={28} />
+                <button type="button" className="header-user">
+                    <div className="avatar">
+                        VG
+                    </div>
 
-                    <span>Administrador</span>
+                    <div className="header-user-info">
+                        <strong>Valentino</strong>
 
+                        <small>Administrador</small>
+                    </div>
                 </button>
-
             </div>
-
         </header>
     );
 }
