@@ -1,21 +1,19 @@
-import "./Header.css";
-import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
+import "./Header.css";
 
-function Header() {
-
+function Header({
+    title = "Dashboard",
+    subtitle = "Bienvenido a VetControl"
+}) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     useEffect(() => {
-
         const interval = setInterval(() => {
-
             setCurrentDate(new Date());
-
         }, 60000);
 
         return () => clearInterval(interval);
-
     }, []);
 
     const date = currentDate.toLocaleDateString("es-AR", {
@@ -31,57 +29,42 @@ function Header() {
     });
 
     return (
-
         <header className="header">
-
             <div className="header-title">
+                <h1>{title}</h1>
 
-                
-
-                <p>Bienvenido nuevamente 👋</p>
+                <p>{subtitle}</p>
 
                 <span>
-                    {date} • {time} hs
+                    {date} - {time} hs
                 </span>
-
             </div>
 
             <div className="header-actions">
-
-                <button className="header-icon">
-
+                <button type="button" className="header-icon">
                     <Bell size={20} />
 
                     <span className="notification-badge">
                         2
                     </span>
-
                 </button>
 
                 <div className="header-divider"></div>
 
-                <button className="header-user">
-
+                <button type="button" className="header-user">
                     <div className="avatar">
                         VG
                     </div>
 
                     <div className="header-user-info">
-
                         <strong>Valentino</strong>
 
                         <small>Administrador</small>
-
                     </div>
-
                 </button>
-
             </div>
-
         </header>
-
     );
-
 }
 
 export default Header;
