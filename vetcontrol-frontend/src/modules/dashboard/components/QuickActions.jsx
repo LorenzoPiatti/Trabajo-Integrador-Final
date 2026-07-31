@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 
 import "./QuickActions.css";
+import Panel from "../../../components/ui/Panel";
 
 function QuickActions() {
 
@@ -30,7 +31,7 @@ function QuickActions() {
 
     return (
 
-        <section className="quick-actions">
+        <Panel>
 
             <h3>Acciones rápidas</h3>
 
@@ -55,7 +56,7 @@ function QuickActions() {
 
             </div>
 
-        </section>
+        </Panel>
 
     );
 }

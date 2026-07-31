@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 
 function Dashboard() {
+
     return (
+
         <Layout>
 
             <div className="dashboard">
@@ -54,19 +56,23 @@ function Dashboard() {
 
                 </div>
 
-                {/* Primera fila */}
+                {/* Fila superior */}
 
                 <div className="dashboard-grid">
 
-                    <UpcomingAppointments />
+                    <div className="upcoming-section">
+                        <UpcomingAppointments />
+                    </div>
 
-                    <QuickActions />
+                    <div className="actions-section">
+                        <QuickActions />
+                    </div>
 
                 </div>
 
-                {/* Segunda fila */}
+                {/* Fila inferior */}
 
-                <div className="dashboard-grid">
+                <div className="pets-section">
 
                     <RecentPets />
 
@@ -75,7 +81,9 @@ function Dashboard() {
             </div>
 
         </Layout>
+
     );
+
 }
 
 export default Dashboard;
