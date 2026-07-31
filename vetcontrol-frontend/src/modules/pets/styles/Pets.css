@@ -1,268 +1,525 @@
-.pets-page {
-    min-height: 100vh;
-    background: #f6f8f7;
-    color: #24302b;
-    padding: 32px;
+.pets-dashboard{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:28px;
 }
 
-.pets-page--centered {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.pets-summary-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:24px;
 }
 
-.pets-hero,
-.pets-workspace,
-.status-message {
-    width: min(1120px, 100%);
-    margin: 0 auto;
+.pets-summary-grid .stat-card{
+
+    min-width:0;
 }
 
-.pets-hero {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 24px;
+.pets-content-grid{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:24px;
+
+    align-items:start;
 }
 
-.pets-hero h1,
-.auth-required h1 {
-    color: #24302b;
-    font-size: 36px;
-    line-height: 1.15;
-    margin: 4px 0 8px;
+.pets-panel{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:24px;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.05);
 }
 
-.pets-hero p,
-.auth-required p {
-    color: #66736d;
-    line-height: 1.5;
-    max-width: 560px;
+.pets-panel-header{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    justify-content:space-between;
+
+    gap:18px;
+
+    margin-bottom:22px;
 }
 
-.section-label {
-    color: #4f7d65;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: uppercase;
+.pets-panel-header h2{
+
+    color:#444;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin-bottom:6px;
 }
 
-.pets-workspace {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 380px;
-    gap: 24px;
-    align-items: start;
+.pets-panel-header p{
+
+    color:#8a8a8a;
+
+    font-size:14px;
 }
 
-.pets-list-panel,
-.pet-form,
-.auth-required {
-    background: #ffffff;
-    border: 1px solid #dfe8e2;
-    border-radius: 8px;
-    box-shadow: 0 12px 30px rgba(36, 48, 43, 0.08);
+.pets-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
 }
 
-.pets-list-panel {
-    padding: 20px;
+.pet-row{
+
+    display:grid;
+
+    grid-template-columns:58px 1fr auto;
+
+    gap:16px;
+
+    align-items:center;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:#f7faf8;
+
+    transition:.25s;
 }
 
-.pets-list-header,
-.pet-form__header {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: flex-start;
-    margin-bottom: 18px;
+.pet-row:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 12px 24px rgba(0,0,0,.06);
 }
 
-.pets-list-header h2,
-.pet-form h2 {
-    color: #24302b;
-    font-size: 22px;
-    line-height: 1.2;
+.pet-avatar{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:18px;
+
+    background:#A3C1AD;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
 }
 
-.pets-list-header strong {
-    min-width: 42px;
-    height: 34px;
-    border-radius: 8px;
-    background: #edf5f0;
-    color: #4f7d65;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.pet-info h3{
+
+    color:#444;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    margin-bottom:4px;
 }
 
-.pets-list {
-    display: grid;
-    gap: 12px;
+.pet-info p,
+.pet-info span,
+.pet-info small{
+
+    display:block;
+
+    color:#8a8a8a;
+
+    line-height:1.45;
 }
 
-.pet-card {
-    display: flex;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 16px;
-    border: 1px solid #e5ece8;
-    border-radius: 8px;
-    background: #fbfcfb;
+.pet-info span,
+.pet-info small{
+
+    font-size:13px;
+
+    margin-top:4px;
 }
 
-.pet-card h3 {
-    color: #24302b;
-    font-size: 20px;
-    margin-bottom: 4px;
+.pet-row-actions{
+
+    display:flex;
+
+    gap:10px;
 }
 
-.pet-card p,
-.pet-card span,
-.empty-state {
-    color: #66736d;
-    line-height: 1.45;
+.pet-icon-button{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:white;
+
+    color:#A3C1AD;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transition:.25s;
 }
 
-.pet-card span {
-    display: block;
-    font-size: 14px;
-    margin-top: 6px;
+.pet-icon-button:hover{
+
+    background:#A3C1AD;
+
+    color:white;
 }
 
-.pet-observations {
-    margin-top: 10px;
+.pet-icon-button--danger{
+
+    color:#E57373;
 }
 
-.pet-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 112px;
+.pet-icon-button--danger:hover{
+
+    background:#E57373;
+
+    color:white;
 }
 
-.pet-form,
-.auth-required {
-    padding: 22px;
+.pets-empty-state{
+
+    color:#8a8a8a;
+
+    font-size:16px;
 }
 
-.pet-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+.pets-empty-state--center{
+
+    min-height:240px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:14px;
+
+    border-radius:18px;
+
+    background:#f7faf8;
+
+    color:#A3C1AD;
 }
 
-.pet-form label {
-    color: #43504a;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    font-size: 14px;
-    font-weight: 700;
+.pets-empty-state--center p{
+
+    color:#8a8a8a;
+}
+
+.pet-form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+}
+
+.pet-form-header{
+
+    margin-bottom:0;
+}
+
+.pet-form-badge{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:16px;
+
+    background:#f7faf8;
+
+    color:#A3C1AD;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+}
+
+.pet-form-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:16px;
+}
+
+.pet-form label{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    color:#666;
+
+    font-size:14px;
+
+    font-weight:600;
 }
 
 .pet-form input,
-.pet-form textarea {
-    border: 1px solid #d8e2dc;
-    border-radius: 8px;
-    color: #24302b;
-    font: inherit;
-    font-weight: 400;
-    outline: none;
-    padding: 12px 14px;
-    resize: vertical;
+.pet-form textarea{
+
+    width:100%;
+
+    border:1px solid #e1e1e1;
+
+    border-radius:14px;
+
+    padding:13px 15px;
+
+    outline:none;
+
+    color:#444;
+
+    font:inherit;
+
+    resize:vertical;
+
+    transition:.25s;
 }
 
 .pet-form input:focus,
-.pet-form textarea:focus {
-    border-color: #4f7d65;
-    box-shadow: 0 0 0 3px rgba(79, 125, 101, 0.12);
+.pet-form textarea:focus{
+
+    border-color:#A3C1AD;
+
+    box-shadow:0 0 0 4px rgba(163,193,173,.18);
 }
 
-.primary-button,
-.secondary-button,
-.danger-button {
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 42px;
-    padding: 0 16px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 700;
+.pet-form-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
 }
 
-.primary-button {
-    background: #4f7d65;
-    color: #ffffff;
+.pets-primary-button,
+.pets-secondary-button,
+.pets-ghost-button{
+
+    border:none;
+
+    border-radius:14px;
+
+    min-height:44px;
+
+    padding:0 18px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    transition:.25s;
 }
 
-.primary-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
+.pets-primary-button{
+
+    background:#A3C1AD;
+
+    color:white;
 }
 
-.secondary-button {
-    background: #edf5f0;
-    color: #385f4b;
+.pets-primary-button:hover{
+
+    background:#8fb39b;
 }
 
-.danger-button {
-    background: #fff0ef;
-    color: #b33b32;
+.pets-primary-button:disabled{
+
+    opacity:.7;
+
+    cursor:not-allowed;
 }
 
-.status-message {
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 18px;
-    padding: 12px 16px;
+.pets-secondary-button,
+.pets-ghost-button{
+
+    background:#f3f3f3;
+
+    color:#555;
 }
 
-.status-message--error {
-    background: #fff0ef;
-    color: #b33b32;
+.pets-secondary-button:hover,
+.pets-ghost-button:hover{
+
+    background:#eef5f0;
+
+    color:#A3C1AD;
 }
 
-.status-message--success {
-    background: #edf8f0;
-    color: #2f6f44;
+.pets-status{
+
+    border-radius:16px;
+
+    padding:14px 18px;
+
+    font-weight:600;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.04);
 }
 
-.auth-required {
-    max-width: 480px;
+.pets-status--error{
+
+    background:#fff0ef;
+
+    color:#c44b43;
 }
 
-.auth-required .primary-button {
-    margin-top: 20px;
+.pets-status--success{
+
+    background:#eef8f1;
+
+    color:#4f8b61;
 }
 
-@media (max-width: 900px) {
-    .pets-page {
-        padding: 20px;
+.pets-auth-page{
+
+    min-height:100vh;
+
+    background:#f7f8fa;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:30px;
+}
+
+.pets-auth-card{
+
+    width:min(460px,100%);
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:34px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+
+    text-align:center;
+}
+
+.pets-auth-icon{
+
+    width:68px;
+
+    height:68px;
+
+    border-radius:20px;
+
+    background:#A3C1AD;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:0 auto 20px;
+}
+
+.pets-auth-card h1{
+
+    color:#444;
+
+    margin-bottom:10px;
+}
+
+.pets-auth-card p{
+
+    color:#8a8a8a;
+
+    line-height:1.5;
+
+    margin-bottom:22px;
+}
+
+@media(max-width:1200px){
+
+    .pets-summary-grid{
+
+        grid-template-columns:1fr;
     }
 
-    .pets-hero,
-    .pets-workspace,
-    .pet-card {
-        flex-direction: column;
+    .pets-content-grid{
+
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .pet-form-grid,
+    .pet-row{
+
+        grid-template-columns:1fr;
     }
 
-    .pets-workspace {
-        grid-template-columns: 1fr;
-    }
+    .pet-row-actions,
+    .pet-form-actions{
 
-    .pets-hero h1,
-    .auth-required h1 {
-        font-size: 30px;
-    }
-
-    .pet-actions {
-        flex-direction: row;
-        min-width: 0;
+        justify-content:flex-start;
     }
 }

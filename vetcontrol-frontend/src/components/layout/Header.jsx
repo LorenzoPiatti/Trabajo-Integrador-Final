@@ -1,16 +1,19 @@
 import "./Header.css";
 import { Bell, CircleUserRound } from "lucide-react";
 
-function Header() {
+function Header({
+    title = "Dashboard",
+    subtitle = "Bienvenido a VetControl"
+}) {
     return (
         <header className="header">
 
             <div className="header-title">
 
-                <h1>Dashboard</h1>
+                <h1>{title}</h1>
 
                 <p>
-                    Bienvenido a VetControl
+                    {subtitle}
                 </p>
 
             </div>

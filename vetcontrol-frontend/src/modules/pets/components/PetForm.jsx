@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PawPrint, Save, X } from "lucide-react";
 
 const emptyForm = {
     name: "",
@@ -56,78 +57,74 @@ function PetForm({
     };
 
     return (
-        <form className="pet-form" onSubmit={handleSubmit}>
-            <div className="pet-form__header">
+        <form className="pets-panel pet-form" onSubmit={handleSubmit}>
+            <div className="pets-panel-header pet-form-header">
                 <div>
-                    <span className="section-label">
-                        Mascota
-                    </span>
-
                     <h2>
                         {selectedPet
                             ? "Editar mascota"
                             : "Registrar mascota"}
                     </h2>
+
+                    <p>Datos principales</p>
                 </div>
 
-                {selectedPet && (
-                    <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={onCancelEdit}
-                    >
-                        Cancelar
-                    </button>
-                )}
+                <div className="pet-form-badge">
+                    <PawPrint size={22} />
+                </div>
             </div>
 
-            <label>
-                Nombre
-                <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    maxLength="100"
-                    required
-                />
-            </label>
+            <div className="pet-form-grid">
+                <label>
+                    Nombre
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        maxLength="100"
+                        placeholder="Ej: Felipe"
+                        required
+                    />
+                </label>
 
-            <label>
-                Especie
-                <input
-                    type="text"
-                    name="species"
-                    value={formData.species}
-                    onChange={handleChange}
-                    maxLength="50"
-                    placeholder="Perro, gato, conejo..."
-                    required
-                />
-            </label>
+                <label>
+                    Especie
+                    <input
+                        type="text"
+                        name="species"
+                        value={formData.species}
+                        onChange={handleChange}
+                        maxLength="50"
+                        placeholder="Perro, gato..."
+                        required
+                    />
+                </label>
 
-            <label>
-                Raza
-                <input
-                    type="text"
-                    name="breed"
-                    value={formData.breed}
-                    onChange={handleChange}
-                    maxLength="100"
-                    required
-                />
-            </label>
+                <label>
+                    Raza
+                    <input
+                        type="text"
+                        name="breed"
+                        value={formData.breed}
+                        onChange={handleChange}
+                        maxLength="100"
+                        placeholder="Mestizo"
+                        required
+                    />
+                </label>
 
-            <label>
-                Fecha de nacimiento
-                <input
-                    type="date"
-                    name="birthDate"
-                    value={formData.birthDate}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
+                <label>
+                    Fecha de nacimiento
+                    <input
+                        type="date"
+                        name="birthDate"
+                        value={formData.birthDate}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+            </div>
 
             <label>
                 Observaciones
@@ -135,22 +132,40 @@ function PetForm({
                     name="observations"
                     value={formData.observations}
                     onChange={handleChange}
-                    rows="4"
-                    placeholder="Notas importantes, alergias o cuidados especiales"
+                    rows="5"
+                    placeholder="Alergias, cuidados especiales o notas"
                 />
             </label>
 
-            <button
-                type="submit"
-                className="primary-button"
-                disabled={loading}
-            >
-                {loading
-                    ? "Guardando..."
-                    : selectedPet
-                        ? "Actualizar mascota"
-                        : "Guardar mascota"}
-            </button>
+            <div className="pet-form-actions">
+                {selectedPet && (
+                    <button
+                        type="button"
+                        className="pets-secondary-button"
+                        onClick={onCancelEdit}
+                    >
+                        <X size={18} />
+
+                        <span>Cancelar</span>
+                    </button>
+                )}
+
+                <button
+                    type="submit"
+                    className="pets-primary-button"
+                    disabled={loading}
+                >
+                    <Save size={18} />
+
+                    <span>
+                        {loading
+                            ? "Guardando..."
+                            : selectedPet
+                                ? "Actualizar"
+                                : "Guardar"}
+                    </span>
+                </button>
+            </div>
         </form>
     );
 }

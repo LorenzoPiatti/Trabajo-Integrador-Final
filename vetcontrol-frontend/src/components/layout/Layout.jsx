@@ -3,7 +3,11 @@ import "./Layout.css";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
-function Layout({ children }) {
+function Layout({
+    children,
+    title = "Dashboard",
+    subtitle = "Bienvenido a VetControl"
+}) {
     return (
         <div className="layout">
 
@@ -11,7 +15,10 @@ function Layout({ children }) {
 
             <div className="layout-content">
 
-                <Header />
+                <Header
+                    title={title}
+                    subtitle={subtitle}
+                />
 
                 <main className="layout-main">
                     {children}

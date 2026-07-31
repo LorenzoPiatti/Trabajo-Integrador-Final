@@ -1,6 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+    CalendarDays,
+    ClipboardList,
+    Edit3,
+    PawPrint,
+    Plus,
+    Trash2
+} from "lucide-react";
+import Layout from "../../../components/layout/Layout";
+import StatCard from "../../../components/ui/StatCard";
+import {
     createPet,
     deletePet,
     getPets,
@@ -114,20 +124,19 @@ function PetsPage() {
 
     if (!token) {
         return (
-            <main className="pets-page pets-page--centered">
-                <section className="auth-required">
-                    <span className="section-label">
-                        Sesión requerida
-                    </span>
+            <main className="pets-auth-page">
+                <section className="pets-auth-card">
+                    <div className="pets-auth-icon">
+                        <PawPrint size={30} />
+                    </div>
 
                     <h1>Mis mascotas</h1>
 
                     <p>
-                        Iniciá sesión para registrar y consultar tus
-                        mascotas.
+                        Iniciá sesión para registrar y consultar tus mascotas.
                     </p>
 
-                    <Link className="primary-button" to="/">
+                    <Link className="pets-primary-button" to="/">
                         Ir al inicio de sesión
                     </Link>
                 </section>
@@ -136,122 +145,149 @@ function PetsPage() {
     }
 
     return (
-        <main className="pets-page">
-            <section className="pets-hero">
-                <div>
-                    <span className="section-label">
-                        VetControl
-                    </span>
+        <Layout
+            title="Mascotas"
+            subtitle="Gestioná las mascotas registradas"
+        >
+            <div className="pets-dashboard">
+                <section className="pets-summary-grid">
+                    <StatCard
+                        title="Mascotas"
+                        value={pets.length}
+                        color="#A3C1AD"
+                        icon={<PawPrint />}
+                    />
 
-                    <h1>Gestión de mascotas</h1>
+                    <StatCard
+                        title="Próximos turnos"
+                        value="0"
+                        color="#7FB3D5"
+                        icon={<CalendarDays />}
+                    />
 
-                    <p>
-                        Registrá, consultá y actualizá las mascotas
-                        asociadas a tu cuenta.
-                    </p>
-                </div>
-
-                <Link className="secondary-button" to="/dashboard">
-                    Volver al dashboard
-                </Link>
-            </section>
-
-            {(error || success) && (
-                <section
-                    className={
-                        error
-                            ? "status-message status-message--error"
-                            : "status-message status-message--success"
-                    }
-                >
-                    {error || success}
+                    <StatCard
+                        title="Historias clínicas"
+                        value="0"
+                        color="#E8B86D"
+                        icon={<ClipboardList />}
+                    />
                 </section>
-            )}
 
-            <section className="pets-workspace">
-                <div className="pets-list-panel">
-                    <div className="pets-list-header">
-                        <div>
-                            <span className="section-label">
-                                Listado
-                            </span>
+                {(error || success) && (
+                    <section
+                        className={
+                            error
+                                ? "pets-status pets-status--error"
+                                : "pets-status pets-status--success"
+                        }
+                    >
+                        {error || success}
+                    </section>
+                )}
 
-                            <h2>Mis mascotas</h2>
+                <section className="pets-content-grid">
+                    <div className="pets-panel pets-list-panel">
+                        <div className="pets-panel-header">
+                            <div>
+                                <h2>Mis mascotas</h2>
+
+                                <p>
+                                    {pets.length === 1
+                                        ? "1 mascota cargada"
+                                        : `${pets.length} mascotas cargadas`}
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="pets-ghost-button"
+                                onClick={() => setSelectedPet(null)}
+                            >
+                                <Plus size={18} />
+
+                                <span>Nueva</span>
+                            </button>
                         </div>
 
-                        <strong>{pets.length}</strong>
+                        {initialLoading ? (
+                            <p className="pets-empty-state">
+                                Cargando mascotas...
+                            </p>
+                        ) : pets.length === 0 ? (
+                            <div className="pets-empty-state pets-empty-state--center">
+                                <PawPrint size={42} />
+
+                                <p>Todavía no registraste mascotas.</p>
+                            </div>
+                        ) : (
+                            <div className="pets-list">
+                                {pets.map((pet) => (
+                                    <article
+                                        className="pet-row"
+                                        key={pet.petId}
+                                    >
+                                        <div className="pet-avatar">
+                                            <PawPrint size={24} />
+                                        </div>
+
+                                        <div className="pet-info">
+                                            <h3>{pet.name}</h3>
+
+                                            <p>
+                                                {pet.species} · {pet.breed}
+                                            </p>
+
+                                            <span>
+                                                Nacimiento:{" "}
+                                                {formatDate(pet.birthDate)}
+                                            </span>
+
+                                            {pet.observations && (
+                                                <small>
+                                                    {pet.observations}
+                                                </small>
+                                            )}
+                                        </div>
+
+                                        <div className="pet-row-actions">
+                                            <button
+                                                type="button"
+                                                className="pet-icon-button"
+                                                title="Editar mascota"
+                                                onClick={() =>
+                                                    setSelectedPet(pet)
+                                                }
+                                            >
+                                                <Edit3 size={18} />
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="pet-icon-button pet-icon-button--danger"
+                                                title="Eliminar mascota"
+                                                onClick={() =>
+                                                    handleDelete(pet.petId)
+                                                }
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
-                    {initialLoading ? (
-                        <p className="empty-state">
-                            Cargando mascotas...
-                        </p>
-                    ) : pets.length === 0 ? (
-                        <p className="empty-state">
-                            Todavía no registraste mascotas.
-                        </p>
-                    ) : (
-                        <div className="pets-list">
-                            {pets.map((pet) => (
-                                <article
-                                    className="pet-card"
-                                    key={pet.petId}
-                                >
-                                    <div>
-                                        <h3>{pet.name}</h3>
-
-                                        <p>
-                                            {pet.species} · {pet.breed}
-                                        </p>
-
-                                        <span>
-                                            Nacimiento:{" "}
-                                            {formatDate(pet.birthDate)}
-                                        </span>
-
-                                        {pet.observations && (
-                                            <p className="pet-observations">
-                                                {pet.observations}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div className="pet-actions">
-                                        <button
-                                            type="button"
-                                            className="secondary-button"
-                                            onClick={() =>
-                                                setSelectedPet(pet)
-                                            }
-                                        >
-                                            Editar
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            className="danger-button"
-                                            onClick={() =>
-                                                handleDelete(pet.petId)
-                                            }
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <PetForm
-                    key={selectedPet?.petId ?? "new-pet"}
-                    selectedPet={selectedPet}
-                    loading={loading}
-                    onSubmit={handleSubmit}
-                    onCancelEdit={() => setSelectedPet(null)}
-                />
-            </section>
-        </main>
+                    <PetForm
+                        key={selectedPet?.petId ?? "new-pet"}
+                        selectedPet={selectedPet}
+                        loading={loading}
+                        onSubmit={handleSubmit}
+                        onCancelEdit={() => setSelectedPet(null)}
+                    />
+                </section>
+            </div>
+        </Layout>
     );
 }
 
