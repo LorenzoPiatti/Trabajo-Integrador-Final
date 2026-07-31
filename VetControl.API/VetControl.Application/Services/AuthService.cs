@@ -23,8 +23,10 @@ public class AuthService : IAuthService
 
     public async Task RegisterAsync(RegisterRequestDto request)
     {
+        ValidateRegisterRequest(request);
+
         var existingUser = await _userRepository
-            .GetByEmailAsync(request.Email);
+            .GetByEmailAsync(request.Email.Trim());
 
         if (existingUser != null)
         {
@@ -33,7 +35,7 @@ public class AuthService : IAuthService
 
         var user = new User
         {
-            Email = request.Email,
+            Email = request.Email.Trim(),
             Password = request.Password,
             Role = UserRole.Owner,
             Active = true,
@@ -41,16 +43,24 @@ public class AuthService : IAuthService
             VerificationCode = Guid.NewGuid()
                 .ToString()
                 .Substring(0, 6)
-                .ToUpper()
+                .ToUpper(),
+            Owner = new Owner
+            {
+                FirstName = request.FirstName.Trim(),
+                LastName = request.LastName.Trim(),
+                Phone = request.Phone.Trim(),
+                Address = request.Address.Trim()
+            }
         };
 
         await _userRepository.AddAsync(user);
 
         await _userRepository.SaveChangesAsync();
 
-        await _emailService.SendEmailAsync( user.Email,
-    "Verificación de cuenta VetControl",
-    $"Tu código de verificación es: {user.VerificationCode}");
+        await _emailService.SendEmailAsync(
+            user.Email,
+            "Verificación de cuenta VetControl",
+            $"Tu código de verificación es: {user.VerificationCode}");
     }
 
     public async Task VerifyEmailAsync(
@@ -123,9 +133,10 @@ public class AuthService : IAuthService
 
         await _userRepository.SaveChangesAsync();
 
-        await _emailService.SendEmailAsync( user.Email,
-    "Recuperación de contraseña VetControl",
-    $"Tu código de recuperación es: {user.VerificationCode}");
+        await _emailService.SendEmailAsync(
+            user.Email,
+            "Recuperación de contraseña VetControl",
+            $"Tu código de recuperación es: {user.VerificationCode}");
     }
 
     public async Task ResetPasswordAsync(
@@ -152,5 +163,39 @@ public class AuthService : IAuthService
         await _userRepository.UpdateAsync(user);
 
         await _userRepository.SaveChangesAsync();
+    }
+
+    private static void ValidateRegisterRequest(
+        RegisterRequestDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.FirstName))
+        {
+            throw new Exception("El nombre es obligatorio.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.LastName))
+        {
+            throw new Exception("El apellido es obligatorio.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            throw new Exception("El email es obligatorio.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Phone))
+        {
+            throw new Exception("El teléfono es obligatorio.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Address))
+        {
+            throw new Exception("La dirección es obligatoria.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Password))
+        {
+            throw new Exception("La contraseña es obligatoria.");
+        }
     }
 }

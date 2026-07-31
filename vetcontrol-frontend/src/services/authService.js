@@ -2,6 +2,36 @@ import API_URL from "./api";
 
 const AUTH_URL = `${API_URL}/auth`;
 
+const readResponse = async (response) => {
+    const text = await response.text();
+
+    if (!text) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text);
+    }
+    catch {
+        return text;
+    }
+};
+
+const handleResponse = async (response) => {
+    const data = await readResponse(response);
+
+    if (!response.ok) {
+        const message =
+            typeof data === "string"
+                ? data
+                : data?.message ?? "Ocurrió un error inesperado";
+
+        throw new Error(message);
+    }
+
+    return data;
+};
+
 export const login = async (email, password) => {
     const response = await fetch(`${AUTH_URL}/login`, {
         method: "POST",
@@ -14,32 +44,21 @@ export const login = async (email, password) => {
         })
     });
 
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-    }
+    const data = await handleResponse(response);
 
-    return await response.json();
+    return data.token;
 };
 
-export const register = async (email, password) => {
+export const register = async (userData) => {
     const response = await fetch(`${AUTH_URL}/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            email,
-            password
-        })
+        body: JSON.stringify(userData)
     });
 
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-    }
-
-    return await response.text();
+    return await handleResponse(response);
 };
 
 export const verifyEmail = async (
@@ -57,12 +76,7 @@ export const verifyEmail = async (
         })
     });
 
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-    }
-
-    return await response.text();
+    return await handleResponse(response);
 };
 
 export const forgotPassword = async (email) => {
@@ -76,12 +90,7 @@ export const forgotPassword = async (email) => {
         })
     });
 
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-    }
-
-    return await response.text();
+    return await handleResponse(response);
 };
 
 export const resetPassword = async (
@@ -101,10 +110,5 @@ export const resetPassword = async (
         })
     });
 
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-    }
-
-    return await response.text();
+    return await handleResponse(response);
 };

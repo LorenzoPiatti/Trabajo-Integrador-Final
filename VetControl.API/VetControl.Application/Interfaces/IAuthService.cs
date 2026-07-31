@@ -11,15 +11,10 @@ public interface IAuthService
 
     Task<string> LoginAsync(
         LoginRequestDto request);
-    public Task ForgotPasswordAsync(
-    ForgotPasswordRequestDto request)
-    {
-        throw new NotImplementedException();
-    }
 
-    public Task ResetPasswordAsync(
-        ResetPasswordRequestDto request)
-    {
-        throw new NotImplementedException();
-    }
+    Task ForgotPasswordAsync(
+        ForgotPasswordRequestDto request);
+
+    Task ResetPasswordAsync(
+        ResetPasswordRequestDto request);
 }
