@@ -1,125 +1,230 @@
-.sidebar{
+.sidebar {
 
-    width:260px;
+    width: 260px;
+    min-width: 260px;
 
-    min-width:260px;
+    background: #fff;
 
-    height:100vh;
+    border-right: 1px solid #ececec;
 
-    position:sticky;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
-    top:0;
+    padding: 24px 18px;
 
-    background:white;
-
-    border-right:1px solid #ececec;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:space-between;
-
-    padding:30px 22px;
+    transition: width .30s ease,
+                min-width .30s ease,
+                padding .30s ease;
 }
 
-.sidebar-logo h2{
+/* ========================= */
+/* SIDEBAR COLAPSADO */
+/* ========================= */
 
-    color:#A3C1AD;
+.sidebar.collapsed {
 
-    font-size:30px;
+    width: 80px;
+    min-width: 80px;
 
-    font-weight:700;
-
-    margin-bottom:6px;
+    padding: 24px 12px;
 }
 
-.sidebar-logo span{
+/* ========================= */
+/* HEADER */
+/* ========================= */
 
-    color:#8a8a8a;
+.sidebar-header {
 
-    font-size:14px;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 40px;
 }
 
-.sidebar-nav{
+.sidebar.collapsed .sidebar-header {
 
-    margin-top:45px;
+    justify-content: center;
+    gap: 0;
 }
 
-.sidebar-nav ul{
+/* ========================= */
+/* BOTÓN MENÚ */
+/* ========================= */
 
-    list-style:none;
+.collapse-btn {
 
-    display:flex;
+    width: 42px;
+    height: 42px;
 
-    flex-direction:column;
+    border: none;
 
-    gap:10px;
+    border-radius: 12px;
+
+    background: #f4f4f4;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition: .25s;
 }
 
-.sidebar-nav li{
+.sidebar.collapsed .collapse-btn {
 
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    padding:14px 18px;
-
-    border-radius:14px;
-
-    cursor:pointer;
-
-    color:#555;
-
-    transition:.25s;
+    margin: 0 auto;
 }
 
-.sidebar-nav li:hover{
+.collapse-btn:hover {
 
-    background:#eef5f0;
-
-    color:#A3C1AD;
+    background: #A3C1AD;
+    color: white;
 }
 
-.sidebar-nav .active{
+/* ========================= */
+/* LOGO */
+/* ========================= */
 
-    background:#A3C1AD;
+.sidebar-logo h2 {
 
-    color:white;
+    margin: 0;
 
-    font-weight:600;
+    color: #A3C1AD;
+
+    font-size: 28px;
+
+    font-weight: 700;
 }
 
-.logout-btn{
+.sidebar-logo span {
 
-    width:100%;
+    color: #8a8a8a;
 
-    border:none;
-
-    background:#f3f3f3;
-
-    border-radius:14px;
-
-    padding:14px;
-
-    cursor:pointer;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    gap:10px;
-
-    transition:.25s;
+    font-size: 13px;
 }
 
-.logout-btn:hover{
+/* ========================= */
+/* MENÚ */
+/* ========================= */
 
-    background:#A3C1AD;
+.sidebar-nav {
 
-    color:white;
+    margin-top: 10px;
+}
+
+.sidebar-nav ul {
+
+    list-style: none;
+
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.sidebar-nav li {
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px 16px;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    color: #555;
+
+    transition: .25s;
+}
+
+.sidebar-nav li:hover {
+
+    background: #eef5f0;
+
+    color: #A3C1AD;
+}
+
+.sidebar-nav .active {
+
+    background: #A3C1AD;
+
+    color: white;
+
+    font-weight: 600;
+}
+
+/* ========================= */
+/* SIDEBAR CERRADO */
+/* ========================= */
+
+.sidebar.collapsed .sidebar-nav li {
+
+    justify-content: center;
+
+    padding: 14px 0;
+}
+
+.sidebar.collapsed .sidebar-nav span {
+
+    display: none;
+}
+
+/* ========================= */
+/* LOGOUT */
+/* ========================= */
+
+.logout-btn {
+
+    width: 100%;
+
+    border: none;
+
+    background: #f3f3f3;
+
+    border-radius: 14px;
+
+    padding: 14px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.logout-btn:hover {
+
+    background: #A3C1AD;
+
+    color: white;
+}
+
+.sidebar.collapsed .logout-btn {
+
+    justify-content: center;
+
+    padding: 14px 0;
+}
+
+.sidebar.collapsed .logout-btn span {
+
+    display: none;
 }

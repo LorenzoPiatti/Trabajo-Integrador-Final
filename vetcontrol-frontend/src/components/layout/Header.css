@@ -1,8 +1,8 @@
 .header{
 
-    height:85px;
+    height:90px;
 
-    background:white;
+    background:#fff;
 
     border-bottom:1px solid #ececec;
 
@@ -13,26 +13,48 @@
     align-items:center;
 
     padding:0 35px;
-
 }
+
+/* =======================
+TÍTULO
+======================= */
 
 .header-title h1{
 
-    color:#4b4b4b;
+    margin:0;
 
     font-size:30px;
+
+    color:#444;
 
     font-weight:700;
 }
 
 .header-title p{
 
-    color:#8b8b8b;
+    margin-top:5px;
 
-    margin-top:4px;
+    color:#777;
 
-    font-size:14px;
+    font-size:15px;
 }
+
+.header-title span{
+
+    display:block;
+
+    margin-top:6px;
+
+    color:#999;
+
+    font-size:13px;
+
+    text-transform:capitalize;
+}
+
+/* =======================
+ACCIONES
+======================= */
 
 .header-actions{
 
@@ -43,25 +65,41 @@
     gap:20px;
 }
 
+.header-divider{
+
+    width:1px;
+
+    height:34px;
+
+    background:#e6e6e6;
+
+}
+
+/* =======================
+NOTIFICACIONES
+======================= */
+
 .header-icon{
 
-    width:46px;
+    position:relative;
 
-    height:46px;
+    width:48px;
+
+    height:48px;
 
     border:none;
 
     border-radius:14px;
 
-    background:#f3f3f3;
-
-    cursor:pointer;
+    background:#f4f5f7;
 
     display:flex;
 
     justify-content:center;
 
     align-items:center;
+
+    cursor:pointer;
 
     transition:.25s;
 }
@@ -70,8 +108,41 @@
 
     background:#A3C1AD;
 
-    color:white;
+    color:#fff;
 }
+
+.notification-badge{
+
+    position:absolute;
+
+    top:-4px;
+
+    right:-4px;
+
+    width:20px;
+
+    height:20px;
+
+    border-radius:50%;
+
+    background:#E57373;
+
+    color:white;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+/* =======================
+USUARIO
+======================= */
 
 .header-user{
 
@@ -83,11 +154,60 @@
 
     align-items:center;
 
-    gap:12px;
+    gap:14px;
 
     cursor:pointer;
+}
 
-    color:#555;
+.avatar{
 
-    font-weight:600;
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+    background:#A3C1AD;
+
+    color:white;
+
+    font-weight:700;
+
+    font-size:16px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:.25s;
+}
+
+.header-user:hover .avatar{
+
+    transform:scale(1.05);
+}
+
+.header-user-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+}
+
+.header-user-info strong{
+
+    color:#444;
+
+    font-size:15px;
+}
+
+.header-user-info small{
+
+    color:#999;
+
+    font-size:12px;
 }

@@ -1,38 +1,87 @@
 import "./Header.css";
-import { Bell, CircleUserRound } from "lucide-react";
+import { Bell } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function Header() {
+
+    const [currentDate, setCurrentDate] = useState(new Date());
+
+    useEffect(() => {
+
+        const interval = setInterval(() => {
+
+            setCurrentDate(new Date());
+
+        }, 60000);
+
+        return () => clearInterval(interval);
+
+    }, []);
+
+    const date = currentDate.toLocaleDateString("es-AR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+
+    const time = currentDate.toLocaleTimeString("es-AR", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
     return (
+
         <header className="header">
 
             <div className="header-title">
 
-                <h1>Dashboard</h1>
+                
 
-                <p>
-                    Bienvenido a VetControl
-                </p>
+                <p>Bienvenido nuevamente 👋</p>
+
+                <span>
+                    {date} • {time} hs
+                </span>
 
             </div>
 
             <div className="header-actions">
 
                 <button className="header-icon">
-                    <Bell size={22} />
+
+                    <Bell size={20} />
+
+                    <span className="notification-badge">
+                        2
+                    </span>
+
                 </button>
+
+                <div className="header-divider"></div>
 
                 <button className="header-user">
 
-                    <CircleUserRound size={28} />
+                    <div className="avatar">
+                        VG
+                    </div>
 
-                    <span>Administrador</span>
+                    <div className="header-user-info">
+
+                        <strong>Valentino</strong>
+
+                        <small>Administrador</small>
+
+                    </div>
 
                 </button>
 
             </div>
 
         </header>
+
     );
+
 }
 
 export default Header;

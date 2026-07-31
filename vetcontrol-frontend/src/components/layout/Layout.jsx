@@ -1,15 +1,27 @@
+import { useState } from "react";
+
 import "./Layout.css";
 
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 function Layout({ children }) {
+
+    const [collapsed, setCollapsed] = useState(false);
+
     return (
         <div className="layout">
 
-            <Sidebar />
+            <Sidebar
+                collapsed={collapsed}
+                setCollapsed={setCollapsed}
+            />
 
-            <div className="layout-content">
+            <div
+                className={`layout-content ${
+                    collapsed ? "expanded" : ""
+                }`}
+            >
 
                 <Header />
 
