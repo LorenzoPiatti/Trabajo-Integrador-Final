@@ -1,99 +1,100 @@
-import "./Sidebar.css";
-
+import { NavLink } from "react-router-dom";
 import {
-    Menu,
-    LayoutDashboard,
     CalendarDays,
+    FileText,
+    LayoutDashboard,
+    LogOut,
+    Menu,
     PawPrint,
     Syringe,
-    FileText,
-    UserRound,
-    LogOut
+    UserRound
 } from "lucide-react";
+import "./Sidebar.css";
+
+const navItems = [
+    {
+        to: "/dashboard",
+        icon: <LayoutDashboard size={20} />,
+        label: "Dashboard"
+    },
+    {
+        to: "/appointments",
+        icon: <CalendarDays size={20} />,
+        label: "Turnos"
+    },
+    {
+        to: "/pets",
+        icon: <PawPrint size={20} />,
+        label: "Mascotas"
+    },
+    {
+        to: "/vaccines",
+        icon: <Syringe size={20} />,
+        label: "Vacunas"
+    },
+    {
+        to: "/medical-records",
+        icon: <FileText size={20} />,
+        label: "Historial Médico"
+    },
+    {
+        to: "/profile",
+        icon: <UserRound size={20} />,
+        label: "Perfil"
+    }
+];
 
 function Sidebar({ collapsed, setCollapsed }) {
-
     return (
-
         <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-
             <div>
-
                 <div className="sidebar-header">
-
                     <button
+                        type="button"
                         className="collapse-btn"
+                        aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
                         onClick={() => setCollapsed(!collapsed)}
                     >
                         <Menu size={22} />
                     </button>
 
                     {!collapsed && (
-
                         <div className="sidebar-logo">
-
                             <h2>VetControl</h2>
 
                             <span>Tu veterinaria digital</span>
-
                         </div>
-
                     )}
-
                 </div>
 
                 <nav className="sidebar-nav">
-
                     <ul>
+                        {navItems.map((item) => (
+                            <li key={item.to}>
+                                <NavLink
+                                    to={item.to}
+                                    title={item.label}
+                                    className={({ isActive }) =>
+                                        isActive ? "active" : undefined
+                                    }
+                                >
+                                    {item.icon}
 
-                        <li className="active">
-                            <LayoutDashboard size={20} />
-                            <span>Dashboard</span>
-                        </li>
-
-                        <li>
-                            <CalendarDays size={20} />
-                            <span>Turnos</span>
-                        </li>
-
-                        <li>
-                            <PawPrint size={20} />
-                            <span>Mascotas</span>
-                        </li>
-
-                        <li>
-                            <Syringe size={20} />
-                            <span>Vacunas</span>
-                        </li>
-
-                        <li>
-                            <FileText size={20} />
-                            <span>Historial Médico</span>
-                        </li>
-
-                        <li>
-                            <UserRound size={20} />
-                            <span>Perfil</span>
-                        </li>
-
+                                    <span>{item.label}</span>
+                                </NavLink>
+                            </li>
+                        ))}
                     </ul>
-
                 </nav>
-
             </div>
 
-            <button className="logout-btn">
-
+            <button type="button" className="logout-btn">
                 <LogOut size={20} />
 
                 <span>Cerrar sesión</span>
-
             </button>
-
         </aside>
-
     );
-
 }
 
 export default Sidebar;
