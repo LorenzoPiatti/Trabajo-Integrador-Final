@@ -227,52 +227,65 @@ function PetsPage() {
                                         className="pet-row"
                                         key={pet.petId}
                                     >
-                                        <div className="pet-avatar">
-                                            <PawPrint size={24} />
+                                        <div className="pet-row-main">
+                                            <div className="pet-card-main">
+                                                <div className="pet-avatar">
+                                                    <PawPrint size={24} />
+                                                </div>
+
+                                                <div className="pet-info">
+                                                    <div className="pet-card-heading">
+                                                        <h3>{pet.name}</h3>
+
+                                                        <span className="pet-species-badge">
+                                                            {pet.species}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="pet-details">
+                                                        <span>{pet.breed}</span>
+
+                                                        <span className="pet-detail-date">
+                                                            <CalendarDays size={14} />
+                                                            Nacimiento:{" "}
+                                                            {formatDate(pet.birthDate)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="pet-row-actions">
+                                                <button
+                                                    type="button"
+                                                    className="pet-icon-button"
+                                                    title="Editar mascota"
+                                                    onClick={() =>
+                                                        setSelectedPet(pet)
+                                                    }
+                                                >
+                                                    <Edit3 size={18} />
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="pet-icon-button pet-icon-button--danger"
+                                                    title="Eliminar mascota"
+                                                    onClick={() =>
+                                                        handleDelete(pet.petId)
+                                                    }
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </div>
 
-                                        <div className="pet-info">
-                                            <h3>{pet.name}</h3>
-
-                                            <p>
-                                                {pet.species} · {pet.breed}
-                                            </p>
-
-                                            <span>
-                                                Nacimiento:{" "}
-                                                {formatDate(pet.birthDate)}
-                                            </span>
-
-                                            {pet.observations && (
-                                                <small>
+                                        {pet.observations && (
+                                            <div className="pet-note-row">
+                                                <p className="pet-note">
                                                     {pet.observations}
-                                                </small>
-                                            )}
-                                        </div>
-
-                                        <div className="pet-row-actions">
-                                            <button
-                                                type="button"
-                                                className="pet-icon-button"
-                                                title="Editar mascota"
-                                                onClick={() =>
-                                                    setSelectedPet(pet)
-                                                }
-                                            >
-                                                <Edit3 size={18} />
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                className="pet-icon-button pet-icon-button--danger"
-                                                title="Eliminar mascota"
-                                                onClick={() =>
-                                                    handleDelete(pet.petId)
-                                                }
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
+                                                </p>
+                                            </div>
+                                        )}
                                     </article>
                                 ))}
                             </div>
