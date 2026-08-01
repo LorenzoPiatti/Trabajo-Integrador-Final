@@ -1,0 +1,91 @@
+.dashboard{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:28px;
+
+}
+
+/* ==========================
+CARDS SUPERIORES
+========================== */
+
+.dashboard-cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:24px;
+
+}
+
+/* ==========================
+PRIMERA FILA
+========================== */
+
+.dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:24px;
+
+    align-items:start;
+
+}
+
+/* Mantiene Acciones rápidas como un cuadrado */
+
+.actions-section{
+
+    align-self:start;
+
+}
+
+/* ==========================
+SEGUNDA FILA
+========================== */
+
+.pets-section{
+
+    width:100%;
+
+}
+
+/* ==========================
+RESPONSIVE
+========================== */
+
+@media(max-width:1200px){
+
+    .dashboard-cards{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:900px){
+
+    .dashboard-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:700px){
+
+    .dashboard-cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

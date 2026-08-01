@@ -1,0 +1,230 @@
+.sidebar {
+
+    width: 260px;
+    min-width: 260px;
+
+    background: #fff;
+
+    border-right: 1px solid #ececec;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 24px 18px;
+
+    transition: width .30s ease,
+                min-width .30s ease,
+                padding .30s ease;
+}
+
+/* ========================= */
+/* SIDEBAR COLAPSADO */
+/* ========================= */
+
+.sidebar.collapsed {
+
+    width: 80px;
+    min-width: 80px;
+
+    padding: 24px 12px;
+}
+
+/* ========================= */
+/* HEADER */
+/* ========================= */
+
+.sidebar-header {
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 40px;
+}
+
+.sidebar.collapsed .sidebar-header {
+
+    justify-content: center;
+    gap: 0;
+}
+
+/* ========================= */
+/* BOTÓN MENÚ */
+/* ========================= */
+
+.collapse-btn {
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #f4f4f4;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition: .25s;
+}
+
+.sidebar.collapsed .collapse-btn {
+
+    margin: 0 auto;
+}
+
+.collapse-btn:hover {
+
+    background: #A3C1AD;
+    color: white;
+}
+
+/* ========================= */
+/* LOGO */
+/* ========================= */
+
+.sidebar-logo h2 {
+
+    margin: 0;
+
+    color: #A3C1AD;
+
+    font-size: 28px;
+
+    font-weight: 700;
+}
+
+.sidebar-logo span {
+
+    color: #8a8a8a;
+
+    font-size: 13px;
+}
+
+/* ========================= */
+/* MENÚ */
+/* ========================= */
+
+.sidebar-nav {
+
+    margin-top: 10px;
+}
+
+.sidebar-nav ul {
+
+    list-style: none;
+
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.sidebar-nav a {
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px 16px;
+
+    border-radius: 14px;
+
+    color: #555;
+
+    text-decoration: none;
+
+    transition: .25s;
+}
+
+.sidebar-nav a:hover {
+
+    background: #eef5f0;
+
+    color: #A3C1AD;
+}
+
+.sidebar-nav a.active {
+
+    background: #A3C1AD;
+
+    color: white;
+
+    font-weight: 600;
+}
+
+/* ========================= */
+/* SIDEBAR CERRADO */
+/* ========================= */
+
+.sidebar.collapsed .sidebar-nav a {
+
+    justify-content: center;
+
+    padding: 14px 0;
+}
+
+.sidebar.collapsed .sidebar-nav span {
+
+    display: none;
+}
+
+/* ========================= */
+/* LOGOUT */
+/* ========================= */
+
+.logout-btn {
+
+    width: 100%;
+
+    border: none;
+
+    background: #f3f3f3;
+
+    border-radius: 14px;
+
+    padding: 14px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.logout-btn:hover {
+
+    background: #A3C1AD;
+
+    color: white;
+}
+
+.sidebar.collapsed .logout-btn {
+
+    justify-content: center;
+
+    padding: 14px 0;
+}
+
+.sidebar.collapsed .logout-btn span {
+
+    display: none;
+}

@@ -1,0 +1,59 @@
+
+
+.quick-actions h3{
+
+    color:#555;
+
+    margin-bottom:20px;
+
+}
+
+.actions-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px;
+
+}
+
+.action-card{
+
+    border:none;
+
+    border-radius:16px;
+
+    padding:22px;
+
+    background:#f7faf8;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:#A3C1AD;
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+.action-card:hover{
+
+    background:#A3C1AD;
+
+    color:white;
+
+    transform:translateY(-3px);
+
+}
