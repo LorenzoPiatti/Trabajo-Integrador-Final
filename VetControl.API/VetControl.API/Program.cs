@@ -29,13 +29,16 @@ builder.Services.AddDbContext<VetControlDbContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:5174"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddControllers();
@@ -71,19 +74,13 @@ builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Appointments
-builder.Services.AddScoped<
-    IAppointmentRepository,
-    AppointmentRepository>();
-
-builder.Services.AddScoped<
-    IAppointmentService,
-    AppointmentService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 // Pets
-builder.Services.AddScoped<
-    IPetRepository,
-    PetRepository>();
-//owners
+builder.Services.AddScoped<IPetRepository, PetRepository>();
+
+// Owners
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
