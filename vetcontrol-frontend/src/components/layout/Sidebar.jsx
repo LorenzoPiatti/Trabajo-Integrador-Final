@@ -1,4 +1,5 @@
 import "./Sidebar.css";
+import { NavLink } from "react-router-dom";
 
 import {
     Menu,
@@ -12,6 +13,11 @@ import {
 } from "lucide-react";
 
 function Sidebar({ collapsed, setCollapsed }) {
+
+    const getNavLinkClass = ({ isActive }) =>
+        isActive
+            ? "sidebar-link active"
+            : "sidebar-link";
 
     return (
 
@@ -44,39 +50,53 @@ function Sidebar({ collapsed, setCollapsed }) {
 
                 <nav className="sidebar-nav">
 
-                    <ul>
+                    <NavLink
+                        to="/dashboard"
+                        className={getNavLinkClass}
+                    >
+                        <LayoutDashboard size={20} />
+                        <span>Inicio</span>
+                    </NavLink>
 
-                        <li className="active">
-                            <LayoutDashboard size={20} />
-                            <span>Dashboard</span>
-                        </li>
+                    <NavLink
+                        to="/appointments"
+                        className={getNavLinkClass}
+                    >
+                        <CalendarDays size={20} />
+                        <span>Turnos</span>
+                    </NavLink>
 
-                        <li>
-                            <CalendarDays size={20} />
-                            <span>Turnos</span>
-                        </li>
+                    <NavLink
+                        to="/pets"
+                        className={getNavLinkClass}
+                    >
+                        <PawPrint size={20} />
+                        <span>Mascotas</span>
+                    </NavLink>
 
-                        <li>
-                            <PawPrint size={20} />
-                            <span>Mascotas</span>
-                        </li>
+                    <NavLink
+                        to="/vaccines"
+                        className={getNavLinkClass}
+                    >
+                        <Syringe size={20} />
+                        <span>Vacunas</span>
+                    </NavLink>
 
-                        <li>
-                            <Syringe size={20} />
-                            <span>Vacunas</span>
-                        </li>
+                    <NavLink
+                        to="/medical-history"
+                        className={getNavLinkClass}
+                    >
+                        <FileText size={20} />
+                        <span>Historial Médico</span>
+                    </NavLink>
 
-                        <li>
-                            <FileText size={20} />
-                            <span>Historial Médico</span>
-                        </li>
-
-                        <li>
-                            <UserRound size={20} />
-                            <span>Perfil</span>
-                        </li>
-
-                    </ul>
+                    <NavLink
+                        to="/profile"
+                        className={getNavLinkClass}
+                    >
+                        <UserRound size={20} />
+                        <span>Perfil</span>
+                    </NavLink>
 
                 </nav>
 
@@ -86,7 +106,9 @@ function Sidebar({ collapsed, setCollapsed }) {
 
                 <LogOut size={20} />
 
-                <span>Cerrar sesión</span>
+                {!collapsed && (
+                    <span>Cerrar sesión</span>
+                )}
 
             </button>
 
