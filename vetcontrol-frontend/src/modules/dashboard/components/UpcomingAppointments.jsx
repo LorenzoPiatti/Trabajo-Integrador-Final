@@ -2,7 +2,7 @@ import "./UpcomingAppointments.css";
 import Panel from "../../../components/ui/Panel";
 import PanelHeader from "../../../components/ui/PanelHeader";
 import AppointmentCard from "./AppointmentCard";
-
+import { useNavigate } from "react-router-dom";
 const appointments = [
     {
         id: 1,
@@ -16,6 +16,8 @@ const appointments = [
    
     
 ];
+
+
 
 // Agrupa automáticamente los turnos por fecha
 const groupedAppointments = appointments.reduce((groups, appointment) => {
@@ -31,6 +33,8 @@ const groupedAppointments = appointments.reduce((groups, appointment) => {
 }, {});
 
 function UpcomingAppointments() {
+    
+    const navigate = useNavigate();
 
     return (
 
@@ -39,6 +43,7 @@ function UpcomingAppointments() {
             <PanelHeader
                 title="Próximos turnos"
                 action="Ver todos"
+                onAction={() => navigate("/appointments")}
             />
 
             {Object.entries(groupedAppointments).map(([date, appointments]) => (
