@@ -15,7 +15,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-builder.Services.AddDataProtection()
+builder.Services.AddDataProtection() 
     .PersistKeysToFileSystem(
         new DirectoryInfo(
             Path.Combine(
@@ -69,8 +69,8 @@ builder.Services.AddAuthentication(
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPetService, PetService>();
-builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Appointments

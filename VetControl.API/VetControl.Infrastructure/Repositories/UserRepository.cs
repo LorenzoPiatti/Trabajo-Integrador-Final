@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VetControl.Application.Interfaces;
 using VetControl.Domain.Entities;
+using VetControl.Domain.Enums;
 using VetControl.Infrastructure.Data;
 
 namespace VetControl.Infrastructure.Repositories;
@@ -41,5 +42,14 @@ public class UserRepository : IUserRepository
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<User>> GetVeterinariansAsync()
+    {
+        return await _context.Users
+            .Where(u =>
+                u.Role == UserRole.Veterinarian &&
+                u.Active)
+            .ToListAsync();
     }
 }

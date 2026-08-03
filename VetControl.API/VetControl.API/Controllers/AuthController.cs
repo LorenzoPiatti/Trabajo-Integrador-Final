@@ -117,6 +117,9 @@ public class AuthController : ControllerBase
         var userId = User.FindFirst(
             ClaimTypes.NameIdentifier)?.Value;
 
+        var name = User.FindFirst(
+            ClaimTypes.Name)?.Value;
+
         var email = User.FindFirst(
             ClaimTypes.Email)?.Value;
 

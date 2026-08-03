@@ -10,7 +10,7 @@ public class AppointmentResponseDto
 
     public int VeterinarianId { get; set; }
 
-    public string VeterinarianEmail { get; set; } = string.Empty;
+    public string VeterinarianName { get; set; } = string.Empty;
 
     public DateTime DateTime { get; set; }
 

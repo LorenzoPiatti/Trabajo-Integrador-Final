@@ -417,7 +417,7 @@ public class AppointmentService : IAppointmentService
             PetId = appointment.PetId,
             PetName = pet.Name,
             VeterinarianId = appointment.VeterinarianId,
-            VeterinarianEmail = veterinarian.Email,
+            VeterinarianName = veterinarian.Name,
             DateTime = appointment.DateTime,
             Reason = appointment.Reason,
             Status = appointment.Status.ToString()

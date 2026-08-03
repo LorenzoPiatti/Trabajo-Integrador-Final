@@ -4,9 +4,6 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
-    // Datos simulados.
-    // Cuando conectemos el login,
-    // este objeto vendrá del backend.
 
     const [user, setUser] = useState({
 

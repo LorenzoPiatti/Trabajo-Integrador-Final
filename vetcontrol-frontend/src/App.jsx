@@ -6,6 +6,7 @@ import ForgotPassword from "./modules/auth/pages/ForgotPassword";
 import ResetPassword from "./modules/auth/pages/ResetPassword";
 import Dashboard from "./modules/dashboard/pages/Dashboard";
 import PetsPage from "./modules/pets/pages/Pets";
+import AppointmentsPage from "./modules/appointments/pages/Appointments";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/pets" element={<PetsPage />} />
+      <Route path="/appointments" element={<AppointmentsPage />} />
     </Routes>
   );
 }
