@@ -3,7 +3,7 @@ import "./RecentPets.css";
 import PetCard from "./PetCard";
 import Panel from "../../../components/ui/Panel";
 import PanelHeader from "../../../components/ui/PanelHeader";
-
+import { useNavigate } from "react-router-dom";
 
 const pets = [
     {
@@ -22,6 +22,7 @@ const pets = [
 
 function RecentPets(){
 
+    const navigate = useNavigate();
     return (
 
         <Panel>
@@ -29,6 +30,7 @@ function RecentPets(){
             <PanelHeader
                 title="Mis mascotas"
                 action="Administrar mascotas"
+                onAction={() => navigate("/pets")}
             />
 
 
