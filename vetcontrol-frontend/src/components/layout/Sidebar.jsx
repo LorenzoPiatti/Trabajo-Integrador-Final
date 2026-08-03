@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+
 import {
     CalendarDays,
     FileText,
@@ -9,13 +10,14 @@ import {
     Syringe,
     UserRound
 } from "lucide-react";
+
 import "./Sidebar.css";
 
 const navItems = [
     {
         to: "/dashboard",
         icon: <LayoutDashboard size={20} />,
-        label: "Dashboard"
+        label: "Inicio"
     },
     {
         to: "/appointments",
@@ -45,56 +47,93 @@ const navItems = [
 ];
 
 function Sidebar({ collapsed, setCollapsed }) {
+
     return (
+
         <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+
             <div>
+
                 <div className="sidebar-header">
+
                     <button
                         type="button"
                         className="collapse-btn"
                         aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
                         onClick={() => setCollapsed(!collapsed)}
                     >
+
                         <Menu size={22} />
+
                     </button>
 
                     {!collapsed && (
+
                         <div className="sidebar-logo">
+
                             <h2>VetControl</h2>
 
                             <span>Tu veterinaria digital</span>
+
                         </div>
+
                     )}
+
                 </div>
 
                 <nav className="sidebar-nav">
+
                     <ul>
+
                         {navItems.map((item) => (
+
                             <li key={item.to}>
+
                                 <NavLink
                                     to={item.to}
                                     title={item.label}
                                     className={({ isActive }) =>
-                                        isActive ? "active" : undefined
+                                        isActive
+                                            ? "sidebar-link active"
+                                            : "sidebar-link"
                                     }
                                 >
+
                                     {item.icon}
 
                                     <span>{item.label}</span>
+
                                 </NavLink>
+
                             </li>
+
                         ))}
+
                     </ul>
+
                 </nav>
+
             </div>
 
-            <button type="button" className="logout-btn">
+            <button
+                type="button"
+                className="logout-btn"
+            >
+
                 <LogOut size={20} />
 
-                <span>Cerrar sesión</span>
+                {!collapsed && (
+
+                    <span>Cerrar sesión</span>
+
+                )}
+
             </button>
+
         </aside>
+
     );
+
 }
 
 export default Sidebar;
