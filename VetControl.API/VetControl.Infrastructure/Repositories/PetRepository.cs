@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using VetControl.Application.Interfaces;
 using VetControl.Domain.Entities;
 using VetControl.Infrastructure.Data;
@@ -29,8 +29,8 @@ public class PetRepository : IPetRepository
     {
         return await _context.Pets
             .FirstOrDefaultAsync(p =>
-                p.PetId == petId
-                && p.Owner.UserId == userId);
+                p.PetId == petId &&
+                p.Owner.UserId == userId);
     }
 
     public async Task<int?> GetOwnerIdByUserIdAsync(int userId)
@@ -41,6 +41,23 @@ public class PetRepository : IPetRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<Pet?> GetByIdAsync(int petId)
+    {
+        return await _context.Pets
+            .FirstOrDefaultAsync(p =>
+                p.PetId == petId);
+    }
+
+    public async Task<bool> BelongsToOwnerAsync(
+        int petId,
+        int ownerId)
+    {
+        return await _context.Pets
+            .AnyAsync(p =>
+                p.PetId == petId &&
+                p.OwnerId == ownerId);
+    }
+
     public async Task AddAsync(Pet pet)
     {
         await _context.Pets.AddAsync(pet);
@@ -49,14 +66,12 @@ public class PetRepository : IPetRepository
     public Task UpdateAsync(Pet pet)
     {
         _context.Pets.Update(pet);
-
         return Task.CompletedTask;
     }
 
     public Task DeleteAsync(Pet pet)
     {
         _context.Pets.Remove(pet);
-
         return Task.CompletedTask;
     }
 

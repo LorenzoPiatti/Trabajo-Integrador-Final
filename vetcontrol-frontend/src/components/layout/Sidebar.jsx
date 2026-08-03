@@ -1,23 +1,52 @@
-import "./Sidebar.css";
 import { NavLink } from "react-router-dom";
 
 import {
-    Menu,
-    LayoutDashboard,
     CalendarDays,
+    FileText,
+    LayoutDashboard,
+    LogOut,
+    Menu,
     PawPrint,
     Syringe,
-    FileText,
-    UserRound,
-    LogOut
+    UserRound
 } from "lucide-react";
 
-function Sidebar({ collapsed, setCollapsed }) {
+import "./Sidebar.css";
 
-    const getNavLinkClass = ({ isActive }) =>
-        isActive
-            ? "sidebar-link active"
-            : "sidebar-link";
+const navItems = [
+    {
+        to: "/dashboard",
+        icon: <LayoutDashboard size={20} />,
+        label: "Inicio"
+    },
+    {
+        to: "/appointments",
+        icon: <CalendarDays size={20} />,
+        label: "Turnos"
+    },
+    {
+        to: "/pets",
+        icon: <PawPrint size={20} />,
+        label: "Mascotas"
+    },
+    {
+        to: "/vaccines",
+        icon: <Syringe size={20} />,
+        label: "Vacunas"
+    },
+    {
+        to: "/medical-records",
+        icon: <FileText size={20} />,
+        label: "Historial Médico"
+    },
+    {
+        to: "/profile",
+        icon: <UserRound size={20} />,
+        label: "Perfil"
+    }
+];
+
+function Sidebar({ collapsed, setCollapsed }) {
 
     return (
 
@@ -28,10 +57,14 @@ function Sidebar({ collapsed, setCollapsed }) {
                 <div className="sidebar-header">
 
                     <button
+                        type="button"
                         className="collapse-btn"
+                        aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
                         onClick={() => setCollapsed(!collapsed)}
                     >
+
                         <Menu size={22} />
+
                     </button>
 
                     {!collapsed && (
@@ -50,64 +83,49 @@ function Sidebar({ collapsed, setCollapsed }) {
 
                 <nav className="sidebar-nav">
 
-                    <NavLink
-                        to="/dashboard"
-                        className={getNavLinkClass}
-                    >
-                        <LayoutDashboard size={20} />
-                        <span>Inicio</span>
-                    </NavLink>
+                    <ul>
 
-                    <NavLink
-                        to="/appointments"
-                        className={getNavLinkClass}
-                    >
-                        <CalendarDays size={20} />
-                        <span>Turnos</span>
-                    </NavLink>
+                        {navItems.map((item) => (
 
-                    <NavLink
-                        to="/pets"
-                        className={getNavLinkClass}
-                    >
-                        <PawPrint size={20} />
-                        <span>Mascotas</span>
-                    </NavLink>
+                            <li key={item.to}>
 
-                    <NavLink
-                        to="/vaccines"
-                        className={getNavLinkClass}
-                    >
-                        <Syringe size={20} />
-                        <span>Vacunas</span>
-                    </NavLink>
+                                <NavLink
+                                    to={item.to}
+                                    title={item.label}
+                                    className={({ isActive }) =>
+                                        isActive
+                                            ? "sidebar-link active"
+                                            : "sidebar-link"
+                                    }
+                                >
 
-                    <NavLink
-                        to="/medical-history"
-                        className={getNavLinkClass}
-                    >
-                        <FileText size={20} />
-                        <span>Historial Médico</span>
-                    </NavLink>
+                                    {item.icon}
 
-                    <NavLink
-                        to="/profile"
-                        className={getNavLinkClass}
-                    >
-                        <UserRound size={20} />
-                        <span>Perfil</span>
-                    </NavLink>
+                                    <span>{item.label}</span>
+
+                                </NavLink>
+
+                            </li>
+
+                        ))}
+
+                    </ul>
 
                 </nav>
 
             </div>
 
-            <button className="logout-btn">
+            <button
+                type="button"
+                className="logout-btn"
+            >
 
                 <LogOut size={20} />
 
                 {!collapsed && (
+
                     <span>Cerrar sesión</span>
+
                 )}
 
             </button>

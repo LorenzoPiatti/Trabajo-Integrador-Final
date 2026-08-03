@@ -1,4 +1,4 @@
-using VetControl.Domain.Entities;
+﻿using VetControl.Domain.Entities;
 
 namespace VetControl.Application.Interfaces;
 
@@ -11,6 +11,12 @@ public interface IPetRepository
         int userId);
 
     Task<int?> GetOwnerIdByUserIdAsync(int userId);
+
+    Task<Pet?> GetByIdAsync(int petId);
+
+    Task<bool> BelongsToOwnerAsync(
+        int petId,
+        int ownerId);
 
     Task AddAsync(Pet pet);
 

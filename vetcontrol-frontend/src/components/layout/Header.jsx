@@ -44,7 +44,7 @@ function Header() {
             subtitle: "Consultá y administrá las vacunas."
         },
 
-        "/medical-history": {
+        "/medical-records": {
             title: "Historial Médico",
             subtitle: "Revisá el historial clínico de tus mascotas."
         },
@@ -63,19 +63,15 @@ function Header() {
         };
 
     const date = currentDate.toLocaleDateString("es-AR", {
-
         weekday: "long",
         day: "numeric",
         month: "long",
         year: "numeric"
-
     });
 
     const time = currentDate.toLocaleTimeString("es-AR", {
-
         hour: "2-digit",
         minute: "2-digit"
-
     });
 
     return (
@@ -98,7 +94,10 @@ function Header() {
 
             <div className="header-actions">
 
-                <button className="header-icon">
+                <button
+                    type="button"
+                    className="header-icon"
+                >
 
                     <Bell size={20} />
 
@@ -112,7 +111,10 @@ function Header() {
 
                 <div className="header-divider"></div>
 
-                <button className="header-user">
+                <button
+                    type="button"
+                    className="header-user"
+                >
 
                     <div className="avatar">
 
