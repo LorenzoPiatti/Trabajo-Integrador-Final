@@ -12,5 +12,7 @@ public interface IUserRepository
 
     Task UpdateAsync(User user);
 
+    Task<List<User>> GetVeterinariansAsync();
+
     Task SaveChangesAsync();
 }

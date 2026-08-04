@@ -26,6 +26,10 @@ public class JwtService : IJwtService
                 user.UserId.ToString()),
 
             new Claim(
+            ClaimTypes.Name,
+            user.Name),
+
+            new Claim(
                 ClaimTypes.Email,
                 user.Email),
 

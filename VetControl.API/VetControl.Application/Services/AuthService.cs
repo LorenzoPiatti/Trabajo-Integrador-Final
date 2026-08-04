@@ -35,6 +35,7 @@ public class AuthService : IAuthService
 
         var user = new User
         {
+            Name = $"{request.FirstName.Trim()} {request.LastName.Trim()}",
             Email = request.Email.Trim(),
             Password = request.Password,
             Role = UserRole.Owner,
@@ -44,6 +45,7 @@ public class AuthService : IAuthService
                 .ToString()
                 .Substring(0, 6)
                 .ToUpper(),
+
             Owner = new Owner
             {
                 FirstName = request.FirstName.Trim(),

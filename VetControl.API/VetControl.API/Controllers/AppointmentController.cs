@@ -19,6 +19,7 @@ public class AppointmentController : ControllerBase
         _appointmentService = appointmentService;
     }
 
+
     [HttpPost]
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Create(
@@ -39,9 +40,13 @@ public class AppointmentController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
+
 
     [HttpGet("availability")]
     [Authorize]
@@ -60,9 +65,13 @@ public class AppointmentController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
+
 
     [HttpGet("my")]
     [Authorize(Roles = "Owner")]
@@ -82,9 +91,13 @@ public class AppointmentController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
+
 
     [HttpGet("{id}")]
     [Authorize(Roles = "Owner")]
@@ -104,16 +117,23 @@ public class AppointmentController : ControllerBase
 
             if (appointment is null)
             {
-                return NotFound("Turno no encontrado.");
+                return NotFound(new
+                {
+                    message = "Turno no encontrado."
+                });
             }
 
             return Ok(appointment);
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
+
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Owner")]
@@ -132,13 +152,20 @@ public class AppointmentController : ControllerBase
                 userId,
                 dto);
 
-            return Ok("Turno actualizado correctamente.");
+            return Ok(new
+            {
+                message = "Turno actualizado correctamente."
+            });
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
+
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Owner")]
@@ -155,11 +182,17 @@ public class AppointmentController : ControllerBase
                 id,
                 userId);
 
-            return Ok("Turno cancelado correctamente.");
+            return Ok(new
+            {
+                message = "Turno cancelado correctamente."
+            });
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
 }
