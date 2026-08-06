@@ -34,5 +34,10 @@ public class ReminderConfiguration : IEntityTypeConfiguration<Reminder>
             .WithMany(av => av.Reminders)
             .HasForeignKey(r => r.AdministeredVaccineId)
             .IsRequired(false);
+        builder.Property(r => r.IsRead)
+            .HasDefaultValue(false);
+        builder.Property(r => r.CreatedAt)
+            .IsRequired()
+            .HasDefaultValueSql("GETUTCDATE()");
     }
 }

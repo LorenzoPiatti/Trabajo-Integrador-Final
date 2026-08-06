@@ -1,8 +1,8 @@
 import "./Header.css";
-
-import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+
+import ReminderBell from "../../modules/reminders/components/ReminderBell";
 
 function Header() {
 
@@ -52,6 +52,11 @@ function Header() {
         "/profile": {
             title: "Mi Perfil",
             subtitle: "Administrá tu información personal."
+        },
+        
+        "/reminders": {
+            title: "Recordatorios",
+            subtitle: "Consultá tus notificaciones y avisos."
         }
 
     };
@@ -94,20 +99,7 @@ function Header() {
 
             <div className="header-actions">
 
-                <button
-                    type="button"
-                    className="header-icon"
-                >
-
-                    <Bell size={20} />
-
-                    <span className="notification-badge">
-
-                        2
-
-                    </span>
-
-                </button>
+                <ReminderBell />
 
                 <div className="header-divider"></div>
 

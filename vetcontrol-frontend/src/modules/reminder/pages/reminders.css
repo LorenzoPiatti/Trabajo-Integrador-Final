@@ -1,0 +1,176 @@
+.reminders-page {
+
+    width: 100%;
+
+    max-width: 1000px;
+
+    margin: 0 auto;
+}
+
+.reminders-page-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #ececec;
+
+    border-radius: 18px;
+}
+
+.reminders-page-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.reminders-page-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    border-radius: 14px;
+
+    background: #e5efe8;
+
+    color: #6e927a;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+.reminders-page-title h2 {
+
+    margin: 0;
+
+    color: #444;
+
+    font-size: 24px;
+}
+
+.reminders-page-title p {
+
+    margin: 5px 0 0;
+
+    color: #888;
+
+    font-size: 14px;
+}
+
+.reminders-read-all-button {
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 11px 15px;
+
+    background: #a3c1ad;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.reminders-read-all-button:hover {
+
+    background: #86aa92;
+}
+
+.reminders-page-content {
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #ececec;
+
+    border-radius: 18px;
+}
+
+.reminders-page-message {
+
+    margin: 0;
+
+    padding: 40px 20px;
+
+    color: #777;
+
+    text-align: center;
+}
+
+.reminders-page-message.error {
+
+    color: #c95555;
+}
+
+.reminders-empty {
+
+    min-height: 260px;
+
+    color: #999;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+}
+
+.reminders-empty h3 {
+
+    margin: 14px 0 5px;
+
+    color: #555;
+}
+
+.reminders-empty p {
+
+    margin: 0;
+
+    font-size: 14px;
+}
+
+@media (max-width: 700px) {
+
+    .reminders-page-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+}
