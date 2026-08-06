@@ -356,6 +356,21 @@ public class AppointmentService : IAppointmentService
         await _appointmentRepository.SaveChangesAsync();
     }
 
+    public async Task<List<AppointmentResponseDto>> GetCompletedByVeterinarianAsync(
+    int veterinarianId)
+    {
+        var appointments =
+            await _appointmentRepository
+                .GetCompletedByVeterinarianAsync(veterinarianId);
+
+        return appointments
+            .Select(a => MapToResponseDto(
+                a,
+                a.Pet,
+                a.Veterinarian))
+            .ToList();
+    }
+
     private static bool IsWithinBusinessHours(
         DateTime dateTime)
     {
@@ -404,6 +419,29 @@ public class AppointmentService : IAppointmentService
 
             current = current.AddMinutes(30);
         }
+    }
+
+    public async Task<List<AppointmentResponseDto>> GetPendingByVeterinarianAsync(
+        int veterinarianId)
+    {
+        var veterinarian =
+            await _userRepository.GetByIdAsync(veterinarianId);
+
+        if (veterinarian is null)
+        {
+            throw new Exception("El veterinario no existe.");
+        }
+
+        var appointments =
+            await _appointmentRepository
+                .GetPendingByVeterinarianAsync(veterinarianId);
+
+        return appointments
+            .Select(a => MapToResponseDto(
+                a,
+                a.Pet,
+                a.Veterinarian))
+            .ToList();
     }
 
     private static AppointmentResponseDto MapToResponseDto(

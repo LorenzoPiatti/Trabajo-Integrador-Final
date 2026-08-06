@@ -83,6 +83,10 @@ builder.Services.AddScoped<IPetRepository, PetRepository>();
 // Owners
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 
+//medical records
+builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
+builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

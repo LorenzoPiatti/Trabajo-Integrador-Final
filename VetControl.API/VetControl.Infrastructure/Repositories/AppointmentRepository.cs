@@ -38,6 +38,20 @@ public class AppointmentRepository : IAppointmentRepository
             .ToListAsync();
     }
 
+    public async Task<List<Appointment>> GetCompletedByVeterinarianAsync(
+        int veterinarianId)
+    {
+        return await _context.Appointments
+            .Include(a => a.Pet)
+            .Include(a => a.Veterinarian)
+            .Include(a => a.MedicalRecord)
+            .Where(a =>
+                a.VeterinarianId == veterinarianId &&
+                a.Status == AppointmentStatus.Completed)
+            .OrderByDescending(a => a.DateTime)
+            .ToListAsync();
+    }
+
     public async Task<List<Appointment>> GetByOwnerAsync(
         int ownerId)
     {
@@ -50,6 +64,18 @@ public class AppointmentRepository : IAppointmentRepository
             .ToListAsync();
     }
 
+    public async Task<List<Appointment>> GetPendingByVeterinarianAsync(
+    int veterinarianId)
+    {
+        return await _context.Appointments
+            .Include(a => a.Pet)
+            .Include(a => a.Veterinarian)
+            .Where(a =>
+                a.VeterinarianId == veterinarianId &&
+                a.Status == AppointmentStatus.Confirmed)
+            .OrderBy(a => a.DateTime)
+            .ToListAsync();
+    }
     public async Task AddAsync(
         Appointment appointment)
     {

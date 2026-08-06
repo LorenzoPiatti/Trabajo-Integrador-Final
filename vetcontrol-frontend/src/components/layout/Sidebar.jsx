@@ -9,6 +9,7 @@ import {
     Syringe,
     UserRound
 } from "lucide-react";
+import { isVeterinarian } from "../../utils/authUtils";
 import "./Sidebar.css";
 
 const navItems = [
@@ -25,7 +26,8 @@ const navItems = [
     {
         to: "/pets",
         icon: <PawPrint size={20} />,
-        label: "Mascotas"
+        label: "Mascotas",
+        ownerOnly: true
     },
     {
         to: "/vaccines",
@@ -45,6 +47,16 @@ const navItems = [
 ];
 
 function Sidebar({ collapsed, setCollapsed }) {
+    const veterinarian = isVeterinarian();
+
+    const visibleItems = navItems.filter((item) => {
+        if (item.ownerOnly && veterinarian) {
+            return false;
+        }
+
+        return true;
+    });
+
     return (
         <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
             <div>
@@ -61,7 +73,6 @@ function Sidebar({ collapsed, setCollapsed }) {
                     {!collapsed && (
                         <div className="sidebar-logo">
                             <h2>VetControl</h2>
-
                             <span>Tu veterinaria digital</span>
                         </div>
                     )}
@@ -69,7 +80,7 @@ function Sidebar({ collapsed, setCollapsed }) {
 
                 <nav className="sidebar-nav">
                     <ul>
-                        {navItems.map((item) => (
+                        {visibleItems.map((item) => (
                             <li key={item.to}>
                                 <NavLink
                                     to={item.to}
@@ -79,7 +90,6 @@ function Sidebar({ collapsed, setCollapsed }) {
                                     }
                                 >
                                     {item.icon}
-
                                     <span>{item.label}</span>
                                 </NavLink>
                             </li>
@@ -90,7 +100,6 @@ function Sidebar({ collapsed, setCollapsed }) {
 
             <button type="button" className="logout-btn">
                 <LogOut size={20} />
-
                 <span>Cerrar sesión</span>
             </button>
         </aside>

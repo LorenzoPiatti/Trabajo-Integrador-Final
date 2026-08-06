@@ -134,6 +134,31 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [HttpGet("veterinarian/pending")]
+    [Authorize(Roles = "Veterinarian")]
+    public async Task<IActionResult> GetPendingAppointments()
+    {
+        try
+        {
+            var veterinarianId = int.Parse(
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier)!);
+
+            var appointments =
+                await _appointmentService
+                    .GetPendingByVeterinarianAsync(
+                        veterinarianId);
+
+            return Ok(appointments);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Owner")]
@@ -186,6 +211,32 @@ public class AppointmentController : ControllerBase
             {
                 message = "Turno cancelado correctamente."
             });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpGet("veterinarian/completed")]
+    [Authorize(Roles = "Veterinarian")]
+    public async Task<IActionResult> GetCompletedAppointments()
+    {
+        try
+        {
+            var veterinarianId = int.Parse(
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier)!);
+
+            var appointments =
+                await _appointmentService
+                    .GetCompletedByVeterinarianAsync(
+                        veterinarianId);
+
+            return Ok(appointments);
         }
         catch (Exception ex)
         {
