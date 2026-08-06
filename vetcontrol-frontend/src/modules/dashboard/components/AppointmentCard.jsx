@@ -1,7 +1,6 @@
 import "./AppointmentCard.css";
 
 import {
-    CalendarDays,
     Clock3,
     CircleCheckBig,
     PawPrint
@@ -10,7 +9,6 @@ import {
 function AppointmentCard({
     pet,
     reason,
-    date,
     time,
     status
 }) {
@@ -30,7 +28,12 @@ function AppointmentCard({
         }
     };
 
-    const currentStatus = statusConfig[status];
+    const currentStatus =
+        statusConfig[status?.toLowerCase()] ??
+        {
+            text: status,
+            className: "confirmed"
+        };
 
     return (
 
@@ -55,14 +58,6 @@ function AppointmentCard({
             </div>
 
             <div className="appointment-info">
-
-                <span>
-
-                    <CalendarDays size={16} />
-
-                    {date}
-
-                </span>
 
                 <span>
 

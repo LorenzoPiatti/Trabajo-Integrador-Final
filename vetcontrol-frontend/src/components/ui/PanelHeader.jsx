@@ -2,7 +2,8 @@ import "./PanelHeader.css";
 
 function PanelHeader({
     title,
-    action
+    action,
+    onAction
 }) {
 
     return (
@@ -16,7 +17,7 @@ function PanelHeader({
             {
                 action && (
 
-                    <button>
+                    <button onClick={onAction}>
                         {action}
                     </button>
 

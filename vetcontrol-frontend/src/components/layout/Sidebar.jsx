@@ -16,7 +16,7 @@ const navItems = [
     {
         to: "/dashboard",
         icon: <LayoutDashboard size={20} />,
-        label: "Dashboard"
+        label: "Inicio"
     },
     {
         to: "/appointments",
@@ -86,11 +86,16 @@ function Sidebar({ collapsed, setCollapsed }) {
                                     to={item.to}
                                     title={item.label}
                                     className={({ isActive }) =>
-                                        isActive ? "active" : undefined
+                                        isActive
+                                            ? "sidebar-link active"
+                                            : "sidebar-link"
                                     }
                                 >
                                     {item.icon}
-                                    <span>{item.label}</span>
+
+                                    {!collapsed && (
+                                        <span>{item.label}</span>
+                                    )}
                                 </NavLink>
                             </li>
                         ))}
@@ -98,9 +103,15 @@ function Sidebar({ collapsed, setCollapsed }) {
                 </nav>
             </div>
 
-            <button type="button" className="logout-btn">
+            <button
+                type="button"
+                className="logout-btn"
+            >
                 <LogOut size={20} />
-                <span>Cerrar sesión</span>
+
+                {!collapsed && (
+                    <span>Cerrar sesión</span>
+                )}
             </button>
         </aside>
     );
