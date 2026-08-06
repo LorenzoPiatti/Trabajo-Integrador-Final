@@ -30,5 +30,10 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .WithMany(u => u.Appointments)
             .HasForeignKey(a => a.VeterinarianId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(a => a.MedicalRecord)
+            .WithOne(m => m.Appointment)
+            .HasForeignKey<MedicalRecord>(m => m.AppointmentId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

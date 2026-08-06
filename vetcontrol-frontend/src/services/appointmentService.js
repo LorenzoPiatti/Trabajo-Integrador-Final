@@ -50,6 +50,14 @@ export const deleteAppointment = (id) => {
     });
 };
 
+export const getPendingAppointments = () => {
+    return request(`${API_URL}/appointment/veterinarian/pending`);
+};
+
+export const getCompletedAppointments = () => {
+    return request(`${API_URL}/appointment/veterinarian/completed`);
+};
+
 export const getAvailability = (veterinarianId, date) => {
     return request(
         `${API_URL}/appointment/availability?veterinarianId=${veterinarianId}&date=${date}`

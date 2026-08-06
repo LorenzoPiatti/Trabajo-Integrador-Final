@@ -1,6 +1,6 @@
-﻿namespace VetControl.Domain.Entities;
+﻿namespace VetControl.Application.DTOs.MedicalRecords;
 
-public class MedicalRecord
+public class MedicalRecordResponseDto
 {
     public int MedicalRecordId { get; set; }
 
@@ -8,7 +8,11 @@ public class MedicalRecord
 
     public int PetId { get; set; }
 
+    public string PetName { get; set; } = string.Empty;
+
     public int VeterinarianId { get; set; }
+
+    public string VeterinarianName { get; set; } = string.Empty;
 
     public DateTime Date { get; set; }
 
@@ -17,10 +21,4 @@ public class MedicalRecord
     public string? Diagnosis { get; set; }
 
     public string Treatment { get; set; } = string.Empty;
-
-    public Appointment Appointment { get; set; } = null!;
-
-    public Pet Pet { get; set; } = null!;
-
-    public User Veterinarian { get; set; } = null!;
 }
