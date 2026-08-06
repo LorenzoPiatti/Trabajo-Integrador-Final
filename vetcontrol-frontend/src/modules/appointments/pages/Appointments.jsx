@@ -1,36 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
-import {
-    CalendarDays,
-    Clock3,
-    Plus,
-    Stethoscope
-} from "lucide-react";
-
+import { CalendarDays, Clock3, Plus, Stethoscope } from "lucide-react";
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
-
-import {
-    createAppointment,
-    deleteAppointment,
-    getAppointments,
-    updateAppointment
-} from "../../../services/appointmentService";
-
+import { createAppointment, deleteAppointment, getAppointments, getCompletedAppointments, updateAppointment} from "../../../services/appointmentService";
 import { getPets } from "../../../services/petService";
 import { getVeterinarians } from "../../../services/userService";
-
 import AppointmentCard from "../components/AppointmentCard";
 import AppointmentForm from "../components/AppointmentForm";
-
+import { isOwner, isVeterinarian } from "../../../utils/authUtils";
 import "../styles/Appointments.css";
-
 
 function AppointmentsPage() {
 
     const token = localStorage.getItem("token");
+
+    const owner = isOwner();
+    const veterinarian = isVeterinarian();
 
     const [appointments, setAppointments] = useState([]);
     const [pets, setPets] = useState([]);
@@ -46,7 +33,6 @@ function AppointmentsPage() {
 
     const formRef = useRef(null);
 
-
     const loadData = useCallback(async () => {
 
         setInitialLoading(true);
@@ -54,19 +40,32 @@ function AppointmentsPage() {
 
         try {
 
-            const [
-                appointmentsData,
-                petsData,
-                veterinariansData
-            ] = await Promise.all([
-                getAppointments(),
-                getPets(),
-                getVeterinarians()
-            ]);
+            if (owner) {
 
-            setAppointments(appointmentsData ?? []);
-            setPets(petsData ?? []);
-            setVeterinarians(veterinariansData ?? []);
+                const [
+                    appointmentsData,
+                    petsData,
+                    veterinariansData
+                ] = await Promise.all([
+                    getAppointments(),
+                    getPets(),
+                    getVeterinarians()
+                ]);
+
+                setAppointments(appointmentsData ?? []);
+                setPets(petsData ?? []);
+                setVeterinarians(veterinariansData ?? []);
+
+            }
+
+            if (veterinarian) {
+
+                const data =
+                    await getCompletedAppointments();
+
+                setAppointments(data ?? []);
+
+            }
 
         } catch (err) {
 
@@ -78,8 +77,7 @@ function AppointmentsPage() {
 
         }
 
-    }, []);
-
+    }, [owner, veterinarian]);
 
     useEffect(() => {
 
@@ -88,7 +86,6 @@ function AppointmentsPage() {
         loadData();
 
     }, [token, loadData]);
-
 
     const scrollToForm = () => {
 
@@ -102,7 +99,6 @@ function AppointmentsPage() {
         }, 100);
 
     };
-
 
     const handleSubmit = async (formData) => {
 
@@ -119,13 +115,17 @@ function AppointmentsPage() {
                     formData
                 );
 
-                setSuccess("Turno actualizado correctamente.");
+                setSuccess(
+                    "Turno actualizado correctamente."
+                );
 
             } else {
 
                 await createAppointment(formData);
 
-                setSuccess("Turno registrado correctamente.");
+                setSuccess(
+                    "Turno registrado correctamente."
+                );
 
             }
 
@@ -149,14 +149,13 @@ function AppointmentsPage() {
 
     };
 
-
     const handleDelete = async (id) => {
 
-        const confirmed = window.confirm(
+        if (!window.confirm(
             "¿Desea cancelar este turno?"
-        );
-
-        if (!confirmed) return;
+        )) {
+            return;
+        }
 
         try {
 
@@ -176,7 +175,6 @@ function AppointmentsPage() {
 
     };
 
-
     if (!token) {
 
         return (
@@ -186,18 +184,18 @@ function AppointmentsPage() {
                 <section className="appointments-auth-card">
 
                     <div className="appointments-auth-icon">
-                        <CalendarDays size={30} />
+                        <CalendarDays size={30}/>
                     </div>
 
-                    <h1>Mis turnos</h1>
+                    <h1>Turnos</h1>
 
                     <p>
-                        Iniciá sesión para administrar tus turnos.
+                        Iniciá sesión para continuar.
                     </p>
 
                     <Link
-                        className="appointments-primary-button"
                         to="/"
+                        className="appointments-primary-button"
                     >
                         Ir al inicio
                     </Link>
@@ -210,12 +208,15 @@ function AppointmentsPage() {
 
     }
 
-
     return (
 
         <Layout
             title="Turnos"
-            subtitle="Gestioná los turnos de tus mascotas"
+            subtitle={
+                owner
+                    ? "Gestioná los turnos de tus mascotas"
+                    : "Turnos atendidos"
+            }
         >
 
             <div className="appointments-dashboard">
@@ -230,10 +231,16 @@ function AppointmentsPage() {
                     />
 
                     <StatCard
-                        title="Próximos"
+                        title={
+                            owner
+                                ? "Próximos"
+                                : "Completados"
+                        }
                         value={
-                            appointments.filter(
-                                a => a.status === "Confirmed"
+                            appointments.filter(a =>
+                                owner
+                                    ? a.status === "Confirmed"
+                                    : a.status === "Completed"
                             ).length
                         }
                         color="#7FB3D5"
@@ -253,7 +260,6 @@ function AppointmentsPage() {
 
                 </section>
 
-
                 {(error || success) && (
 
                     <section
@@ -268,7 +274,6 @@ function AppointmentsPage() {
 
                 )}
 
-
                 <section className="appointments-content-grid">
 
                     <Panel className="appointments-list-panel">
@@ -278,43 +283,57 @@ function AppointmentsPage() {
                             <div>
 
                                 <h2>
-                                    Mis turnos
+
+                                    {
+                                        owner
+                                            ? "Mis turnos"
+                                            : "Turnos atendidos"
+                                    }
+
                                 </h2>
 
                                 <p>
+
                                     {appointments.length} turno(s)
+
                                 </p>
 
                             </div>
 
+                            {
+                                owner && (
 
-                            <button
-                                className="appointments-ghost-button"
-                                onClick={() => {
+                                    <button
+                                        className="appointments-ghost-button"
+                                        onClick={() => {
 
-                                    setSelectedAppointment(null);
-                                    scrollToForm();
+                                            setSelectedAppointment(null);
 
-                                }}
-                            >
+                                            scrollToForm();
 
-                                <Plus size={18} />
+                                        }}
+                                    >
 
-                                <span>
-                                    Nuevo
-                                </span>
+                                        <Plus size={18}/>
 
-                            </button>
+                                        <span>
+                                            Nuevo
+                                        </span>
+
+                                    </button>
+
+                                )
+                            }
 
                         </div>
 
-
                         {
+
                             initialLoading
 
                                 ? (
                                     <p>
-                                        Cargando turnos...
+                                        Cargando...
                                     </p>
                                 )
 
@@ -322,7 +341,7 @@ function AppointmentsPage() {
 
                                     ? (
                                         <p>
-                                            No hay turnos registrados.
+                                            No hay turnos.
                                         </p>
                                     )
 
@@ -331,53 +350,60 @@ function AppointmentsPage() {
                                         <div className="appointments-record-list">
 
                                             {
-                                                appointments.map(
-                                                    appointment => (
 
-                                                        <AppointmentCard
-                                                            key={
-                                                                appointment.appointmentId
-                                                            }
-                                                            appointment={
+                                                appointments.map(appointment => (
+
+                                                    <AppointmentCard
+                                                        key={appointment.appointmentId}
+                                                        appointment={appointment}
+                                                        owner={owner}
+                                                        onEdit={() => {
+
+                                                            setSelectedAppointment(
                                                                 appointment
-                                                            }
-                                                            onEdit={(appointment) => {
+                                                            );
 
-                                                                setSelectedAppointment(
-                                                                    appointment
-                                                                );
+                                                            scrollToForm();
 
-                                                                scrollToForm();
+                                                        }}
+                                                        onDelete={
+                                                            handleDelete
+                                                        }
+                                                    />
 
-                                                            }}
-                                                            onDelete={
-                                                                handleDelete
-                                                            }
-                                                        />
+                                                ))
 
-                                                    )
-                                                )
                                             }
 
                                         </div>
 
                                     )
+
                         }
 
                     </Panel>
 
+                    {
 
-                    <AppointmentForm
-                        ref={formRef}
-                        selectedAppointment={selectedAppointment}
-                        pets={pets}
-                        veterinarians={veterinarians}
-                        loading={loading}
-                        onSubmit={handleSubmit}
-                        onCancelEdit={() =>
-                            setSelectedAppointment(null)
-                        }
-                    />
+                        owner && (
+
+                            <AppointmentForm
+                                ref={formRef}
+                                selectedAppointment={
+                                    selectedAppointment
+                                }
+                                pets={pets}
+                                veterinarians={veterinarians}
+                                loading={loading}
+                                onSubmit={handleSubmit}
+                                onCancelEdit={() =>
+                                    setSelectedAppointment(null)
+                                }
+                            />
+
+                        )
+
+                    }
 
                 </section>
 
@@ -388,6 +414,5 @@ function AppointmentsPage() {
     );
 
 }
-
 
 export default AppointmentsPage;

@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-
 import {
     CalendarDays,
     FileText,
@@ -10,7 +9,7 @@ import {
     Syringe,
     UserRound
 } from "lucide-react";
-
+import { isVeterinarian } from "../../utils/authUtils";
 import "./Sidebar.css";
 
 const navItems = [
@@ -27,7 +26,8 @@ const navItems = [
     {
         to: "/pets",
         icon: <PawPrint size={20} />,
-        label: "Mascotas"
+        label: "Mascotas",
+        ownerOnly: true
     },
     {
         to: "/vaccines",
@@ -47,48 +47,41 @@ const navItems = [
 ];
 
 function Sidebar({ collapsed, setCollapsed }) {
+    const veterinarian = isVeterinarian();
+
+    const visibleItems = navItems.filter((item) => {
+        if (item.ownerOnly && veterinarian) {
+            return false;
+        }
+
+        return true;
+    });
 
     return (
-
         <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-
             <div>
-
                 <div className="sidebar-header">
-
                     <button
                         type="button"
                         className="collapse-btn"
                         aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
                         onClick={() => setCollapsed(!collapsed)}
                     >
-
                         <Menu size={22} />
-
                     </button>
 
                     {!collapsed && (
-
                         <div className="sidebar-logo">
-
                             <h2>VetControl</h2>
-
                             <span>Tu veterinaria digital</span>
-
                         </div>
-
                     )}
-
                 </div>
 
                 <nav className="sidebar-nav">
-
                     <ul>
-
-                        {navItems.map((item) => (
-
+                        {visibleItems.map((item) => (
                             <li key={item.to}>
-
                                 <NavLink
                                     to={item.to}
                                     title={item.label}
@@ -98,42 +91,30 @@ function Sidebar({ collapsed, setCollapsed }) {
                                             : "sidebar-link"
                                     }
                                 >
-
                                     {item.icon}
 
-                                    <span>{item.label}</span>
-
+                                    {!collapsed && (
+                                        <span>{item.label}</span>
+                                    )}
                                 </NavLink>
-
                             </li>
-
                         ))}
-
                     </ul>
-
                 </nav>
-
             </div>
 
             <button
                 type="button"
                 className="logout-btn"
             >
-
                 <LogOut size={20} />
 
                 {!collapsed && (
-
                     <span>Cerrar sesión</span>
-
                 )}
-
             </button>
-
         </aside>
-
     );
-
 }
 
 export default Sidebar;

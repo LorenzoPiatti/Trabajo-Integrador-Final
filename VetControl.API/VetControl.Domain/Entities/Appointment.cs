@@ -24,4 +24,6 @@ public class Appointment
 
     public ICollection<Reminder> Reminders { get; set; }
         = new List<Reminder>();
+
+    public MedicalRecord? MedicalRecord { get; set; }
 }

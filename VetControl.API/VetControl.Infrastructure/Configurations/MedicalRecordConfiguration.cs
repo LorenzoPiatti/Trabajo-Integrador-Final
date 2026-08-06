@@ -23,13 +23,22 @@ public class MedicalRecordConfiguration : IEntityTypeConfiguration<MedicalRecord
         builder.Property(m => m.Treatment)
             .IsRequired();
 
+        builder.HasOne(m => m.Appointment)
+            .WithOne(a => a.MedicalRecord)
+            .HasForeignKey<MedicalRecord>(m => m.AppointmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne(m => m.Pet)
             .WithMany(p => p.MedicalRecords)
-            .HasForeignKey(m => m.PetId);
+            .HasForeignKey(m => m.PetId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(m => m.Veterinarian)
             .WithMany(u => u.MedicalRecords)
             .HasForeignKey(m => m.VeterinarianId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(m => m.AppointmentId)
+            .IsUnique();
     }
 }

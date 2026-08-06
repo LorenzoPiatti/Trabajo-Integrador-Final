@@ -7,6 +7,7 @@ import ResetPassword from "./modules/auth/pages/ResetPassword";
 import Dashboard from "./modules/dashboard/pages/Dashboard";
 import PetsPage from "./modules/pets/pages/Pets";
 import AppointmentsPage from "./modules/appointments/pages/Appointments";
+import MedicalRecords from "./modules/medical-records/pages/MedicalRecords";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/pets" element={<PetsPage />} />
       <Route path="/appointments" element={<AppointmentsPage />} />
+      <Route path="/medical-records" element={<MedicalRecords />} />
     </Routes>
   );
 }

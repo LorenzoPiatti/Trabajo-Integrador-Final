@@ -15,6 +15,9 @@ public interface IAppointmentService
     Task<List<AppointmentResponseDto>> GetByOwnerAsync(
         int userId);
 
+    Task<List<AppointmentResponseDto>> GetPendingByVeterinarianAsync(
+    int veterinarianId);
+
     Task<AppointmentResponseDto?> GetByIdAsync(
         int appointmentId,
         int userId);
@@ -27,4 +30,7 @@ public interface IAppointmentService
     Task CancelAsync(
         int appointmentId,
         int userId);
+
+    Task<List<AppointmentResponseDto>> GetCompletedByVeterinarianAsync(
+    int veterinarianId);
 }

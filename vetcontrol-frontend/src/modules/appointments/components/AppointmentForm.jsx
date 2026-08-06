@@ -1,17 +1,7 @@
 import { forwardRef, useEffect, useState } from "react";
-
-import {
-    CalendarDays,
-    Save,
-    X
-} from "lucide-react";
-
+import { CalendarDays, Save, X } from "lucide-react";
 import Panel from "../../../components/ui/Panel";
-
-import {
-    getAvailability
-} from "../../../services/appointmentService";
-
+import { getAvailability} from "../../../services/appointmentService";
 
 const emptyForm = {
     petId: "",
@@ -21,9 +11,7 @@ const emptyForm = {
     reason: ""
 };
 
-
 const getInitialFormData = (selectedAppointment) => {
-
     if (!selectedAppointment) {
         return {
             ...emptyForm
@@ -43,7 +31,6 @@ const getInitialFormData = (selectedAppointment) => {
     };
 
 };
-
 
 const AppointmentForm = forwardRef(({
     selectedAppointment,
@@ -121,10 +108,7 @@ const AppointmentForm = forwardRef(({
                 ? { time: "" }
                 : {})
         });
-
     };
-
-
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -135,26 +119,18 @@ const AppointmentForm = forwardRef(({
             dateTime: `${formData.date}T${formData.time}:00`,
             reason: formData.reason
         };
-
-
         const saved = await onSubmit(
             appointment
         );
-
 
         if (saved && !selectedAppointment) {
 
             setFormData({
                 ...emptyForm
             });
-
         }
-
     };
-
-
     return (
-
         <div ref={ref}>
 
             <Panel className="appointment-form-panel">
@@ -187,8 +163,6 @@ const AppointmentForm = forwardRef(({
                         </div>
 
                     </div>
-
-
                     <label>
                         Mascota
 
@@ -271,7 +245,6 @@ const AppointmentForm = forwardRef(({
 
                         <label>
                             Hora
-
                             <select
                                 name="time"
                                 value={formData.time}
@@ -294,12 +267,9 @@ const AppointmentForm = forwardRef(({
                                             >
                                                 {slot.dateTime.substring(11, 16)}
                                             </option>
-
                                         ))
                                 }
-
                             </select>
-
                         </label>
 
                     </div>
