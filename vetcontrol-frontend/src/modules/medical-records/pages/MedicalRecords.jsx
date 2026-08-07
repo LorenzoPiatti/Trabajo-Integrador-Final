@@ -52,7 +52,11 @@ function MedicalRecords() {
     useEffect(() => {
         if (!token) return;
 
-        loadData();
+        const timeoutId = window.setTimeout(() => {
+            loadData();
+        }, 0);
+
+        return () => window.clearTimeout(timeoutId);
     }, [token, loadData]);
 
     const handleSelectAppointment = (appointment) => {

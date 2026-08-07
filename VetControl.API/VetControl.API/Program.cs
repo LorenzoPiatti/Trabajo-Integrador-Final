@@ -183,6 +183,21 @@ builder.Services.AddScoped<
 
 
 // ------------------------------------------------------
+// VACUNAS
+// ------------------------------------------------------
+
+builder.Services.AddScoped<
+    IVaccineRepository,
+    VaccineRepository
+>();
+
+builder.Services.AddScoped<
+    IVaccineService,
+    VaccineService
+>();
+
+
+// ------------------------------------------------------
 // HISTORIAS CLÍNICAS
 // ------------------------------------------------------
 
