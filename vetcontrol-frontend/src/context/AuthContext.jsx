@@ -1,25 +1,38 @@
-import { createContext, useContext, useState } from "react";
+import {
+    createContext,
+    useContext,
+    useState
+} from "react";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
+    const [user, setUser] = useState(() => {
 
-    const [user, setUser] = useState({
+        const storedUser = localStorage.getItem("user");
 
-        id: 1,
+        if (!storedUser) {
+            return null;
+        }
 
-        firstName: "Valentino",
+        try {
 
-        lastName: "Gentiletti",
+            return JSON.parse(storedUser);
 
-        role: "Administrador",
+        }
+        catch (error) {
 
-        email: "valentino@mail.com",
+            console.error(
+                "No se pudo recuperar el usuario guardado:",
+                error
+            );
 
-        notifications: 2,
+            localStorage.removeItem("user");
 
-        photo: null
+            return null;
+
+        }
 
     });
 
@@ -27,11 +40,19 @@ export function AuthProvider({ children }) {
 
         setUser(userData);
 
+        localStorage.setItem(
+            "user",
+            JSON.stringify(userData)
+        );
+
     };
 
     const logout = () => {
 
         setUser(null);
+
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
 
     };
 

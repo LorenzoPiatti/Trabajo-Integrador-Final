@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VetControl.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using VetControl.Infrastructure.Data;
 namespace VetControl.Infrastructure.Migrations
 {
     [DbContext(typeof(VetControlDbContext))]
-    partial class VetControlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260806000230_AddReminderReadStatus")]
+    partial class AddReminderReadStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,9 +104,6 @@ namespace VetControl.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicalRecordId"));
 
-                    b.Property<int>("AppointmentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -125,9 +125,6 @@ namespace VetControl.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("MedicalRecordId");
-
-                    b.HasIndex("AppointmentId")
-                        .IsUnique();
 
                     b.HasIndex("PetId");
 
@@ -385,16 +382,10 @@ namespace VetControl.Infrastructure.Migrations
 
             modelBuilder.Entity("VetControl.Domain.Entities.MedicalRecord", b =>
                 {
-                    b.HasOne("VetControl.Domain.Entities.Appointment", "Appointment")
-                        .WithOne("MedicalRecord")
-                        .HasForeignKey("VetControl.Domain.Entities.MedicalRecord", "AppointmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("VetControl.Domain.Entities.Pet", "Pet")
                         .WithMany("MedicalRecords")
                         .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("VetControl.Domain.Entities.User", "Veterinarian")
@@ -402,8 +393,6 @@ namespace VetControl.Infrastructure.Migrations
                         .HasForeignKey("VeterinarianId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Appointment");
 
                     b.Navigation("Pet");
 
@@ -462,8 +451,6 @@ namespace VetControl.Infrastructure.Migrations
 
             modelBuilder.Entity("VetControl.Domain.Entities.Appointment", b =>
                 {
-                    b.Navigation("MedicalRecord");
-
                     b.Navigation("Reminders");
                 });
 

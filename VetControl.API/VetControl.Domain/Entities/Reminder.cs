@@ -24,4 +24,7 @@ public class Reminder
     public Appointment? Appointment { get; set; }
 
     public AdministeredVaccine? AdministeredVaccine { get; set; }
+    public bool IsRead { get; set; } = false;
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

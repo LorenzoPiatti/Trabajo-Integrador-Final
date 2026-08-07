@@ -1,0 +1,125 @@
+.reminder-dropdown {
+
+    position: absolute;
+
+    top: 58px;
+
+    right: 0;
+
+    width: 390px;
+
+    max-height: 480px;
+
+    background: #ffffff;
+
+    border: 1px solid #e8e8e8;
+
+    border-radius: 16px;
+
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.14);
+
+    overflow: hidden;
+
+    z-index: 1000;
+}
+
+.reminder-dropdown-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 16px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.reminder-dropdown-header h3 {
+
+    margin: 0;
+
+    color: #444;
+
+    font-size: 17px;
+}
+
+.reminder-dropdown-header span {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: #999;
+
+    font-size: 12px;
+}
+
+.reminder-mark-all-button {
+
+    border: none;
+
+    background: transparent;
+
+    color: #6e927a;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.reminder-mark-all-button:hover {
+
+    color: #4f7059;
+
+    text-decoration: underline;
+}
+
+.reminder-dropdown-content {
+
+    max-height: 390px;
+
+    overflow-y: auto;
+}
+
+.reminder-dropdown-message {
+
+    margin: 0;
+
+    padding: 30px 20px;
+
+    color: #777;
+
+    font-size: 14px;
+
+    text-align: center;
+}
+
+.reminder-dropdown-message.error {
+
+    color: #c95555;
+}
+
+@media (max-width: 600px) {
+
+    .reminder-dropdown {
+
+        position: fixed;
+
+        top: 82px;
+
+        right: 16px;
+
+        left: 16px;
+
+        width: auto;
+    }
+
+}

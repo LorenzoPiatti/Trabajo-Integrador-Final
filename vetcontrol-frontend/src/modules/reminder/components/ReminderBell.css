@@ -1,0 +1,15 @@
+.reminder-bell-container {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+}
+
+.header-icon.active {
+
+    background: #A3C1AD;
+
+    color: #ffffff;
+}
