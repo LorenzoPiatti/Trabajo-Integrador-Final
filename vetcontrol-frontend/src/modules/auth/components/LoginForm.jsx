@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../../services/authService";
+import { login, getUserFromToken } from "../../../services/authService";
+import { useAuth } from "../../../context/AuthContext";
 
 function LoginForm() {
 
     const navigate = useNavigate();
+
+    const { login: saveUser } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -56,6 +59,12 @@ function LoginForm() {
                 "token",
                 token
             );
+
+            const userData = getUserFromToken(token);
+
+            if (userData) {
+                saveUser(userData);
+            }
 
             navigate("/dashboard");
         }

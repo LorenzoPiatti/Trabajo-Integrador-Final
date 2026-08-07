@@ -109,6 +109,47 @@ export const resetPassword = async (
             newPassword
         })
     });
-
+    
     return await handleResponse(response);
+};
+
+    export const getUserFromToken = (token) => {
+    if (!token) {
+        return null;
+    }
+
+    try {
+        const payload = token.split(".")[1];
+
+        const normalized = payload
+            .replace(/-/g, "+")
+            .replace(/_/g, "/");
+
+        const data = JSON.parse(atob(normalized));
+
+        const name =
+            data.unique_name ||
+            data[
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+            ] ||
+            "";
+
+        const role =
+            data.role ||
+            data[
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            ] ||
+            "";
+
+        const nameParts = name.trim().split(" ");
+
+        return {
+            firstName: nameParts[0] || "",
+            lastName: nameParts.slice(1).join(" "),
+            role
+        };
+    }
+    catch {
+        return null;
+    }
 };

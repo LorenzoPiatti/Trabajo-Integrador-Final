@@ -88,9 +88,12 @@ function Header() {
             .toUpperCase()
         : "";
 
-    const isAdmin =
-        user?.role?.toLowerCase() === "admin" ||
-        user?.role?.toLowerCase() === "administrador";
+    const roleLabel =
+        user?.role === "Veterinarian"
+            ? "Veterinario"
+            : user?.role === "Admin"
+                ? "Administrador"
+                : null;
 
     return (
 
@@ -149,9 +152,9 @@ function Header() {
 
                         </strong>
 
-                        {isAdmin && (
+                        {roleLabel && (
 
-                            <small>Administrador</small>
+                            <small>{roleLabel}</small>
 
                         )}
 
