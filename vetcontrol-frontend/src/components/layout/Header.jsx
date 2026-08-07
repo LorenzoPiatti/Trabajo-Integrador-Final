@@ -1,12 +1,16 @@
 import "./Header.css";
+
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import ReminderBell from "../../modules/reminders/components/ReminderBell";
+import ReminderBell from "../../modules/reminder/components/ReminderBell";
+import { useAuth } from "../../context/AuthContext";
 
 function Header() {
 
     const location = useLocation();
+
+    const { user } = useAuth();
 
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -53,7 +57,7 @@ function Header() {
             title: "Mi Perfil",
             subtitle: "Administrá tu información personal."
         },
-        
+
         "/reminders": {
             title: "Recordatorios",
             subtitle: "Consultá tus notificaciones y avisos."
@@ -78,6 +82,15 @@ function Header() {
         hour: "2-digit",
         minute: "2-digit"
     });
+
+    const initials = user
+        ? `${user.firstName?.charAt(0) ?? ""}${user.lastName?.charAt(0) ?? ""}`
+            .toUpperCase()
+        : "";
+
+    const isAdmin =
+        user?.role?.toLowerCase() === "admin" ||
+        user?.role?.toLowerCase() === "administrador";
 
     return (
 
@@ -110,15 +123,37 @@ function Header() {
 
                     <div className="avatar">
 
-                        VG
+                        {user?.photo ? (
+
+                            <img
+                                src={user.photo}
+                                alt={`Foto de ${user.firstName}`}
+                            />
+
+                        ) : (
+
+                            initials || "VC"
+
+                        )}
 
                     </div>
 
                     <div className="header-user-info">
 
-                        <strong>Valentino</strong>
+                        <strong>
 
-                        <small>Administrador</small>
+                            {user
+                                ? `${user.firstName} ${user.lastName ?? ""}`
+                                : "Usuario"
+                            }
+
+                        </strong>
+
+                        {isAdmin && (
+
+                            <small>Administrador</small>
+
+                        )}
 
                     </div>
 
