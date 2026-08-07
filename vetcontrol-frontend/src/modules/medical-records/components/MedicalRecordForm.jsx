@@ -17,9 +17,15 @@ function MedicalRecordForm({
 }) {
 
     const [formData, setFormData] = useState(emptyForm);
+
     useEffect(() => {
-        setFormData(emptyForm);
+        const timeoutId = window.setTimeout(() => {
+            setFormData(emptyForm);
+        }, 0);
+
+        return () => window.clearTimeout(timeoutId);
     }, [selectedAppointment]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({

@@ -9,6 +9,8 @@ import PetsPage from "./modules/pets/pages/Pets";
 import AppointmentsPage from "./modules/appointments/pages/Appointments";
 import MedicalRecords from "./modules/medical-records/pages/MedicalRecords";
 import Reminders from "./modules/reminder/pages/Reminders";
+import Vaccines from "./modules/vaccines/pages/Vaccines";
+
 function App() {
   return (
     <Routes>
@@ -24,9 +26,9 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/pets" element={<PetsPage />} />
       <Route path="/appointments" element={<AppointmentsPage />} />
+      <Route path="/vaccines" element={<Vaccines />} />
       <Route path="/medical-records" element={<MedicalRecords />} />
-      <Route path="/reminders" element={<Reminders />}
-/>
+      <Route path="/reminders" element={<Reminders />} />
     </Routes>
   );
 }
