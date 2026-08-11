@@ -19,7 +19,7 @@
 
 .appointments-list-panel,
 .appointment-form-panel {
-    box-shadow: 0 6px 18px rgba(0,0,0,.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .05);
 }
 
 .appointments-panel-header {
@@ -53,13 +53,13 @@
     border: 1px solid #edf3ef;
     border-radius: 20px;
     padding: 18px;
-    background: linear-gradient(135deg,#f7faf8,#fff);
+    background: linear-gradient(135deg, #f7faf8, #fff);
     transition: .25s;
 }
 
 .appointment-row:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0,0,0,.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .05);
 }
 
 .appointment-row-main {
@@ -215,7 +215,7 @@
 .appointment-form textarea:focus,
 .appointment-form select:focus {
     border-color: #A3C1AD;
-    box-shadow: 0 0 0 4px rgba(163,193,173,.18);
+    box-shadow: 0 0 0 4px rgba(163, 193, 173, .18);
 }
 
 .appointment-form-actions {
@@ -298,12 +298,12 @@
 }
 
 .appointments-auth-card {
-    width: min(460px,100%);
+    width: min(460px, 100%);
     background: white;
     border-radius: 20px;
     padding: 34px;
     text-align: center;
-    box-shadow: 0 8px 25px rgba(0,0,0,.06);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .06);
 }
 
 .appointments-auth-icon {
@@ -318,30 +318,43 @@
     margin: 0 auto 20px;
 }
 
+.appointments-dashboard .medical-record-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+}
+
+.appointments-dashboard .medical-record-list-panel,
+.appointments-dashboard .medical-record-form-panel {
+    height: 100%;
+}
+.appointments-dashboard .medical-record-list-panel {
+    min-height: 100%;
+}
+
 /* RESPONSIVE */
 
-@media(max-width:1200px){
+@media(max-width:1200px) {
 
-    .appointments-summary-grid{
-        grid-template-columns:1fr;
+    .appointments-summary-grid {
+        grid-template-columns: 1fr;
     }
 
-    .appointments-content-grid{
-        grid-template-columns:1fr;
+    .appointments-content-grid {
+        grid-template-columns: 1fr;
     }
 
 }
 
-@media(max-width:700px){
+@media(max-width:700px) {
 
     .appointment-row-main,
-    .appointment-form-grid{
-        grid-template-columns:1fr;
+    .appointment-form-grid {
+        grid-template-columns: 1fr;
     }
 
     .appointment-actions,
-    .appointment-form-actions{
-        justify-content:flex-start;
+    .appointment-form-actions {
+        justify-content: flex-start;
     }
 
 }

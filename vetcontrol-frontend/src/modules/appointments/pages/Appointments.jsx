@@ -4,13 +4,17 @@ import { CalendarDays, Clock3, Plus, Stethoscope } from "lucide-react";
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
-import { createAppointment, deleteAppointment, getAppointments, getCompletedAppointments, updateAppointment} from "../../../services/appointmentService";
+import { createAppointment, deleteAppointment, getAppointments, getCompletedAppointments, getPendingAppointments, updateAppointment } from "../../../services/appointmentService";
 import { getPets } from "../../../services/petService";
 import { getVeterinarians } from "../../../services/userService";
 import AppointmentCard from "../components/AppointmentCard";
 import AppointmentForm from "../components/AppointmentForm";
+import MedicalRecordList from "../../medical-records/components/MedicalRecordList";
+import MedicalRecordForm from "../../medical-records/components/MedicalRecordForm";
 import { isOwner, isVeterinarian } from "../../../utils/authUtils";
+
 import "../styles/Appointments.css";
+import "../../medical-records/styles/MedicalRecords.css";
 
 function AppointmentsPage() {
 
@@ -20,10 +24,13 @@ function AppointmentsPage() {
     const veterinarian = isVeterinarian();
 
     const [appointments, setAppointments] = useState([]);
+    const [pendingAppointments, setPendingAppointments] = useState([]);
+
     const [pets, setPets] = useState([]);
     const [veterinarians, setVeterinarians] = useState([]);
 
     const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [selectedMedicalAppointment, setSelectedMedicalAppointment] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(Boolean(token));
@@ -55,16 +62,20 @@ function AppointmentsPage() {
                 setAppointments(appointmentsData ?? []);
                 setPets(petsData ?? []);
                 setVeterinarians(veterinariansData ?? []);
-
             }
 
             if (veterinarian) {
 
-                const data =
-                    await getCompletedAppointments();
+                const [
+                    pendingData,
+                    completedData
+                ] = await Promise.all([
+                    getPendingAppointments(),
+                    getCompletedAppointments()
+                ]);
 
-                setAppointments(data ?? []);
-
+                setPendingAppointments(pendingData ?? []);
+                setAppointments(completedData ?? []);
             }
 
         } catch (err) {
@@ -74,7 +85,6 @@ function AppointmentsPage() {
         } finally {
 
             setInitialLoading(false);
-
         }
 
     }, [owner, veterinarian]);
@@ -101,7 +111,6 @@ function AppointmentsPage() {
             });
 
         }, 100);
-
     };
 
     const handleSubmit = async (formData) => {
@@ -130,7 +139,6 @@ function AppointmentsPage() {
                 setSuccess(
                     "Turno registrado correctamente."
                 );
-
             }
 
             setSelectedAppointment(null);
@@ -148,9 +156,7 @@ function AppointmentsPage() {
         } finally {
 
             setLoading(false);
-
         }
-
     };
 
     const handleDelete = async (id) => {
@@ -174,9 +180,24 @@ function AppointmentsPage() {
         } catch (err) {
 
             setError(err.message);
-
         }
+    };
 
+    const handleSelectMedicalAppointment = (appointment) => {
+
+        setSelectedMedicalAppointment(appointment);
+        setError("");
+        setSuccess("");
+    };
+
+    const handleMedicalSuccess = async (message) => {
+
+        setSuccess(message);
+        setError("");
+
+        setSelectedMedicalAppointment(null);
+
+        await loadData();
     };
 
     if (!token) {
@@ -188,7 +209,7 @@ function AppointmentsPage() {
                 <section className="appointments-auth-card">
 
                     <div className="appointments-auth-icon">
-                        <CalendarDays size={30}/>
+                        <CalendarDays size={30} />
                     </div>
 
                     <h1>Turnos</h1>
@@ -207,9 +228,7 @@ function AppointmentsPage() {
                 </section>
 
             </main>
-
         );
-
     }
 
     return (
@@ -219,7 +238,7 @@ function AppointmentsPage() {
             subtitle={
                 owner
                     ? "Gestioná los turnos de tus mascotas"
-                    : "Turnos atendidos"
+                    : "Consultá tus turnos y registrá las atenciones médicas"
             }
         >
 
@@ -229,7 +248,11 @@ function AppointmentsPage() {
 
                     <StatCard
                         title="Turnos"
-                        value={appointments.length}
+                        value={
+                            veterinarian
+                                ? pendingAppointments.length + appointments.length
+                                : appointments.length
+                        }
                         color="#A3C1AD"
                         icon={<CalendarDays />}
                     />
@@ -238,14 +261,14 @@ function AppointmentsPage() {
                         title={
                             owner
                                 ? "Próximos"
-                                : "Completados"
+                                : "Pendientes"
                         }
                         value={
-                            appointments.filter(a =>
-                                owner
-                                    ? a.status === "Confirmed"
-                                    : a.status === "Completed"
-                            ).length
+                            owner
+                                ? appointments.filter(
+                                    a => a.status === "Confirmed"
+                                ).length
+                                : pendingAppointments.length
                         }
                         color="#7FB3D5"
                         icon={<Clock3 />}
@@ -275,87 +298,70 @@ function AppointmentsPage() {
                     >
                         {error || success}
                     </section>
-
                 )}
 
-                <section className="appointments-content-grid">
+                {owner && (
 
-                    <Panel className="appointments-list-panel">
+                    <section className="appointments-content-grid">
 
-                        <div className="appointments-panel-header">
+                        <Panel className="appointments-list-panel">
 
-                            <div>
+                            <div className="appointments-panel-header">
 
-                                <h2>
+                                <div>
 
-                                    {
-                                        owner
-                                            ? "Mis turnos"
-                                            : "Turnos atendidos"
-                                    }
+                                    <h2>
+                                        Mis turnos
+                                    </h2>
 
-                                </h2>
+                                    <p>
+                                        {appointments.length} turno(s)
+                                    </p>
 
-                                <p>
+                                </div>
 
-                                    {appointments.length} turno(s)
+                                <button
+                                    className="appointments-ghost-button"
+                                    onClick={() => {
 
-                                </p>
+                                        setSelectedAppointment(null);
+
+                                        scrollToForm();
+                                    }}
+                                >
+
+                                    <Plus size={18} />
+
+                                    <span>
+                                        Nuevo
+                                    </span>
+
+                                </button>
 
                             </div>
 
                             {
-                                owner && (
-
-                                    <button
-                                        className="appointments-ghost-button"
-                                        onClick={() => {
-
-                                            setSelectedAppointment(null);
-
-                                            scrollToForm();
-
-                                        }}
-                                    >
-
-                                        <Plus size={18}/>
-
-                                        <span>
-                                            Nuevo
-                                        </span>
-
-                                    </button>
-
-                                )
-                            }
-
-                        </div>
-
-                        {
-
-                            initialLoading
-
-                                ? (
-                                    <p>
-                                        Cargando...
-                                    </p>
-                                )
-
-                                : appointments.length === 0
+                                initialLoading
 
                                     ? (
                                         <p>
-                                            No hay turnos.
+                                            Cargando...
                                         </p>
                                     )
 
-                                    : (
+                                    : appointments.length === 0
 
-                                        <div className="appointments-record-list">
+                                        ? (
+                                            <p>
+                                                No hay turnos.
+                                            </p>
+                                        )
 
-                                            {
+                                        : (
 
-                                                appointments.map(appointment => (
+                                            <div className="appointments-record-list">
+
+                                                {appointments.map(appointment => (
 
                                                     <AppointmentCard
                                                         key={appointment.appointmentId}
@@ -368,55 +374,148 @@ function AppointmentsPage() {
                                                             );
 
                                                             scrollToForm();
-
                                                         }}
-                                                        onDelete={
-                                                            handleDelete
-                                                        }
+                                                        onDelete={handleDelete}
                                                     />
 
-                                                ))
+                                                ))}
 
-                                            }
+                                            </div>
+                                        )
+                            }
+
+                        </Panel>
+
+                        <AppointmentForm
+                            ref={formRef}
+                            selectedAppointment={selectedAppointment}
+                            pets={pets}
+                            veterinarians={veterinarians}
+                            loading={loading}
+                            onSubmit={handleSubmit}
+                            onCancelEdit={() =>
+                                setSelectedAppointment(null)
+                            }
+                        />
+
+                    </section>
+                )}
+
+                {veterinarian && (
+
+                    <>
+                        <section className="medical-record-section">
+
+                            <div className="medical-record-grid">
+
+                                <Panel className="medical-record-list-panel">
+
+                                    <div className="medical-record-panel-header">
+
+                                        <div>
+
+                                            <h2>
+                                                Turnos pendientes
+                                            </h2>
+
+                                            <p>
+                                                Seleccioná un turno para registrar la atención médica.
+                                            </p>
 
                                         </div>
 
-                                    )
+                                    </div>
 
-                        }
+                                    {initialLoading ? (
 
-                    </Panel>
+                                        <p>
+                                            Cargando turnos...
+                                        </p>
 
-                    {
+                                    ) : (
 
-                        owner && (
+                                        <MedicalRecordList
+                                            appointments={pendingAppointments}
+                                            onSelect={handleSelectMedicalAppointment}
+                                        />
 
-                            <AppointmentForm
-                                ref={formRef}
-                                selectedAppointment={
-                                    selectedAppointment
-                                }
-                                pets={pets}
-                                veterinarians={veterinarians}
-                                loading={loading}
-                                onSubmit={handleSubmit}
-                                onCancelEdit={() =>
-                                    setSelectedAppointment(null)
-                                }
-                            />
+                                    )}
 
-                        )
+                                </Panel>
 
-                    }
+                                <MedicalRecordForm
+                                    selectedAppointment={selectedMedicalAppointment}
+                                    onSuccess={handleMedicalSuccess}
+                                    onError={(message) => {
+                                        setError(message);
+                                        setSuccess("");
+                                    }}
+                                />
 
-                </section>
+                            </div>
+
+                        </section>
+
+                        <section className="appointments-content-grid">
+
+                            <Panel className="appointments-list-panel">
+
+                                <div className="appointments-panel-header">
+
+                                    <div>
+
+                                        <h2>
+                                            Turnos atendidos
+                                        </h2>
+
+                                        <p>
+                                            {appointments.length} turno(s)
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                {initialLoading ? (
+
+                                    <p>
+                                        Cargando...
+                                    </p>
+
+                                ) : appointments.length === 0 ? (
+
+                                    <p>
+                                        No hay turnos atendidos.
+                                    </p>
+
+                                ) : (
+
+                                    <div className="appointments-record-list">
+
+                                        {appointments.map(appointment => (
+
+                                            <AppointmentCard
+                                                key={appointment.appointmentId}
+                                                appointment={appointment}
+                                                owner={false}
+                                            />
+
+                                        ))}
+
+                                    </div>
+
+                                )}
+
+                            </Panel>
+
+                        </section>
+                    </>
+                )}
 
             </div>
 
         </Layout>
-
     );
-
 }
 
 export default AppointmentsPage;

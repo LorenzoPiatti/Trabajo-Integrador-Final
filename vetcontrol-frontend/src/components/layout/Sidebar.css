@@ -1,7 +1,10 @@
 .sidebar {
-
     width: 260px;
     min-width: 260px;
+
+    height: 100vh;
+    position: sticky;
+    top: 0;
 
     background: #fff;
 
@@ -16,7 +19,6 @@
     transition: width .30s ease,
         min-width .30s ease,
         padding .30s ease;
-
 }
 
 /* ========================= */
@@ -24,12 +26,10 @@
 /* ========================= */
 
 .sidebar.collapsed {
-
     width: 80px;
     min-width: 80px;
 
     padding: 24px 12px;
-
 }
 
 /* ========================= */
@@ -37,7 +37,6 @@
 /* ========================= */
 
 .sidebar-header {
-
     width: 100%;
 
     display: flex;
@@ -46,15 +45,12 @@
     gap: 14px;
 
     margin-bottom: 40px;
-
 }
 
 .sidebar.collapsed .sidebar-header {
-
     justify-content: center;
 
     gap: 0;
-
 }
 
 /* ========================= */
@@ -62,7 +58,6 @@
 /* ========================= */
 
 .collapse-btn {
-
     width: 42px;
     height: 42px;
 
@@ -81,21 +76,16 @@
     flex-shrink: 0;
 
     transition: .25s;
-
 }
 
 .sidebar.collapsed .collapse-btn {
-
     margin: 0 auto;
-
 }
 
 .collapse-btn:hover {
-
     background: #A3C1AD;
 
     color: white;
-
 }
 
 /* ========================= */
@@ -103,7 +93,6 @@
 /* ========================= */
 
 .sidebar-logo h2 {
-
     margin: 0;
 
     color: #A3C1AD;
@@ -111,15 +100,12 @@
     font-size: 28px;
 
     font-weight: 700;
-
 }
 
 .sidebar-logo span {
-
     color: #8a8a8a;
 
     font-size: 13px;
-
 }
 
 /* ========================= */
@@ -127,13 +113,10 @@
 /* ========================= */
 
 .sidebar-nav {
-
     margin-top: 10px;
-
 }
 
 .sidebar-nav ul {
-
     list-style: none;
 
     margin: 0;
@@ -143,11 +126,9 @@
     flex-direction: column;
 
     gap: 10px;
-
 }
 
 .sidebar-link {
-
     display: flex;
     align-items: center;
 
@@ -162,25 +143,20 @@
     text-decoration: none;
 
     transition: .25s;
-
 }
 
 .sidebar-link:hover {
-
     background: #eef5f0;
 
     color: #A3C1AD;
-
 }
 
 .sidebar-link.active {
-
     background: #A3C1AD;
 
     color: white;
 
     font-weight: 600;
-
 }
 
 /* ========================= */
@@ -188,17 +164,13 @@
 /* ========================= */
 
 .sidebar.collapsed .sidebar-link {
-
     justify-content: center;
 
     padding: 14px 0;
-
 }
 
 .sidebar.collapsed .sidebar-link span {
-
     display: none;
-
 }
 
 /* ========================= */
@@ -206,7 +178,6 @@
 /* ========================= */
 
 .logout-btn {
-
     width: 100%;
 
     border: none;
@@ -226,27 +197,20 @@
     cursor: pointer;
 
     transition: .25s;
-
 }
 
 .logout-btn:hover {
-
     background: #A3C1AD;
 
     color: white;
-
 }
 
 .sidebar.collapsed .logout-btn {
-
     justify-content: center;
 
     padding: 14px 0;
-
 }
 
 .sidebar.collapsed .logout-btn span {
-
     display: none;
-
 }

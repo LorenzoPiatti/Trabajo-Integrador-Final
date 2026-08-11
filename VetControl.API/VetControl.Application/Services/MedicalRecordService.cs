@@ -11,22 +11,25 @@ public class MedicalRecordService : IMedicalRecordService
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IPetRepository _petRepository;
     private readonly IOwnerRepository _ownerRepository;
+    private readonly IVaccineRepository _vaccineRepository;
 
     public MedicalRecordService(
         IMedicalRecordRepository medicalRecordRepository,
         IAppointmentRepository appointmentRepository,
         IPetRepository petRepository,
-        IOwnerRepository ownerRepository)
+        IOwnerRepository ownerRepository,
+        IVaccineRepository vaccineRepository)
     {
         _medicalRecordRepository = medicalRecordRepository;
         _appointmentRepository = appointmentRepository;
         _petRepository = petRepository;
         _ownerRepository = ownerRepository;
+        _vaccineRepository = vaccineRepository;
     }
 
     public async Task<MedicalRecordResponseDto> RegisterAsync(
-    int veterinarianId,
-    CreateMedicalRecordDto dto)
+        int veterinarianId,
+        CreateMedicalRecordDto dto)
     {
         var appointment = await _appointmentRepository
             .GetByIdAsync(dto.AppointmentId);
@@ -56,6 +59,63 @@ public class MedicalRecordService : IMedicalRecordService
                 "Este turno ya posee un historial médico.");
         }
 
+        if (dto.VaccineId.HasValue)
+        {
+            var vaccine = await _vaccineRepository
+                .GetVaccineByIdAsync(dto.VaccineId.Value);
+
+            if (vaccine == null)
+            {
+                throw new Exception(
+                    "La vacuna seleccionada no existe.");
+            }
+
+            if (vaccine.Stock <= 0)
+            {
+                throw new Exception(
+                    "No hay stock disponible de la vacuna seleccionada.");
+            }
+
+            if (vaccine.FrequencyMonths <= 0)
+            {
+                throw new Exception(
+                    "La vacuna no tiene una frecuencia válida.");
+            }
+
+            var applicationDate = DateTime.Now.Date;
+
+            var administeredVaccine = new AdministeredVaccine
+            {
+                VaccineId = vaccine.VaccineId,
+                PetId = appointment.PetId,
+                VeterinarianId = veterinarianId,
+                ApplicationDate = applicationDate,
+                NextDueDate = applicationDate.AddMonths(
+                    vaccine.FrequencyMonths),
+                Observations = string.IsNullOrWhiteSpace(
+                    dto.VaccineObservations)
+                        ? null
+                        : dto.VaccineObservations.Trim()
+            };
+
+            administeredVaccine.Reminders.Add(
+                new Reminder
+                {
+                    OwnerId = appointment.Pet.OwnerId,
+                    ReminderDate = administeredVaccine
+                        .NextDueDate.Date,
+                    Type = ReminderType.Vaccine,
+                    Sent = false,
+                    IsRead = false,
+                    CreatedAt = DateTime.UtcNow
+                });
+
+            vaccine.Stock--;
+
+            await _vaccineRepository
+                .AddAdministeredAsync(administeredVaccine);
+        }
+
         var medicalRecord = new MedicalRecord
         {
             AppointmentId = appointment.AppointmentId,
@@ -69,11 +129,14 @@ public class MedicalRecordService : IMedicalRecordService
 
         appointment.Status = AppointmentStatus.Completed;
 
-        await _medicalRecordRepository.AddAsync(medicalRecord);
+        await _medicalRecordRepository.AddAsync(
+            medicalRecord);
 
-        await _appointmentRepository.UpdateAsync(appointment);
+        await _appointmentRepository.UpdateAsync(
+            appointment);
 
-        await _medicalRecordRepository.SaveChangesAsync();
+        await _medicalRecordRepository
+            .SaveChangesAsync();
 
         return new MedicalRecordResponseDto
         {
@@ -165,7 +228,7 @@ public class MedicalRecordService : IMedicalRecordService
     }
 
     public async Task<List<MedicalRecordPetDto>> GetPetsByVeterinarianAsync(
-    int veterinarianId)
+        int veterinarianId)
     {
         var pets = await _medicalRecordRepository
             .GetPetsByVeterinarianAsync(veterinarianId);
@@ -182,7 +245,7 @@ public class MedicalRecordService : IMedicalRecordService
     }
 
     public async Task<MedicalRecordResponseDto?> GetByAppointmentAsync(
-     int appointmentId)
+        int appointmentId)
     {
         var medicalRecord = await _medicalRecordRepository
             .GetByAppointmentIdAsync(appointmentId);

@@ -9,4 +9,9 @@ public class CreateMedicalRecordDto
     public string? Diagnosis { get; set; }
 
     public string Treatment { get; set; } = string.Empty;
+
+    public int? VaccineId { get; set; }
+
+    public string? VaccineObservations { get; set; }
+
 }

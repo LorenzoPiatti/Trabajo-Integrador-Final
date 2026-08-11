@@ -1,10 +1,8 @@
 import {
     CalendarDays,
-    Edit3,
     PawPrint,
     Stethoscope,
-    Syringe,
-    Trash2
+    Syringe
 } from "lucide-react";
 
 const formatDate = (value) => {
@@ -24,27 +22,31 @@ const getDueState = (nextDueDate) => {
 
     return dueDate < today
         ? "Vencida"
-        : "Al dia";
+        : "Al día";
 };
 
 function VaccineCard({
-    administeredVaccine,
-    onEdit,
-    onDelete
+    administeredVaccine
 }) {
+
     const dueState = getDueState(
         administeredVaccine.nextDueDate
     );
 
     return (
+
         <article className="vaccine-row">
+
             <div className="vaccine-row-main">
+
                 <div className="vaccine-avatar">
                     <Syringe size={24} />
                 </div>
 
                 <div className="vaccine-info">
+
                     <div className="vaccine-heading">
+
                         <h3>
                             {administeredVaccine.vaccineName}
                         </h3>
@@ -58,9 +60,11 @@ function VaccineCard({
                         >
                             {dueState}
                         </span>
+
                     </div>
 
                     <div className="vaccine-details">
+
                         <span>
                             <PawPrint size={15} />
                             {administeredVaccine.petName}
@@ -73,6 +77,7 @@ function VaccineCard({
 
                         <span>
                             <CalendarDays size={15} />
+
                             Aplicada:{" "}
                             {formatDate(
                                 administeredVaccine.applicationDate
@@ -81,44 +86,27 @@ function VaccineCard({
 
                         <span>
                             <CalendarDays size={15} />
-                            Proxima:{" "}
+
+                            Próxima:{" "}
                             {formatDate(
                                 administeredVaccine.nextDueDate
                             )}
                         </span>
+
                     </div>
 
                     {administeredVaccine.observations && (
+
                         <p className="vaccine-observation">
                             {administeredVaccine.observations}
                         </p>
+
                     )}
+
                 </div>
 
-                <div className="vaccine-actions">
-                    <button
-                        type="button"
-                        className="vaccine-icon-button"
-                        onClick={() => onEdit(administeredVaccine)}
-                        title="Editar vacuna"
-                    >
-                        <Edit3 size={18} />
-                    </button>
-
-                    <button
-                        type="button"
-                        className="vaccine-icon-button vaccine-icon-button--danger"
-                        onClick={() =>
-                            onDelete(
-                                administeredVaccine.administeredVaccineId
-                            )
-                        }
-                        title="Eliminar vacuna"
-                    >
-                        <Trash2 size={18} />
-                    </button>
-                </div>
             </div>
+
         </article>
     );
 }
