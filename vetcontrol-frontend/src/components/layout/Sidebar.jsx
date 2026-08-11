@@ -25,7 +25,8 @@ const navItems = [
     {
         to: "/vaccines",
         icon: <Syringe size={20} />,
-        label: "Vacunas"
+        label: "Vacunas",
+        ownerOnly: true
     },
     {
         to: "/medical-records",

@@ -45,7 +45,7 @@ function Header() {
 
         "/vaccines": {
             title: "Vacunas",
-            subtitle: "Consultá y administrá las vacunas."
+            subtitle: "Consultá las vacunas aplicadas a tus mascotas."
         },
 
         "/medical-records": {
