@@ -1,18 +1,7 @@
-import { NavLink } from "react-router-dom";
-
-import {
-    Bell,
-    CalendarDays,
-    FileText,
-    LayoutDashboard,
-    LogOut,
-    Menu,
-    PawPrint,
-    Syringe,
-    UserRound
-} from "lucide-react";
-
+import { NavLink, useNavigate } from "react-router-dom";
+import { Bell, CalendarDays, FileText, LayoutDashboard, LogOut, Menu, PawPrint, Syringe, UserRound } from "lucide-react";
 import { isVeterinarian } from "../../utils/authUtils";
+import { useAuth } from "../../context/AuthContext";
 
 import "./Sidebar.css";
 
@@ -36,7 +25,8 @@ const navItems = [
     {
         to: "/vaccines",
         icon: <Syringe size={20} />,
-        label: "Vacunas"
+        label: "Vacunas",
+        ownerOnly: true
     },
     {
         to: "/medical-records",
@@ -71,6 +61,15 @@ function Sidebar({
         return true;
 
     });
+
+    const navigate = useNavigate();
+
+    const { logout } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    };
 
     return (
 
@@ -154,6 +153,7 @@ function Sidebar({
             <button
                 type="button"
                 className="logout-btn"
+                onClick={handleLogout}
             >
 
                 <LogOut size={20} />
