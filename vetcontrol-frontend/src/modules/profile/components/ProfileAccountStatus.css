@@ -1,0 +1,115 @@
+.profile-account-status {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border: 1px solid #ececec;
+
+    border-radius: 18px;
+
+    padding: 24px;
+}
+
+.profile-account-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 24px;
+
+    color: #7f9f89;
+}
+
+.profile-account-header h3 {
+
+    margin: 0;
+
+    color: #444;
+
+    font-size: 19px;
+}
+
+.profile-account-header p {
+
+    margin: 5px 0 0;
+
+    color: #999;
+
+    font-size: 13px;
+}
+
+.profile-account-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 18px;
+}
+
+.profile-account-item {
+
+    padding: 16px;
+
+    background: #f8f9f8;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.profile-account-label {
+
+    color: #999;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.profile-account-value {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 14px;
+}
+
+.profile-account-value.active,
+.profile-account-value.verified {
+
+    color: #6e927a;
+}
+
+.profile-account-value.inactive,
+.profile-account-value.not-verified {
+
+    color: #c95555;
+}
+
+.profile-account-value strong {
+
+    font-weight: 600;
+}
+
+@media (max-width: 700px) {
+
+    .profile-account-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+}

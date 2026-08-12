@@ -1,0 +1,57 @@
+.profile-page {
+
+    width: 100%;
+
+    max-width: 1050px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+.profile-page-state {
+
+    padding: 40px;
+
+    background: #ffffff;
+
+    border: 1px solid #ececec;
+
+    border-radius: 18px;
+
+    text-align: center;
+
+    color: #777;
+}
+
+.profile-page-state.error {
+
+    color: #c95555;
+}
+
+.profile-page-message {
+
+    padding: 13px 16px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+}
+
+.profile-page-message.success {
+
+    background: #edf6ef;
+
+    color: #5e846a;
+}
+
+.profile-page-message.error {
+
+    background: #fcecec;
+
+    color: #bd5959;
+}

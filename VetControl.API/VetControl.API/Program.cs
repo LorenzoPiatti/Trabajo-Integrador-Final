@@ -168,6 +168,14 @@ builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 
 
 // ------------------------------------------------------
+// PERFIL DE USUARIO
+// ------------------------------------------------------
+
+builder.Services.AddScoped<IProfileService, ProfileService>();
+
+
+
+// ------------------------------------------------------
 // TURNOS
 // ------------------------------------------------------
 

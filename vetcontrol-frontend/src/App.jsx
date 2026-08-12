@@ -10,7 +10,7 @@ import AppointmentsPage from "./modules/appointments/pages/Appointments";
 import MedicalRecords from "./modules/medical-records/pages/MedicalRecords";
 import Reminders from "./modules/reminder/pages/Reminders";
 import Vaccines from "./modules/vaccines/pages/Vaccines";
-
+import Profile from "./modules/profile/pages/Profile";
 function App() {
   return (
     <Routes>
@@ -29,6 +29,8 @@ function App() {
       <Route path="/vaccines" element={<Vaccines />} />
       <Route path="/medical-records" element={<MedicalRecords />} />
       <Route path="/reminders" element={<Reminders />} />
+      <Route path="/profile" element={<Profile />}
+/>
     </Routes>
   );
 }

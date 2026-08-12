@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login, getUserFromToken } from "../../../services/authService";
+
+import {
+    login,
+    getUserFromToken
+} from "../../../services/authService";
+
 import { useAuth } from "../../../context/AuthContext";
 
 function LoginForm() {
@@ -21,23 +26,32 @@ function LoginForm() {
         const newErrors = {};
 
         if (!email) {
+
             newErrors.email = "El email es obligatorio";
+
         }
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+
             newErrors.email = "El email no tiene un formato válido";
+
         }
 
         if (!password) {
+
             newErrors.password = "La contraseña es obligatoria";
+
         }
         else if (password.length < 6) {
+
             newErrors.password =
                 "La contraseña debe tener al menos 6 caracteres";
+
         }
 
         setErrors(newErrors);
 
         return Object.keys(newErrors).length === 0;
+
     };
 
     const handleSubmit = async () => {
@@ -63,10 +77,13 @@ function LoginForm() {
             const userData = getUserFromToken(token);
 
             if (userData) {
+
                 saveUser(userData);
+
             }
 
             navigate("/dashboard");
+
         }
         catch (error) {
 
@@ -75,18 +92,23 @@ function LoginForm() {
                     ? error.message
                     : "Error al iniciar sesión"
             );
+
         }
+
     };
 
     return (
+
         <div className="login-form">
 
             <h2>¡Bienvenido!</h2>
 
             <p className="login-subtitle">
+
                 Iniciá sesión para administrar tus mascotas,
                 gestionar turnos, ver su historial médico
                 y mucho más.
+
             </p>
 
             <label>Email</label>
@@ -95,14 +117,20 @@ function LoginForm() {
                 type="email"
                 placeholder="Ingrese mail"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(event) =>
+                    setEmail(event.target.value)
+                }
             />
 
-            {errors.email &&
+            {errors.email && (
+
                 <span className="error">
+
                     {errors.email}
+
                 </span>
-            }
+
+            )}
 
             <label>Contraseña</label>
 
@@ -116,8 +144,8 @@ function LoginForm() {
                     }
                     placeholder="Ingrese contraseña"
                     value={password}
-                    onChange={(e) =>
-                        setPassword(e.target.value)
+                    onChange={(event) =>
+                        setPassword(event.target.value)
                     }
                 />
 
@@ -125,33 +153,48 @@ function LoginForm() {
                     type="button"
                     className="password-toggle"
                     onClick={() =>
-                        setShowPassword(!showPassword)
+                        setShowPassword(
+                            currentValue => !currentValue
+                        )
                     }
                 >
+
                     {showPassword ? "🙈" : "👁"}
+
                 </button>
 
             </div>
 
-            {errors.password &&
-                <span className="error">
-                    {errors.password}
-                </span>
-            }
+            {errors.password && (
 
-            {apiError &&
                 <span className="error">
-                    {apiError}
+
+                    {errors.password}
+
                 </span>
-            }
+
+            )}
+
+            {apiError && (
+
+                <span className="error">
+
+                    {apiError}
+
+                </span>
+
+            )}
 
             <div className="login-links">
 
                 <span>
+
                     ¿No tenés cuenta?{" "}
+
                     <Link to="/register">
                         Registrarse
                     </Link>
+
                 </span>
 
                 <Link to="/forgot-password">
@@ -165,7 +208,9 @@ function LoginForm() {
                 type="button"
                 onClick={handleSubmit}
             >
+
                 Iniciar sesión
+
             </button>
 
             <div className="login-contact">
@@ -204,7 +249,9 @@ function LoginForm() {
             </div>
 
         </div>
+
     );
+
 }
 
 export default LoginForm;
