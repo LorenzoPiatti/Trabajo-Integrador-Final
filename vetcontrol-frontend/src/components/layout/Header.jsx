@@ -58,6 +58,11 @@ function Header() {
             subtitle: "Administrá tu información personal."
         },
 
+        "/users": {
+            title: "Usuarios y roles",
+            subtitle: "Administración de cuentas del sistema."
+        },
+
         "/reminders": {
             title: "Recordatorios",
             subtitle: "Consultá tus notificaciones y avisos."
@@ -93,7 +98,9 @@ function Header() {
             ? "Veterinario"
             : user?.role === "Admin"
                 ? "Administrador"
-                : null;
+                : user?.role === "Reception"
+                    ? "Recepción"
+                    : null;
 
     return (
 

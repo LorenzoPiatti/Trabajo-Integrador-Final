@@ -33,10 +33,35 @@ export const getUserRole = () => {
     );
 };
 
+export const getUserId = () => {
+    const payload = getTokenPayload();
+
+    if (!payload) {
+        return null;
+    }
+
+    const userId =
+        payload.nameid ||
+        payload[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ] ||
+        null;
+
+    const parsedUserId = Number(userId);
+
+    return Number.isNaN(parsedUserId)
+        ? null
+        : parsedUserId;
+};
+
 export const isOwner = () => {
     return getUserRole() === "Owner";
 };
 
 export const isVeterinarian = () => {
     return getUserRole() === "Veterinarian";
+};
+
+export const isAdmin = () => {
+    return getUserRole() === "Admin";
 };
