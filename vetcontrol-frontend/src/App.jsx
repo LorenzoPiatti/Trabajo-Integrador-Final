@@ -11,6 +11,8 @@ import MedicalRecords from "./modules/medical-records/pages/MedicalRecords";
 import Reminders from "./modules/reminder/pages/Reminders";
 import Vaccines from "./modules/vaccines/pages/Vaccines";
 import Profile from "./modules/profile/pages/Profile";
+import UsersPage from "./modules/users/pages/Users";
+
 function App() {
   return (
     <Routes>
@@ -29,8 +31,8 @@ function App() {
       <Route path="/vaccines" element={<Vaccines />} />
       <Route path="/medical-records" element={<MedicalRecords />} />
       <Route path="/reminders" element={<Reminders />} />
-      <Route path="/profile" element={<Profile />}
-/>
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/users" element={<UsersPage />} />
     </Routes>
   );
 }

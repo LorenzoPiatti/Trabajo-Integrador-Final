@@ -141,9 +141,17 @@ export const resetPassword = async (
             ] ||
             "";
 
+        const userId =
+            data.nameid ||
+            data[
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            ] ||
+            null;
+
         const nameParts = name.trim().split(" ");
 
         return {
+            userId: Number(userId) || null,
             firstName: nameParts[0] || "",
             lastName: nameParts.slice(1).join(" "),
             role

@@ -1,6 +1,17 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { Bell, CalendarDays, FileText, LayoutDashboard, LogOut, Menu, PawPrint, Syringe, UserRound } from "lucide-react";
-import { isVeterinarian } from "../../utils/authUtils";
+import {
+    Bell,
+    CalendarDays,
+    FileText,
+    LayoutDashboard,
+    LogOut,
+    Menu,
+    PawPrint,
+    Syringe,
+    UserRound,
+    Users
+} from "lucide-react";
+import { isAdmin, isVeterinarian } from "../../utils/authUtils";
 import { useAuth } from "../../context/AuthContext";
 
 import "./Sidebar.css";
@@ -42,6 +53,12 @@ const navItems = [
         to: "/profile",
         icon: <UserRound size={20} />,
         label: "Perfil"
+    },
+    {
+        to: "/users",
+        icon: <Users size={20} />,
+        label: "Usuarios",
+        adminOnly: true
     }
 ];
 
@@ -51,10 +68,15 @@ function Sidebar({
 }) {
 
     const veterinarian = isVeterinarian();
+    const admin = isAdmin();
 
     const visibleItems = navItems.filter((item) => {
 
         if (item.ownerOnly && veterinarian) {
+            return false;
+        }
+
+        if (item.adminOnly && !admin) {
             return false;
         }
 
@@ -175,4 +197,3 @@ function Sidebar({
 }
 
 export default Sidebar;
-
