@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using VetControl.Application.Interfaces;
 using VetControl.Domain.Entities;
 using VetControl.Infrastructure.Data;
@@ -21,5 +21,11 @@ public class OwnerRepository : IOwnerRepository
         return await _context.Owners
             .FirstOrDefaultAsync(o =>
                 o.UserId == userId);
+    }
+
+    public async Task AddAsync(
+        Owner owner)
+    {
+        await _context.Owners.AddAsync(owner);
     }
 }

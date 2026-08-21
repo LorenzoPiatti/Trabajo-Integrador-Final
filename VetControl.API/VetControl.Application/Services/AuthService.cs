@@ -105,6 +105,12 @@ public class AuthService : IAuthService
             throw new Exception("Contraseña incorrecta.");
         }
 
+        if (!user.Active)
+        {
+            throw new Exception(
+                "La cuenta se encuentra inactiva. Contacta a un administrador.");
+        }
+
         if (!user.EmailVerified)
         {
             throw new Exception(

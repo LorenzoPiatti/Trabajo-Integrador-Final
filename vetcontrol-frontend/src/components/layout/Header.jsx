@@ -5,12 +5,14 @@ import { useLocation } from "react-router-dom";
 
 import ReminderBell from "../../modules/reminder/components/ReminderBell";
 import { useAuth } from "../../context/AuthContext";
+import { isOwner } from "../../utils/authUtils";
 
 function Header() {
 
     const location = useLocation();
 
     const { user } = useAuth();
+    const owner = isOwner();
 
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -122,9 +124,17 @@ function Header() {
 
             <div className="header-actions">
 
-                <ReminderBell />
+                {owner && (
 
-                <div className="header-divider"></div>
+                    <ReminderBell />
+
+                )}
+
+                {owner && (
+
+                    <div className="header-divider"></div>
+
+                )}
 
                 <button
                     type="button"
