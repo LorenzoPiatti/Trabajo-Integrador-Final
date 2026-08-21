@@ -11,7 +11,7 @@ import {
     UserRound,
     Users
 } from "lucide-react";
-import { isAdmin, isVeterinarian } from "../../utils/authUtils";
+import { getUserRole } from "../../utils/authUtils";
 import { useAuth } from "../../context/AuthContext";
 
 import "./Sidebar.css";
@@ -20,45 +20,50 @@ const navItems = [
     {
         to: "/dashboard",
         icon: <LayoutDashboard size={20} />,
-        label: "Inicio"
+        label: "Inicio",
+        roles: ["Owner", "Veterinarian", "Reception", "Admin"]
     },
     {
         to: "/appointments",
         icon: <CalendarDays size={20} />,
-        label: "Turnos"
+        label: "Turnos",
+        roles: ["Owner", "Veterinarian", "Reception"]
     },
     {
         to: "/pets",
         icon: <PawPrint size={20} />,
         label: "Mascotas",
-        ownerOnly: true
+        roles: ["Owner"]
     },
     {
         to: "/vaccines",
         icon: <Syringe size={20} />,
         label: "Vacunas",
-        ownerOnly: true
+        roles: ["Owner"]
     },
     {
         to: "/medical-records",
         icon: <FileText size={20} />,
-        label: "Historial Médico"
+        label: "Historial Médico",
+        roles: ["Owner", "Veterinarian"]
     },
     {
         to: "/reminders",
         icon: <Bell size={20} />,
-        label: "Recordatorios"
+        label: "Recordatorios",
+        roles: ["Owner"]
     },
     {
         to: "/profile",
         icon: <UserRound size={20} />,
-        label: "Perfil"
+        label: "Perfil",
+        roles: ["Owner", "Veterinarian", "Reception", "Admin"]
     },
     {
         to: "/users",
         icon: <Users size={20} />,
         label: "Usuarios",
-        adminOnly: true
+        roles: ["Admin"]
     }
 ];
 
@@ -67,22 +72,11 @@ function Sidebar({
     setCollapsed
 }) {
 
-    const veterinarian = isVeterinarian();
-    const admin = isAdmin();
+    const role = getUserRole();
 
-    const visibleItems = navItems.filter((item) => {
-
-        if (item.ownerOnly && veterinarian) {
-            return false;
-        }
-
-        if (item.adminOnly && !admin) {
-            return false;
-        }
-
-        return true;
-
-    });
+    const visibleItems = navItems.filter((item) =>
+        item.roles.includes(role)
+    );
 
     const navigate = useNavigate();
 

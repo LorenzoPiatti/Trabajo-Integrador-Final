@@ -62,6 +62,10 @@ export const isVeterinarian = () => {
     return getUserRole() === "Veterinarian";
 };
 
+export const isReception = () => {
+    return getUserRole() === "Reception";
+};
+
 export const isAdmin = () => {
     return getUserRole() === "Admin";
 };

@@ -1,173 +1,659 @@
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+    Bell,
+    CalendarDays,
+    ClipboardList,
+    FileText,
+    PawPrint,
+    ShieldCheck,
+    Stethoscope,
+    Syringe,
+    UserCheck,
+    Users,
+    UserX
+} from "lucide-react";
+
 import Layout from "../../../components/layout/Layout";
+import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
 
-import QuickActions from "../components/QuickActions";
-import UpcomingAppointments from "../components/UpcomingAppointments";
-import RecentPets from "../components/RecentPets";
-
+import {
+    getAppointments,
+    getCompletedAppointments,
+    getPendingAppointments
+} from "../../../services/appointmentService";
+import { getMedicalRecordPets } from "../../../services/medicalRecordService";
 import { getPets } from "../../../services/petService";
-import { getAppointments } from "../../../services/appointmentService";
-
-import { useEffect, useState } from "react";
+import { getUnreadReminderCount } from "../../../services/reminderService";
+import { getUsers } from "../../../services/userService";
+import {
+    getAdministeredVaccines,
+    getVaccines
+} from "../../../services/vaccineService";
+import { getUserRole } from "../../../utils/authUtils";
 
 import "../styles/Dashboard.css";
 
-import {
-    PawPrint,
-    CalendarDays,
-    Syringe,
-    Bell
-} from "lucide-react";
+const isToday = (date) => {
+    const currentDate = new Date(date);
+    const today = new Date();
 
-function Dashboard() {
+    return (
+        currentDate.getFullYear() === today.getFullYear() &&
+        currentDate.getMonth() === today.getMonth() &&
+        currentDate.getDate() === today.getDate()
+    );
+};
 
+const isCancelled = (status) => {
+    const normalizedStatus = status?.toLowerCase();
+
+    return (
+        normalizedStatus === "cancelled" ||
+        normalizedStatus === "cancelado"
+    );
+};
+
+const isVaccineDue = (nextDueDate) => {
+    const dueDate = new Date(nextDueDate);
+    dueDate.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return dueDate <= today;
+};
+
+const getUpcomingAppointments = (appointments, limit = 3) => {
+    return appointments
+        .filter((appointment) => {
+            return (
+                new Date(appointment.dateTime) >= new Date() &&
+                !isCancelled(appointment.status)
+            );
+        })
+        .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))
+        .slice(0, limit);
+};
+
+const formatAppointmentDate = (date) => {
+    return new Intl.DateTimeFormat("es-AR", {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+    }).format(new Date(date));
+};
+
+function DashboardActions({ title = "Acciones rápidas", actions }) {
+    const navigate = useNavigate();
+
+    return (
+        <Panel>
+            <h3 className="dashboard-panel-title">{title}</h3>
+
+            <div className="dashboard-actions-grid">
+                {actions.map((action) => (
+                    <button
+                        key={action.title}
+                        type="button"
+                        className="dashboard-action-card"
+                        onClick={() => navigate(action.path)}
+                    >
+                        {action.icon}
+                        <span>{action.title}</span>
+                    </button>
+                ))}
+            </div>
+        </Panel>
+    );
+}
+
+function AppointmentPreview({
+    title,
+    appointments,
+    emptyText,
+    actionPath = "/appointments"
+}) {
+    const navigate = useNavigate();
+
+    return (
+        <Panel>
+            <div className="dashboard-panel-header">
+                <div>
+                    <h3>{title}</h3>
+                    <p>{appointments.length} turno(s)</p>
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() => navigate(actionPath)}
+                >
+                    Ver todos
+                </button>
+            </div>
+
+            {appointments.length === 0 ? (
+                <p className="dashboard-empty">{emptyText}</p>
+            ) : (
+                <div className="dashboard-preview-list">
+                    {appointments.map((appointment) => (
+                        <article
+                            key={appointment.appointmentId}
+                            className="dashboard-preview-row"
+                        >
+                            <div className="dashboard-preview-icon">
+                                <CalendarDays size={18} />
+                            </div>
+
+                            <div>
+                                <strong>{appointment.petName}</strong>
+                                <span>{appointment.reason}</span>
+                            </div>
+
+                            <small>
+                                {formatAppointmentDate(appointment.dateTime)}
+                            </small>
+                        </article>
+                    ))}
+                </div>
+            )}
+        </Panel>
+    );
+}
+
+function OwnerDashboard() {
     const [stats, setStats] = useState({
         pets: 0,
         appointmentsToday: 0,
         pendingVaccines: 0,
         reminders: 0
     });
-
-    const [loadingStats, setLoadingStats] = useState(true);
+    const [appointments, setAppointments] = useState([]);
+    const [pets, setPets] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
-        const loadDashboardStats = async () => {
-
+        const loadDashboard = async () => {
             try {
-
-                const [pets, appointments] = await Promise.all([
+                const [
+                    petsData,
+                    appointmentsData,
+                    vaccinesData,
+                    unreadReminders
+                ] = await Promise.all([
                     getPets(),
-                    getAppointments()
+                    getAppointments(),
+                    getAdministeredVaccines(),
+                    getUnreadReminderCount()
                 ]);
 
-                const today = new Date();
-
-                const appointmentsToday = appointments.filter((appointment) => {
-
-                    const appointmentDate = new Date(appointment.dateTime);
-
-                    const isToday =
-                        appointmentDate.getFullYear() === today.getFullYear() &&
-                        appointmentDate.getMonth() === today.getMonth() &&
-                        appointmentDate.getDate() === today.getDate();
-
-                    const status = appointment.status?.toLowerCase();
-
-                    const isCancelled =
-                        status === "cancelled" ||
-                        status === "cancelado";
-
-                    return isToday && !isCancelled;
-
-                }).length;
+                setPets(petsData ?? []);
+                setAppointments(appointmentsData ?? []);
 
                 setStats({
-                    pets: pets.length,
-                    appointmentsToday,
-                    pendingVaccines: 0,
-                    reminders: 0
+                    pets: petsData?.length ?? 0,
+                    appointmentsToday: (appointmentsData ?? [])
+                        .filter((appointment) =>
+                            isToday(appointment.dateTime) &&
+                            !isCancelled(appointment.status)
+                        ).length,
+                    pendingVaccines: (vaccinesData ?? [])
+                        .filter((vaccine) =>
+                            isVaccineDue(vaccine.nextDueDate)
+                        ).length,
+                    reminders:
+                        typeof unreadReminders === "number"
+                            ? unreadReminders
+                            : unreadReminders?.unreadCount ??
+                            unreadReminders?.count ??
+                            0
                 });
-
             }
             catch (error) {
-
-                console.error(
-                    "Error al obtener las estadísticas del dashboard:",
-                    error
-                );
-
+                console.error("Error al cargar inicio owner:", error);
             }
             finally {
-
-                setLoadingStats(false);
-
+                setLoading(false);
             }
-
         };
 
-        loadDashboardStats();
-
+        loadDashboard();
     }, []);
 
+    const upcomingAppointments =
+        useMemo(
+            () => getUpcomingAppointments(appointments, 3),
+            [appointments]
+        );
+
     return (
+        <>
+            <section className="dashboard-cards">
+                <StatCard
+                    title="Mascotas"
+                    value={loading ? "..." : stats.pets}
+                    color="#A3C1AD"
+                    icon={<PawPrint />}
+                />
 
-        <Layout>
+                <StatCard
+                    title="Turnos hoy"
+                    value={loading ? "..." : stats.appointmentsToday}
+                    color="#7FB3D5"
+                    icon={<CalendarDays />}
+                />
 
-            <div className="dashboard">
+                <StatCard
+                    title="Vacunas pendientes"
+                    value={loading ? "..." : stats.pendingVaccines}
+                    color="#E8B86D"
+                    icon={<Syringe />}
+                />
 
-                <div className="dashboard-cards">
+                <StatCard
+                    title="Recordatorios"
+                    value={loading ? "..." : stats.reminders}
+                    color="#E57373"
+                    icon={<Bell />}
+                />
+            </section>
 
-                    <StatCard
-                        title="Mascotas"
-                        value={loadingStats ? "..." : stats.pets}
-                        color="#A3C1AD"
-                        icon={<PawPrint />}
-                    />
+            <section className="dashboard-grid">
+                <AppointmentPreview
+                    title="Próximos turnos"
+                    appointments={upcomingAppointments}
+                    emptyText="No tenés turnos programados."
+                />
 
-                    <StatCard
-                        title="Turnos Hoy"
-                        value={
-                            loadingStats
-                                ? "..."
-                                : stats.appointmentsToday
+                <DashboardActions
+                    actions={[
+                        {
+                            title: "Nuevo turno",
+                            path: "/appointments",
+                            icon: <CalendarDays size={22} />
+                        },
+                        {
+                            title: "Mis mascotas",
+                            path: "/pets",
+                            icon: <PawPrint size={22} />
+                        },
+                        {
+                            title: "Vacunas",
+                            path: "/vaccines",
+                            icon: <Syringe size={22} />
+                        },
+                        {
+                            title: "Historial",
+                            path: "/medical-records",
+                            icon: <FileText size={22} />
                         }
-                        color="#7FB3D5"
-                        icon={<CalendarDays />}
-                    />
+                    ]}
+                />
+            </section>
 
-                    <StatCard
-                        title="Vacunas Pendientes"
-                        value={
-                            loadingStats
-                                ? "..."
-                                : stats.pendingVaccines
-                        }
-                        color="#E8B86D"
-                        icon={<Syringe />}
-                    />
-
-                    <StatCard
-                        title="Recordatorios"
-                        value={
-                            loadingStats
-                                ? "..."
-                                : stats.reminders
-                        }
-                        color="#E57373"
-                        icon={<Bell />}
-                    />
-
+            <Panel>
+                <div className="dashboard-panel-header">
+                    <div>
+                        <h3>Mis mascotas</h3>
+                        <p>{pets.length} mascota(s)</p>
+                    </div>
                 </div>
 
-                <div className="dashboard-grid">
+                {pets.length === 0 ? (
+                    <p className="dashboard-empty">
+                        No tenés mascotas registradas.
+                    </p>
+                ) : (
+                    <div className="dashboard-preview-list dashboard-preview-list--grid">
+                        {pets.slice(0, 4).map((pet) => (
+                            <article
+                                key={pet.petId}
+                                className="dashboard-preview-row"
+                            >
+                                <div className="dashboard-preview-icon">
+                                    <PawPrint size={18} />
+                                </div>
 
-                    <div className="upcoming-section">
+                                <div>
+                                    <strong>{pet.name}</strong>
+                                    <span>
+                                        {pet.species}
+                                        {pet.breed ? ` · ${pet.breed}` : ""}
+                                    </span>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                )}
+            </Panel>
+        </>
+    );
+}
 
-                        <UpcomingAppointments />
+function VeterinarianDashboard() {
+    const [pendingAppointments, setPendingAppointments] = useState([]);
+    const [completedAppointments, setCompletedAppointments] = useState([]);
+    const [patients, setPatients] = useState([]);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        const loadDashboard = async () => {
+            try {
+                const [
+                    pendingData,
+                    completedData,
+                    patientsData
+                ] = await Promise.all([
+                    getPendingAppointments(),
+                    getCompletedAppointments(),
+                    getMedicalRecordPets()
+                ]);
+
+                setPendingAppointments(pendingData ?? []);
+                setCompletedAppointments(completedData ?? []);
+                setPatients(patientsData ?? []);
+            }
+            catch (error) {
+                console.error("Error al cargar inicio veterinario:", error);
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+
+        loadDashboard();
+    }, []);
+
+    const appointmentsToday =
+        pendingAppointments.filter((appointment) =>
+            isToday(appointment.dateTime)
+        ).length;
+
+    return (
+        <>
+            <section className="dashboard-cards">
+                <StatCard
+                    title="Turnos hoy"
+                    value={loading ? "..." : appointmentsToday}
+                    color="#7FB3D5"
+                    icon={<CalendarDays />}
+                />
+
+                <StatCard
+                    title="Pendientes"
+                    value={loading ? "..." : pendingAppointments.length}
+                    color="#E8B86D"
+                    icon={<ClipboardList />}
+                />
+
+                <StatCard
+                    title="Atendidos"
+                    value={loading ? "..." : completedAppointments.length}
+                    color="#A3C1AD"
+                    icon={<Stethoscope />}
+                />
+
+                <StatCard
+                    title="Pacientes"
+                    value={loading ? "..." : patients.length}
+                    color="#8E7CC3"
+                    icon={<PawPrint />}
+                />
+            </section>
+
+            <section className="dashboard-grid">
+                <AppointmentPreview
+                    title="Próximas atenciones"
+                    appointments={getUpcomingAppointments(
+                        pendingAppointments,
+                        4
+                    )}
+                    emptyText="No hay atenciones pendientes."
+                />
+
+                <DashboardActions
+                    actions={[
+                        {
+                            title: "Turnos",
+                            path: "/appointments",
+                            icon: <CalendarDays size={22} />
+                        },
+                        {
+                            title: "Historial médico",
+                            path: "/medical-records",
+                            icon: <FileText size={22} />
+                        }
+                    ]}
+                />
+            </section>
+        </>
+    );
+}
+
+function ReceptionDashboard() {
+    return (
+        <>
+            <section className="dashboard-cards">
+                <StatCard
+                    title="Agenda del día"
+                    value="--"
+                    color="#7FB3D5"
+                    icon={<CalendarDays />}
+                />
+
+                <StatCard
+                    title="Turnos a gestionar"
+                    value="--"
+                    color="#E8B86D"
+                    icon={<ClipboardList />}
+                />
+
+                <StatCard
+                    title="Cambios"
+                    value="--"
+                    color="#A3C1AD"
+                    icon={<UserCheck />}
+                />
+
+                <StatCard
+                    title="Cancelaciones"
+                    value="--"
+                    color="#E57373"
+                    icon={<UserX />}
+                />
+            </section>
+
+            <section className="dashboard-grid">
+                <Panel>
+                    <div className="dashboard-panel-header">
+                        <div>
+                            <h3>Gestión de turnos</h3>
+                            <p>Vista operativa de recepción</p>
+                        </div>
                     </div>
 
-                    <div className="actions-section">
+                    <p className="dashboard-empty">
+                        Todavía falta conectar la agenda general para
+                        recepción.
+                    </p>
+                </Panel>
 
-                        <QuickActions />
+                <DashboardActions
+                    actions={[
+                        {
+                            title: "Turnos",
+                            path: "/appointments",
+                            icon: <CalendarDays size={22} />
+                        },
+                        {
+                            title: "Perfil",
+                            path: "/profile",
+                            icon: <UserCheck size={22} />
+                        }
+                    ]}
+                />
+            </section>
+        </>
+    );
+}
 
+function AdminDashboard() {
+    const [users, setUsers] = useState([]);
+    const [vaccines, setVaccines] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadDashboard = async () => {
+            try {
+                const [
+                    usersData,
+                    vaccinesData
+                ] = await Promise.all([
+                    getUsers(),
+                    getVaccines()
+                ]);
+
+                setUsers(usersData ?? []);
+                setVaccines(vaccinesData ?? []);
+            }
+            catch (error) {
+                console.error("Error al cargar inicio admin:", error);
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+
+        loadDashboard();
+    }, []);
+
+    const activeUsers =
+        users.filter((user) => user.active).length;
+    const inactiveUsers = users.length - activeUsers;
+    const lowStockVaccines =
+        vaccines.filter((vaccine) => vaccine.stock <= 2);
+
+    return (
+        <>
+            <section className="dashboard-cards">
+                <StatCard
+                    title="Usuarios"
+                    value={loading ? "..." : users.length}
+                    color="#A3C1AD"
+                    icon={<Users />}
+                />
+
+                <StatCard
+                    title="Activos"
+                    value={loading ? "..." : activeUsers}
+                    color="#7FB3D5"
+                    icon={<UserCheck />}
+                />
+
+                <StatCard
+                    title="Inactivos"
+                    value={loading ? "..." : inactiveUsers}
+                    color="#E57373"
+                    icon={<UserX />}
+                />
+
+                <StatCard
+                    title="Stock bajo"
+                    value={loading ? "..." : lowStockVaccines.length}
+                    color="#E8B86D"
+                    icon={<Syringe />}
+                />
+            </section>
+
+            <section className="dashboard-grid">
+                <Panel>
+                    <div className="dashboard-panel-header">
+                        <div>
+                            <h3>Vacunas con stock bajo</h3>
+                            <p>{lowStockVaccines.length} alerta(s)</p>
+                        </div>
                     </div>
 
+                    {lowStockVaccines.length === 0 ? (
+                        <p className="dashboard-empty">
+                            No hay vacunas con stock bajo.
+                        </p>
+                    ) : (
+                        <div className="dashboard-preview-list">
+                            {lowStockVaccines.slice(0, 4).map((vaccine) => (
+                                <article
+                                    key={vaccine.vaccineId}
+                                    className="dashboard-preview-row"
+                                >
+                                    <div className="dashboard-preview-icon">
+                                        <Syringe size={18} />
+                                    </div>
+
+                                    <div>
+                                        <strong>{vaccine.name}</strong>
+                                        <span>Stock actual: {vaccine.stock}</span>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    )}
+                </Panel>
+
+                <DashboardActions
+                    actions={[
+                        {
+                            title: "Usuarios",
+                            path: "/users",
+                            icon: <ShieldCheck size={22} />
+                        },
+                        {
+                            title: "Perfil",
+                            path: "/profile",
+                            icon: <UserCheck size={22} />
+                        }
+                    ]}
+                />
+            </section>
+        </>
+    );
+}
+
+function FallbackDashboard() {
+    return (
+        <Panel>
+            <div className="dashboard-panel-header">
+                <div>
+                    <h3>Inicio</h3>
+                    <p>Tu veterinaria digital</p>
                 </div>
-
-                <div className="pets-section">
-
-                    <RecentPets />
-
-                </div>
-
             </div>
 
-        </Layout>
-
+            <p className="dashboard-empty">
+                No se pudo identificar el rol del usuario.
+            </p>
+        </Panel>
     );
+}
 
+function Dashboard() {
+    const role = getUserRole();
+
+    const contentByRole = {
+        Owner: <OwnerDashboard />,
+        Veterinarian: <VeterinarianDashboard />,
+        Reception: <ReceptionDashboard />,
+        Admin: <AdminDashboard />
+    };
+
+    return (
+        <Layout>
+            <div className="dashboard">
+                {contentByRole[role] ?? <FallbackDashboard />}
+            </div>
+        </Layout>
+    );
 }
 
 export default Dashboard;
