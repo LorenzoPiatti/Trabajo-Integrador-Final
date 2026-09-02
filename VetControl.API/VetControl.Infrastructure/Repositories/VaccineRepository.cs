@@ -31,6 +31,39 @@ public class VaccineRepository : IVaccineRepository
                 v.VaccineId == vaccineId);
     }
 
+    public async Task<int> CountAdministeredByVaccineAsync(
+        int vaccineId)
+    {
+        return await _context.AdministeredVaccines
+            .CountAsync(av =>
+                av.VaccineId == vaccineId);
+    }
+
+    public async Task AddVaccineAsync(
+        Vaccine vaccine)
+    {
+        await _context.Vaccines.AddAsync(
+            vaccine);
+    }
+
+    public Task UpdateVaccineAsync(
+        Vaccine vaccine)
+    {
+        _context.Vaccines.Update(
+            vaccine);
+
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteVaccineAsync(
+        Vaccine vaccine)
+    {
+        _context.Vaccines.Remove(
+            vaccine);
+
+        return Task.CompletedTask;
+    }
+
     public async Task<List<AdministeredVaccine>> GetAdministeredByOwnerAsync(
         int ownerId)
     {

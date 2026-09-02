@@ -98,6 +98,27 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [HttpGet("reception")]
+    [Authorize(Roles = "Reception")]
+    public async Task<IActionResult> GetReceptionAppointments()
+    {
+        try
+        {
+            var appointments =
+                await _appointmentService
+                    .GetAllForReceptionAsync();
+
+            return Ok(appointments);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
+
 
     [HttpGet("{id}")]
     [Authorize(Roles = "Owner")]
@@ -124,6 +145,56 @@ public class AppointmentController : ControllerBase
             }
 
             return Ok(appointment);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpPut("reception/{id:int}")]
+    [Authorize(Roles = "Reception")]
+    public async Task<IActionResult> UpdateByReception(
+        int id,
+        UpdateAppointmentDto dto)
+    {
+        try
+        {
+            await _appointmentService.UpdateByReceptionAsync(
+                id,
+                dto);
+
+            return Ok(new
+            {
+                message = "Turno actualizado correctamente."
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpDelete("reception/{id:int}")]
+    [Authorize(Roles = "Reception")]
+    public async Task<IActionResult> CancelByReception(
+        int id)
+    {
+        try
+        {
+            await _appointmentService.CancelByReceptionAsync(
+                id);
+
+            return Ok(new
+            {
+                message = "Turno cancelado correctamente."
+            });
         }
         catch (Exception ex)
         {

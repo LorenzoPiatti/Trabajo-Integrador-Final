@@ -21,7 +21,8 @@ import StatCard from "../../../components/ui/StatCard";
 import {
     getAppointments,
     getCompletedAppointments,
-    getPendingAppointments
+    getPendingAppointments,
+    getReceptionAppointments
 } from "../../../services/appointmentService";
 import { getMedicalRecordPets } from "../../../services/medicalRecordService";
 import { getPets } from "../../../services/petService";
@@ -55,6 +56,15 @@ const isCancelled = (status) => {
     );
 };
 
+const isConfirmed = (status) => {
+    const normalizedStatus = status?.toLowerCase();
+
+    return (
+        normalizedStatus === "confirmed" ||
+        normalizedStatus === "confirmado"
+    );
+};
+
 const isVaccineDue = (nextDueDate) => {
     const dueDate = new Date(nextDueDate);
     dueDate.setHours(0, 0, 0, 0);
@@ -64,6 +74,8 @@ const isVaccineDue = (nextDueDate) => {
 
     return dueDate <= today;
 };
+
+const LOW_STOCK_LIMIT = 5;
 
 const getUpcomingAppointments = (appointments, limit = 3) => {
     return appointments
@@ -81,6 +93,13 @@ const formatAppointmentDate = (date) => {
     return new Intl.DateTimeFormat("es-AR", {
         day: "2-digit",
         month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+    }).format(new Date(date));
+};
+
+const formatAppointmentTime = (date) => {
+    return new Intl.DateTimeFormat("es-AR", {
         hour: "2-digit",
         minute: "2-digit"
     }).format(new Date(date));
@@ -114,7 +133,8 @@ function AppointmentPreview({
     title,
     appointments,
     emptyText,
-    actionPath = "/appointments"
+    actionPath = "/appointments",
+    showOwner = false
 }) {
     const navigate = useNavigate();
 
@@ -149,7 +169,13 @@ function AppointmentPreview({
 
                             <div>
                                 <strong>{appointment.petName}</strong>
-                                <span>{appointment.reason}</span>
+                                <span>
+                                    {
+                                        showOwner && appointment.ownerName
+                                            ? `${appointment.ownerName} · ${appointment.reason || "Sin motivo"}`
+                                            : appointment.reason
+                                    }
+                                </span>
                             </div>
 
                             <small>
@@ -433,52 +459,118 @@ function VeterinarianDashboard() {
 }
 
 function ReceptionDashboard() {
+    const [appointments, setAppointments] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadDashboard = async () => {
+            try {
+                const appointmentsData =
+                    await getReceptionAppointments();
+
+                setAppointments(appointmentsData ?? []);
+            }
+            catch (error) {
+                console.error("Error al cargar inicio recepción:", error);
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+
+        loadDashboard();
+    }, []);
+
+    const confirmedTodayAppointments =
+        useMemo(
+            () => appointments
+                .filter((appointment) =>
+                    isToday(appointment.dateTime) &&
+                    isConfirmed(appointment.status)
+                )
+                .sort((a, b) =>
+                    new Date(a.dateTime) - new Date(b.dateTime)
+                ),
+            [appointments]
+        );
+
+    const upcomingTodayAppointments =
+        confirmedTodayAppointments.filter((appointment) =>
+            new Date(appointment.dateTime) >= new Date()
+        );
+
+    const nextAppointment =
+        upcomingTodayAppointments[0];
+
+    const veterinarianCount =
+        new Set(
+            confirmedTodayAppointments
+                .map((appointment) =>
+                    appointment.veterinarianId ??
+                    appointment.veterinarianName
+                )
+                .filter(Boolean)
+        ).size;
+
     return (
         <>
             <section className="dashboard-cards">
                 <StatCard
-                    title="Agenda del día"
-                    value="--"
+                    title="Confirmados hoy"
+                    value={
+                        loading
+                            ? "..."
+                            : confirmedTodayAppointments.length
+                    }
                     color="#7FB3D5"
                     icon={<CalendarDays />}
                 />
 
                 <StatCard
-                    title="Turnos a gestionar"
-                    value="--"
+                    title="Por atender"
+                    value={
+                        loading
+                            ? "..."
+                            : upcomingTodayAppointments.length
+                    }
                     color="#E8B86D"
                     icon={<ClipboardList />}
                 />
 
                 <StatCard
-                    title="Cambios"
-                    value="--"
+                    title="Próximo turno"
+                    value={
+                        loading
+                            ? "..."
+                            : nextAppointment
+                                ? formatAppointmentTime(
+                                    nextAppointment.dateTime
+                                )
+                                : "--"
+                    }
                     color="#A3C1AD"
                     icon={<UserCheck />}
                 />
 
                 <StatCard
-                    title="Cancelaciones"
-                    value="--"
+                    title="Veterinarios"
+                    value={
+                        loading
+                            ? "..."
+                            : veterinarianCount
+                    }
                     color="#E57373"
                     icon={<UserX />}
                 />
             </section>
 
             <section className="dashboard-grid">
-                <Panel>
-                    <div className="dashboard-panel-header">
-                        <div>
-                            <h3>Gestión de turnos</h3>
-                            <p>Vista operativa de recepción</p>
-                        </div>
-                    </div>
-
-                    <p className="dashboard-empty">
-                        Todavía falta conectar la agenda general para
-                        recepción.
-                    </p>
-                </Panel>
+                <AppointmentPreview
+                    title="Turnos confirmados de hoy"
+                    appointments={confirmedTodayAppointments}
+                    emptyText="No hay turnos confirmados para hoy."
+                    showOwner
+                />
 
                 <DashboardActions
                     actions={[
@@ -533,7 +625,9 @@ function AdminDashboard() {
         users.filter((user) => user.active).length;
     const inactiveUsers = users.length - activeUsers;
     const lowStockVaccines =
-        vaccines.filter((vaccine) => vaccine.stock <= 2);
+        vaccines.filter((vaccine) =>
+            vaccine.stock <= LOW_STOCK_LIMIT
+        );
 
     return (
         <>

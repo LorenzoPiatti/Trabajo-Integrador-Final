@@ -38,6 +38,78 @@ public class VaccinesController : ControllerBase
         }
     }
 
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> CreateVaccine(
+        CreateVaccineRequestDto dto)
+    {
+        try
+        {
+            var vaccine =
+                await _vaccineService.CreateVaccineAsync(
+                    dto);
+
+            return Ok(vaccine);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateVaccine(
+        int id,
+        UpdateVaccineRequestDto dto)
+    {
+        try
+        {
+            await _vaccineService.UpdateVaccineAsync(
+                id,
+                dto);
+
+            return Ok(new
+            {
+                message = "Vacuna actualizada correctamente."
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteVaccine(
+        int id)
+    {
+        try
+        {
+            await _vaccineService.DeleteVaccineAsync(
+                id);
+
+            return Ok(new
+            {
+                message = "Vacuna eliminada correctamente."
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
+
     [HttpGet("my")]
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> GetMyVaccines()

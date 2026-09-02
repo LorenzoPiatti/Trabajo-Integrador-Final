@@ -12,6 +12,9 @@ public interface IAppointmentRepository
 
     Task<List<Appointment>> GetByOwnerAsync(
         int ownerId);
+
+    Task<List<Appointment>> GetAllForReceptionAsync();
+
     Task<List<Appointment>> GetCompletedByVeterinarianAsync(
     int veterinarianId);
 

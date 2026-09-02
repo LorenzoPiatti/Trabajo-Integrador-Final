@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, Clock3, Plus, Stethoscope } from "lucide-react";
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
-import { createAppointment, deleteAppointment, getAppointments, getCompletedAppointments, getPendingAppointments, updateAppointment } from "../../../services/appointmentService";
+import { createAppointment, deleteAppointment, deleteReceptionAppointment, getAppointments, getCompletedAppointments, getPendingAppointments, getReceptionAppointments, updateAppointment, updateReceptionAppointment } from "../../../services/appointmentService";
 import { getPets } from "../../../services/petService";
 import { getVeterinarians } from "../../../services/userService";
 import AppointmentCard from "../components/AppointmentCard";
 import AppointmentForm from "../components/AppointmentForm";
 import MedicalRecordList from "../../medical-records/components/MedicalRecordList";
 import MedicalRecordForm from "../../medical-records/components/MedicalRecordForm";
-import { isOwner, isVeterinarian } from "../../../utils/authUtils";
+import { isOwner, isReception, isVeterinarian } from "../../../utils/authUtils";
 
 import "../styles/Appointments.css";
 import "../../medical-records/styles/MedicalRecords.css";
@@ -22,6 +22,7 @@ function AppointmentsPage() {
 
     const owner = isOwner();
     const veterinarian = isVeterinarian();
+    const reception = isReception();
 
     const [appointments, setAppointments] = useState([]);
     const [pendingAppointments, setPendingAppointments] = useState([]);
@@ -31,6 +32,8 @@ function AppointmentsPage() {
 
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [selectedMedicalAppointment, setSelectedMedicalAppointment] = useState(null);
+    const [receptionDateFilter, setReceptionDateFilter] = useState("");
+    const [receptionStatusFilter, setReceptionStatusFilter] = useState("");
 
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(Boolean(token));
@@ -78,6 +81,20 @@ function AppointmentsPage() {
                 setAppointments(completedData ?? []);
             }
 
+            if (reception) {
+
+                const [
+                    appointmentsData,
+                    veterinariansData
+                ] = await Promise.all([
+                    getReceptionAppointments(),
+                    getVeterinarians()
+                ]);
+
+                setAppointments(appointmentsData ?? []);
+                setVeterinarians(veterinariansData ?? []);
+            }
+
         } catch (err) {
 
             setError(err.message);
@@ -87,7 +104,7 @@ function AppointmentsPage() {
             setInitialLoading(false);
         }
 
-    }, [owner, veterinarian]);
+    }, [owner, veterinarian, reception]);
 
     useEffect(() => {
 
@@ -123,10 +140,20 @@ function AppointmentsPage() {
 
             if (selectedAppointment) {
 
-                await updateAppointment(
-                    selectedAppointment.appointmentId,
-                    formData
-                );
+                if (reception) {
+
+                    await updateReceptionAppointment(
+                        selectedAppointment.appointmentId,
+                        formData
+                    );
+
+                } else {
+
+                    await updateAppointment(
+                        selectedAppointment.appointmentId,
+                        formData
+                    );
+                }
 
                 setSuccess(
                     "Turno actualizado correctamente."
@@ -169,7 +196,14 @@ function AppointmentsPage() {
 
         try {
 
-            await deleteAppointment(id);
+            if (reception) {
+
+                await deleteReceptionAppointment(id);
+
+            } else {
+
+                await deleteAppointment(id);
+            }
 
             setSuccess(
                 "Turno cancelado correctamente."
@@ -199,6 +233,47 @@ function AppointmentsPage() {
 
         await loadData();
     };
+
+    const visibleReceptionAppointments = useMemo(() => {
+        return appointments.filter(appointment => {
+            const matchesDate =
+                !receptionDateFilter ||
+                appointment.dateTime.substring(0, 10) === receptionDateFilter;
+
+            const matchesStatus =
+                !receptionStatusFilter ||
+                appointment.status === receptionStatusFilter;
+
+            return matchesDate && matchesStatus;
+        });
+    }, [
+        appointments,
+        receptionDateFilter,
+        receptionStatusFilter
+    ]);
+
+    const totalAppointments =
+        veterinarian
+            ? pendingAppointments.length + appointments.length
+            : appointments.length;
+
+    const confirmedAppointments =
+        appointments.filter(a => a.status === "Confirmed").length;
+
+    const completedAppointments =
+        appointments.filter(a => a.status === "Completed").length;
+
+    const cancelledAppointments =
+        appointments.filter(a => a.status === "Cancelled").length;
+
+    const selectedReceptionPet = selectedAppointment
+        ? [
+            {
+                petId: selectedAppointment.petId,
+                name: selectedAppointment.petName
+            }
+        ]
+        : [];
 
     if (!token) {
 
@@ -238,7 +313,9 @@ function AppointmentsPage() {
             subtitle={
                 owner
                     ? "Gestioná los turnos de tus mascotas"
-                    : "Consultá tus turnos y registrá las atenciones médicas"
+                    : veterinarian
+                        ? "Consultá tus turnos y registrá las atenciones médicas"
+                        : "Gestioná la agenda general de turnos"
             }
         >
 
@@ -248,11 +325,7 @@ function AppointmentsPage() {
 
                     <StatCard
                         title="Turnos"
-                        value={
-                            veterinarian
-                                ? pendingAppointments.length + appointments.length
-                                : appointments.length
-                        }
+                        value={totalAppointments}
                         color="#A3C1AD"
                         icon={<CalendarDays />}
                     />
@@ -261,25 +334,31 @@ function AppointmentsPage() {
                         title={
                             owner
                                 ? "Próximos"
-                                : "Pendientes"
+                                : reception
+                                    ? "Confirmados"
+                                    : "Pendientes"
                         }
                         value={
                             owner
-                                ? appointments.filter(
-                                    a => a.status === "Confirmed"
-                                ).length
-                                : pendingAppointments.length
+                                ? confirmedAppointments
+                                : reception
+                                    ? confirmedAppointments
+                                    : pendingAppointments.length
                         }
                         color="#7FB3D5"
                         icon={<Clock3 />}
                     />
 
                     <StatCard
-                        title="Atendidos"
+                        title={
+                            reception
+                                ? "Cancelados"
+                                : "Atendidos"
+                        }
                         value={
-                            appointments.filter(
-                                a => a.status === "Completed"
-                            ).length
+                            reception
+                                ? cancelledAppointments
+                                : completedAppointments
                         }
                         color="#A3C1AD"
                         icon={<Stethoscope />}
@@ -297,6 +376,162 @@ function AppointmentsPage() {
                         }
                     >
                         {error || success}
+                    </section>
+                )}
+
+                {reception && (
+
+                    <section className="appointments-content-grid">
+
+                        <Panel className="appointments-list-panel">
+
+                            <div className="appointments-panel-header appointments-panel-header--filters">
+
+                                <div>
+
+                                    <h2>
+                                        Agenda general
+                                    </h2>
+
+                                    <p>
+                                        {visibleReceptionAppointments.length} de {appointments.length} turno(s)
+                                    </p>
+
+                                </div>
+
+                                <div className="appointments-filters">
+
+                                    <label>
+                                        Fecha
+
+                                        <input
+                                            type="date"
+                                            value={receptionDateFilter}
+                                            onChange={(e) =>
+                                                setReceptionDateFilter(e.target.value)
+                                            }
+                                        />
+
+                                    </label>
+
+                                    <label>
+                                        Estado
+
+                                        <select
+                                            value={receptionStatusFilter}
+                                            onChange={(e) =>
+                                                setReceptionStatusFilter(e.target.value)
+                                            }
+                                        >
+
+                                            <option value="">
+                                                Todos
+                                            </option>
+
+                                            <option value="Confirmed">
+                                                Confirmados
+                                            </option>
+
+                                            <option value="Completed">
+                                                Atendidos
+                                            </option>
+
+                                            <option value="Cancelled">
+                                                Cancelados
+                                            </option>
+
+                                        </select>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            {
+                                initialLoading
+
+                                    ? (
+                                        <p>
+                                            Cargando agenda...
+                                        </p>
+                                    )
+
+                                    : visibleReceptionAppointments.length === 0
+
+                                        ? (
+                                            <p>
+                                                No hay turnos para los filtros seleccionados.
+                                            </p>
+                                        )
+
+                                        : (
+
+                                            <div className="appointments-record-list">
+
+                                                {visibleReceptionAppointments.map(appointment => (
+
+                                                    <AppointmentCard
+                                                        key={appointment.appointmentId}
+                                                        appointment={appointment}
+                                                        owner={false}
+                                                        canManage
+                                                        showOwner
+                                                        onEdit={() => {
+
+                                                            setSelectedAppointment(
+                                                                appointment
+                                                            );
+
+                                                            scrollToForm();
+                                                        }}
+                                                        onDelete={handleDelete}
+                                                    />
+
+                                                ))}
+
+                                            </div>
+                                        )
+                            }
+
+                        </Panel>
+
+                        {selectedAppointment ? (
+
+                            <AppointmentForm
+                                ref={formRef}
+                                selectedAppointment={selectedAppointment}
+                                pets={selectedReceptionPet}
+                                veterinarians={veterinarians}
+                                loading={loading}
+                                title="Reprogramar turno"
+                                subtitle="Modificá fecha, horario, veterinario o motivo"
+                                disablePetSelection
+                                onSubmit={handleSubmit}
+                                onCancelEdit={() =>
+                                    setSelectedAppointment(null)
+                                }
+                            />
+
+                        ) : (
+
+                            <Panel className="appointment-form-panel appointments-selection-panel">
+
+                                <div className="appointments-selection-icon">
+                                    <CalendarDays size={24} />
+                                </div>
+
+                                <h2>
+                                    Seleccioná un turno
+                                </h2>
+
+                                <p>
+                                    Desde la agenda podés reprogramar o cancelar turnos confirmados.
+                                </p>
+
+                            </Panel>
+                        )}
+
                     </section>
                 )}
 

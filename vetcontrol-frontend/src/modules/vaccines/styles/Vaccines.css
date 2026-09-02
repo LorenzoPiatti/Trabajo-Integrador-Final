@@ -21,6 +21,10 @@
     align-items: start;
 }
 
+.vaccines-content-grid--admin {
+    grid-template-columns: 2fr 1fr;
+}
+
 .vaccines-list-panel,
 .vaccine-form-panel {
     box-shadow: 0 6px 18px rgba(0,0,0,.05);
@@ -126,6 +130,11 @@
     color: #c44b43;
 }
 
+.vaccine-status--warning {
+    background: #fff7e6;
+    color: #b7791f;
+}
+
 .vaccine-details {
     display: flex;
     align-items: center;
@@ -218,6 +227,12 @@
     color: #666;
     font-size: 14px;
     font-weight: 600;
+}
+
+.vaccine-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
 .vaccine-form input,
@@ -375,13 +390,15 @@
         grid-template-columns: 1fr;
     }
 
-    .vaccines-content-grid {
+    .vaccines-content-grid,
+    .vaccines-content-grid--admin {
         grid-template-columns: 1fr;
     }
 }
 
 @media(max-width: 700px) {
-    .vaccine-row-main {
+    .vaccine-row-main,
+    .vaccine-form-grid {
         grid-template-columns: 1fr;
     }
 

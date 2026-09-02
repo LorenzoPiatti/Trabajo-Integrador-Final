@@ -9,6 +9,18 @@ public interface IVaccineRepository
     Task<Vaccine?> GetVaccineByIdAsync(
         int vaccineId);
 
+    Task<int> CountAdministeredByVaccineAsync(
+        int vaccineId);
+
+    Task AddVaccineAsync(
+        Vaccine vaccine);
+
+    Task UpdateVaccineAsync(
+        Vaccine vaccine);
+
+    Task DeleteVaccineAsync(
+        Vaccine vaccine);
+
     Task<List<AdministeredVaccine>> GetAdministeredByOwnerAsync(
         int ownerId);
 

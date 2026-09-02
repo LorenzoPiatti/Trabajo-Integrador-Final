@@ -6,6 +6,16 @@ public interface IVaccineService
 {
     Task<List<VaccineResponseDto>> GetVaccinesAsync();
 
+    Task<VaccineResponseDto> CreateVaccineAsync(
+        CreateVaccineRequestDto dto);
+
+    Task UpdateVaccineAsync(
+        int vaccineId,
+        UpdateVaccineRequestDto dto);
+
+    Task DeleteVaccineAsync(
+        int vaccineId);
+
     Task<List<AdministeredVaccineResponseDto>> GetMyVaccinesAsync(
         int userId);
 

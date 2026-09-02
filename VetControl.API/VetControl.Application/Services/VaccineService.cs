@@ -34,6 +34,93 @@ public class VaccineService : IVaccineService
             .ToList();
     }
 
+    public async Task<VaccineResponseDto> CreateVaccineAsync(
+        CreateVaccineRequestDto dto)
+    {
+        ValidateVaccineData(
+            dto.Name,
+            dto.FrequencyMonths,
+            dto.Stock);
+
+        var vaccine = new Vaccine
+        {
+            Name = dto.Name.Trim(),
+            Description = NormalizeObservations(
+                dto.Description),
+            FrequencyMonths = dto.FrequencyMonths,
+            Stock = dto.Stock
+        };
+
+        await _vaccineRepository.AddVaccineAsync(
+            vaccine);
+
+        await _vaccineRepository.SaveChangesAsync();
+
+        return MapToVaccineResponseDto(
+            vaccine);
+    }
+
+    public async Task UpdateVaccineAsync(
+        int vaccineId,
+        UpdateVaccineRequestDto dto)
+    {
+        ValidateVaccineData(
+            dto.Name,
+            dto.FrequencyMonths,
+            dto.Stock);
+
+        var vaccine =
+            await _vaccineRepository
+                .GetVaccineByIdAsync(vaccineId);
+
+        if (vaccine is null)
+        {
+            throw new Exception(
+                "La vacuna no existe.");
+        }
+
+        vaccine.Name = dto.Name.Trim();
+        vaccine.Description =
+            NormalizeObservations(dto.Description);
+        vaccine.FrequencyMonths = dto.FrequencyMonths;
+        vaccine.Stock = dto.Stock;
+
+        await _vaccineRepository.UpdateVaccineAsync(
+            vaccine);
+
+        await _vaccineRepository.SaveChangesAsync();
+    }
+
+    public async Task DeleteVaccineAsync(
+        int vaccineId)
+    {
+        var vaccine =
+            await _vaccineRepository
+                .GetVaccineByIdAsync(vaccineId);
+
+        if (vaccine is null)
+        {
+            throw new Exception(
+                "La vacuna no existe.");
+        }
+
+        var administeredCount =
+            await _vaccineRepository
+                .CountAdministeredByVaccineAsync(
+                    vaccineId);
+
+        if (administeredCount > 0)
+        {
+            throw new Exception(
+                "No se puede eliminar una vacuna con aplicaciones registradas. Puede dejar el stock en 0.");
+        }
+
+        await _vaccineRepository.DeleteVaccineAsync(
+            vaccine);
+
+        await _vaccineRepository.SaveChangesAsync();
+    }
+
     public async Task<List<AdministeredVaccineResponseDto>> GetMyVaccinesAsync(
         int userId)
     {
@@ -345,6 +432,30 @@ public class VaccineService : IVaccineService
         return string.IsNullOrWhiteSpace(observations)
             ? null
             : observations.Trim();
+    }
+
+    private static void ValidateVaccineData(
+        string name,
+        int frequencyMonths,
+        int stock)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new Exception(
+                "El nombre de la vacuna es obligatorio.");
+        }
+
+        if (frequencyMonths <= 0)
+        {
+            throw new Exception(
+                "La frecuencia debe ser mayor a 0.");
+        }
+
+        if (stock < 0)
+        {
+            throw new Exception(
+                "El stock no puede ser negativo.");
+        }
     }
 
     private static VaccineResponseDto MapToVaccineResponseDto(

@@ -8,6 +8,12 @@ public class AppointmentResponseDto
 
     public string PetName { get; set; } = string.Empty;
 
+    public int OwnerId { get; set; }
+
+    public string OwnerName { get; set; } = string.Empty;
+
+    public string OwnerEmail { get; set; } = string.Empty;
+
     public int VeterinarianId { get; set; }
 
     public string VeterinarianName { get; set; } = string.Empty;

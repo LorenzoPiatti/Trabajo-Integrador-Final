@@ -20,6 +20,8 @@ public class AppointmentRepository : IAppointmentRepository
     {
         return await _context.Appointments
             .Include(a => a.Pet)
+                .ThenInclude(p => p.Owner)
+                    .ThenInclude(o => o.User)
             .Include(a => a.Veterinarian)
             .FirstOrDefaultAsync(a =>
                 a.AppointmentId == appointmentId);
@@ -43,6 +45,8 @@ public class AppointmentRepository : IAppointmentRepository
     {
         return await _context.Appointments
             .Include(a => a.Pet)
+                .ThenInclude(p => p.Owner)
+                    .ThenInclude(o => o.User)
             .Include(a => a.Veterinarian)
             .Include(a => a.MedicalRecord)
             .Where(a =>
@@ -57,9 +61,22 @@ public class AppointmentRepository : IAppointmentRepository
     {
         return await _context.Appointments
             .Include(a => a.Pet)
+                .ThenInclude(p => p.Owner)
+                    .ThenInclude(o => o.User)
             .Include(a => a.Veterinarian)
             .Where(a =>
                 a.Pet.OwnerId == ownerId)
+            .OrderByDescending(a => a.DateTime)
+            .ToListAsync();
+    }
+
+    public async Task<List<Appointment>> GetAllForReceptionAsync()
+    {
+        return await _context.Appointments
+            .Include(a => a.Pet)
+                .ThenInclude(p => p.Owner)
+                    .ThenInclude(o => o.User)
+            .Include(a => a.Veterinarian)
             .OrderByDescending(a => a.DateTime)
             .ToListAsync();
     }
@@ -69,6 +86,8 @@ public class AppointmentRepository : IAppointmentRepository
     {
         return await _context.Appointments
             .Include(a => a.Pet)
+                .ThenInclude(p => p.Owner)
+                    .ThenInclude(o => o.User)
             .Include(a => a.Veterinarian)
             .Where(a =>
                 a.VeterinarianId == veterinarianId &&

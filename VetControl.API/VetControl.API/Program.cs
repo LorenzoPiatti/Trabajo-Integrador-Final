@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using VetControl.Application.Interfaces;
 using VetControl.Application.Services;
+using VetControl.Domain.Entities;
+using VetControl.Domain.Enums;
 using VetControl.Infrastructure.Data;
 using VetControl.Infrastructure.Repositories;
 using VetControl.Infrastructure.Services;
@@ -251,6 +253,10 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+await SeedInitialAdminAsync(
+    app.Services,
+    app.Configuration);
+
 
 // Swagger se habilita solamente durante el desarrollo.
 if (app.Environment.IsDevelopment())
@@ -281,3 +287,72 @@ app.MapControllers();
 
 // Inicia la aplicación.
 app.Run();
+
+static async Task SeedInitialAdminAsync(
+    IServiceProvider services,
+    IConfiguration configuration)
+{
+    var enabled = string.Equals(
+        configuration["SeedAdmin:Enabled"],
+        "true",
+        StringComparison.OrdinalIgnoreCase);
+
+    var email =
+        configuration["SeedAdmin:Email"]?.Trim();
+
+    var password =
+        configuration["SeedAdmin:Password"]?.Trim();
+
+    if (!enabled ||
+        string.IsNullOrWhiteSpace(email) ||
+        string.IsNullOrWhiteSpace(password))
+    {
+        return;
+    }
+
+    var name =
+        configuration["SeedAdmin:Name"]?.Trim();
+
+    using var scope = services.CreateScope();
+
+    var dbContext =
+        scope.ServiceProvider
+            .GetRequiredService<VetControlDbContext>();
+
+    var normalizedEmail =
+        email.ToLowerInvariant();
+
+    var user =
+        await dbContext.Users
+            .FirstOrDefaultAsync(u =>
+                u.Email.ToLower() == normalizedEmail);
+
+    if (user is null)
+    {
+        await dbContext.Users.AddAsync(
+            new User
+            {
+                Name = string.IsNullOrWhiteSpace(name)
+                    ? "Administrador"
+                    : name,
+                Email = email,
+                Password = password,
+                Role = UserRole.Admin,
+                Active = true,
+                EmailVerified = true
+            });
+    }
+    else
+    {
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            user.Name = name;
+        }
+
+        user.Role = UserRole.Admin;
+        user.Active = true;
+        user.EmailVerified = true;
+    }
+
+    await dbContext.SaveChangesAsync();
+}

@@ -39,7 +39,7 @@ const navItems = [
         to: "/vaccines",
         icon: <Syringe size={20} />,
         label: "Vacunas",
-        roles: ["Owner"]
+        roles: ["Owner", "Admin"]
     },
     {
         to: "/medical-records",
