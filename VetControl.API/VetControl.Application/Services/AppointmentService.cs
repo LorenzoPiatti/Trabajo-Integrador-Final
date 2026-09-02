@@ -182,6 +182,20 @@ public class AppointmentService : IAppointmentService
             .ToList();
     }
 
+    public async Task<List<AppointmentResponseDto>> GetAllForReceptionAsync()
+    {
+        var appointments =
+            await _appointmentRepository
+                .GetAllForReceptionAsync();
+
+        return appointments
+            .Select(a => MapToResponseDto(
+                a,
+                a.Pet,
+                a.Veterinarian))
+            .ToList();
+    }
+
     public async Task<AppointmentResponseDto?> GetByIdAsync(
         int appointmentId,
         int userId)
@@ -305,6 +319,128 @@ public class AppointmentService : IAppointmentService
         appointment.VeterinarianId = dto.VeterinarianId;
         appointment.DateTime = dto.DateTime;
         appointment.Reason = dto.Reason;
+
+        await _appointmentRepository.UpdateAsync(
+            appointment);
+
+        await _appointmentRepository.SaveChangesAsync();
+    }
+
+    public async Task UpdateByReceptionAsync(
+        int appointmentId,
+        UpdateAppointmentDto dto)
+    {
+        var appointment =
+            await _appointmentRepository
+                .GetByIdAsync(appointmentId);
+
+        if (appointment is null)
+        {
+            throw new Exception(
+                "El turno no existe.");
+        }
+
+        if (appointment.Status == AppointmentStatus.Completed)
+        {
+            throw new Exception(
+                "No se puede modificar un turno ya atendido.");
+        }
+
+        if (appointment.Status == AppointmentStatus.Cancelled)
+        {
+            throw new Exception(
+                "No se puede modificar un turno cancelado.");
+        }
+
+        var pet =
+            await _petRepository
+                .GetByIdAsync(dto.PetId);
+
+        if (pet is null)
+        {
+            throw new Exception(
+                "La mascota no existe.");
+        }
+
+        var veterinarian =
+            await _userRepository
+                .GetByIdAsync(dto.VeterinarianId);
+
+        if (veterinarian is null)
+        {
+            throw new Exception(
+                "El veterinario no existe.");
+        }
+
+        if (veterinarian.Role != UserRole.Veterinarian)
+        {
+            throw new Exception(
+                "El usuario seleccionado no es un veterinario.");
+        }
+
+        if (!IsWithinBusinessHours(dto.DateTime))
+        {
+            throw new Exception(
+                "El horario seleccionado está fuera del horario de atención.");
+        }
+
+        var appointments =
+            await _appointmentRepository
+                .GetByVeterinarianAndDateAsync(
+                    dto.VeterinarianId,
+                    dto.DateTime.Date);
+
+        var isOccupied = appointments.Any(a =>
+            a.AppointmentId != appointmentId &&
+            a.DateTime == dto.DateTime &&
+            a.Status != AppointmentStatus.Cancelled);
+
+        if (isOccupied)
+        {
+            throw new Exception(
+                "El horario seleccionado no está disponible.");
+        }
+
+        appointment.PetId = dto.PetId;
+        appointment.VeterinarianId = dto.VeterinarianId;
+        appointment.DateTime = dto.DateTime;
+        appointment.Reason = dto.Reason;
+
+        await _appointmentRepository.UpdateAsync(
+            appointment);
+
+        await _appointmentRepository.SaveChangesAsync();
+    }
+
+    public async Task CancelByReceptionAsync(
+        int appointmentId)
+    {
+        var appointment =
+            await _appointmentRepository
+                .GetByIdAsync(appointmentId);
+
+        if (appointment is null)
+        {
+            throw new Exception(
+                "El turno no existe.");
+        }
+
+        if (appointment.Status ==
+            AppointmentStatus.Cancelled)
+        {
+            throw new Exception(
+                "El turno ya está cancelado.");
+        }
+
+        if (appointment.Status ==
+            AppointmentStatus.Completed)
+        {
+            throw new Exception(
+                "No se puede cancelar un turno ya atendido.");
+        }
+
+        appointment.Status =
+            AppointmentStatus.Cancelled;
 
         await _appointmentRepository.UpdateAsync(
             appointment);
@@ -454,11 +590,30 @@ public class AppointmentService : IAppointmentService
             AppointmentId = appointment.AppointmentId,
             PetId = appointment.PetId,
             PetName = pet.Name,
+            OwnerId = pet.OwnerId,
+            OwnerName = GetOwnerName(pet.Owner),
+            OwnerEmail = pet.Owner?.User?.Email ?? string.Empty,
             VeterinarianId = appointment.VeterinarianId,
             VeterinarianName = veterinarian.Name,
             DateTime = appointment.DateTime,
             Reason = appointment.Reason,
             Status = appointment.Status.ToString()
         };
+    }
+
+    private static string GetOwnerName(
+        Owner? owner)
+    {
+        if (owner is null)
+        {
+            return string.Empty;
+        }
+
+        if (!string.IsNullOrWhiteSpace(owner.User?.Name))
+        {
+            return owner.User.Name;
+        }
+
+        return $"{owner.FirstName} {owner.LastName}".Trim();
     }
 }

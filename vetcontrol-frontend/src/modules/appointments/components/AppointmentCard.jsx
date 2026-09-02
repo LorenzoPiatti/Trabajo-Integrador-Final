@@ -1,8 +1,16 @@
-import { CalendarDays, Clock3, Edit3, Stethoscope, Trash2 } from "lucide-react";
+import { CalendarDays, Clock3, Edit3, Stethoscope, Trash2, UserRound } from "lucide-react";
+
+const statusLabels = {
+    Confirmed: "Confirmado",
+    Completed: "Atendido",
+    Cancelled: "Cancelado"
+};
 
 function AppointmentCard({
     appointment,
     owner,
+    canManage = false,
+    showOwner = false,
     onEdit,
     onDelete
 }) {
@@ -25,8 +33,11 @@ function AppointmentCard({
     ).format(new Date(appointment.dateTime));
 
     const canEdit =
-        owner &&
-        appointment.status === "Confirmed";
+        appointment.status === "Confirmed" &&
+        (owner || canManage);
+
+    const statusClass =
+        appointment.status?.toLowerCase() ?? "confirmed";
 
     return (
 
@@ -46,8 +57,8 @@ function AppointmentCard({
                             {appointment.petName}
                         </h3>
 
-                        <span className="appointment-status">
-                            {appointment.status}
+                        <span className={`appointment-status appointment-status--${statusClass}`}>
+                            {statusLabels[appointment.status] ?? appointment.status}
                         </span>
 
                     </div>
@@ -58,6 +69,15 @@ function AppointmentCard({
                             <Stethoscope size={15} />
                             {appointment.veterinarianName}
                         </span>
+
+                        {showOwner && appointment.ownerName && (
+
+                            <span title={appointment.ownerEmail}>
+                                <UserRound size={15} />
+                                {appointment.ownerName}
+                            </span>
+
+                        )}
 
                         <span>
                             <CalendarDays size={15} />
@@ -87,7 +107,7 @@ function AppointmentCard({
 
                         <button
                             className="appointment-icon-button"
-                            onClick={() => onEdit(appointment)}
+                            onClick={() => onEdit?.(appointment)}
                             title="Editar turno"
                         >
                             <Edit3 size={18} />
@@ -96,7 +116,7 @@ function AppointmentCard({
                         <button
                             className="appointment-icon-button appointment-icon-button--danger"
                             onClick={() =>
-                                onDelete(
+                                onDelete?.(
                                     appointment.appointmentId
                                 )
                             }

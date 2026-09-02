@@ -53,6 +53,35 @@ export const getVaccines = async () => {
     return await handleResponse(response);
 };
 
+export const createVaccine = async (vaccine) => {
+    const response = await fetch(VACCINES_URL, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify(vaccine)
+    });
+
+    return await handleResponse(response);
+};
+
+export const updateVaccine = async (vaccineId, vaccine) => {
+    const response = await fetch(`${VACCINES_URL}/${vaccineId}`, {
+        method: "PUT",
+        headers: getHeaders(),
+        body: JSON.stringify(vaccine)
+    });
+
+    return await handleResponse(response);
+};
+
+export const deleteVaccine = async (vaccineId) => {
+    const response = await fetch(`${VACCINES_URL}/${vaccineId}`, {
+        method: "DELETE",
+        headers: getHeaders()
+    });
+
+    return await handleResponse(response);
+};
+
 export const getAdministeredVaccines = async () => {
     const response = await fetch(`${VACCINES_URL}/my`, {
         headers: getHeaders()

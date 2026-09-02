@@ -30,6 +30,10 @@ export const getAppointments = () => {
     return request(`${API_URL}/appointment/my`);
 };
 
+export const getReceptionAppointments = () => {
+    return request(`${API_URL}/appointment/reception`);
+};
+
 export const createAppointment = (appointment) => {
     return request(`${API_URL}/appointment`, {
         method: "POST",
@@ -44,8 +48,21 @@ export const updateAppointment = (id, appointment) => {
     });
 };
 
+export const updateReceptionAppointment = (id, appointment) => {
+    return request(`${API_URL}/appointment/reception/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(appointment)
+    });
+};
+
 export const deleteAppointment = (id) => {
     return request(`${API_URL}/appointment/${id}`, {
+        method: "DELETE"
+    });
+};
+
+export const deleteReceptionAppointment = (id) => {
+    return request(`${API_URL}/appointment/reception/${id}`, {
         method: "DELETE"
     });
 };

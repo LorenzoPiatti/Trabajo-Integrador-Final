@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertTriangle, CheckCircle2, Syringe } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Package, Plus, Syringe } from "lucide-react";
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
-import { getAdministeredVaccines } from "../../../services/vaccineService";
+import { createVaccine, deleteVaccine, getAdministeredVaccines, getVaccines, updateVaccine } from "../../../services/vaccineService";
+import { isAdmin } from "../../../utils/authUtils";
+import AdminVaccineCard from "../components/AdminVaccineCard";
+import AdminVaccineForm from "../components/AdminVaccineForm";
 import VaccineCard from "../components/VaccineCard";
 import "../styles/Vaccines.css";
 
@@ -25,14 +28,19 @@ const isOverdue = (nextDueDate) => {
 function Vaccines() {
 
     const token = localStorage.getItem("token");
+    const admin = isAdmin();
 
     const [administeredVaccines, setAdministeredVaccines] =
         useState([]);
+    const [vaccines, setVaccines] = useState([]);
+    const [selectedVaccine, setSelectedVaccine] = useState(null);
 
     const [initialLoading, setInitialLoading] =
         useState(Boolean(token));
+    const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const loadData = useCallback(async () => {
 
@@ -40,6 +48,18 @@ function Vaccines() {
         setError("");
 
         try {
+
+            if (admin) {
+
+                const data =
+                    await getVaccines();
+
+                setVaccines(
+                    data ?? []
+                );
+
+                return;
+            }
 
             const data =
                 await getAdministeredVaccines();
@@ -57,7 +77,7 @@ function Vaccines() {
             setInitialLoading(false);
         }
 
-    }, []);
+    }, [admin]);
 
     useEffect(() => {
 
@@ -78,6 +98,99 @@ function Vaccines() {
 
     const activeCount =
         administeredVaccines.length - overdueCount;
+
+    const totalStock =
+        vaccines.reduce(
+            (total, vaccine) => total + vaccine.stock,
+            0
+        );
+
+    const lowStockCount =
+        vaccines.filter(vaccine =>
+            vaccine.stock <= 5
+        ).length;
+
+    const availableVaccinesCount =
+        vaccines.filter(vaccine =>
+            vaccine.stock > 0
+        ).length;
+
+    const handleAdminSubmit = async (formData) => {
+
+        setLoading(true);
+        setError("");
+        setSuccess("");
+
+        try {
+
+            if (selectedVaccine) {
+
+                await updateVaccine(
+                    selectedVaccine.vaccineId,
+                    formData
+                );
+
+                setSuccess(
+                    "Vacuna actualizada correctamente."
+                );
+
+            } else {
+
+                await createVaccine(formData);
+
+                setSuccess(
+                    "Vacuna creada correctamente."
+                );
+            }
+
+            setSelectedVaccine(null);
+
+            await loadData();
+
+            return true;
+
+        } catch (err) {
+
+            setError(err.message);
+
+            return false;
+
+        } finally {
+
+            setLoading(false);
+        }
+    };
+
+    const handleAdminDelete = async (vaccineId) => {
+
+        if (!window.confirm(
+            "¿Desea eliminar esta vacuna del catálogo?"
+        )) {
+            return;
+        }
+
+        setError("");
+        setSuccess("");
+
+        try {
+
+            await deleteVaccine(vaccineId);
+
+            setSuccess(
+                "Vacuna eliminada correctamente."
+            );
+
+            if (selectedVaccine?.vaccineId === vaccineId) {
+                setSelectedVaccine(null);
+            }
+
+            await loadData();
+
+        } catch (err) {
+
+            setError(err.message);
+        }
+    };
 
     if (!token) {
 
@@ -109,6 +222,148 @@ function Vaccines() {
                 </section>
 
             </main>
+        );
+    }
+
+    if (admin) {
+
+        return (
+
+            <Layout
+                title="Vacunas"
+                subtitle="Administrá el catálogo y stock disponible"
+            >
+
+                <div className="vaccines-dashboard">
+
+                    <section className="vaccines-summary-grid">
+
+                        <StatCard
+                            title="Catálogo"
+                            value={vaccines.length}
+                            color="#A3C1AD"
+                            icon={<Syringe />}
+                        />
+
+                        <StatCard
+                            title="Stock total"
+                            value={totalStock}
+                            color="#7FB3D5"
+                            icon={<Package />}
+                        />
+
+                        <StatCard
+                            title="Stock bajo"
+                            value={lowStockCount}
+                            color="#E57373"
+                            icon={<AlertTriangle />}
+                        />
+
+                    </section>
+
+                    {(error || success) && (
+
+                        <section
+                            className={
+                                error
+                                    ? "vaccines-status vaccines-status--error"
+                                    : "vaccines-status vaccines-status--success"
+                            }
+                        >
+                            {error || success}
+                        </section>
+
+                    )}
+
+                    <section className="vaccines-content-grid vaccines-content-grid--admin">
+
+                        <Panel className="vaccines-list-panel">
+
+                            <div className="vaccines-panel-header">
+
+                                <div>
+
+                                    <h2>
+                                        Catálogo de vacunas
+                                    </h2>
+
+                                    <p>
+                                        {availableVaccinesCount} disponible(s) de {vaccines.length}
+                                    </p>
+
+                                </div>
+
+                                <button
+                                    className="vaccines-ghost-button"
+                                    type="button"
+                                    onClick={() =>
+                                        setSelectedVaccine(null)
+                                    }
+                                >
+                                    <Plus size={18} />
+                                    <span>Nueva</span>
+                                </button>
+
+                            </div>
+
+                            {
+                                initialLoading
+
+                                    ? (
+                                        <p className="vaccines-empty-state">
+                                            Cargando catálogo...
+                                        </p>
+                                    )
+
+                                    : vaccines.length === 0
+
+                                        ? (
+                                            <div className="vaccines-empty-state vaccines-empty-state--center">
+
+                                                <Syringe size={34} />
+
+                                                <p>
+                                                    No hay vacunas cargadas en el catálogo.
+                                                </p>
+
+                                            </div>
+                                        )
+
+                                        : (
+                                            <div className="vaccines-record-list">
+
+                                                {vaccines.map(vaccine => (
+
+                                                    <AdminVaccineCard
+                                                        key={vaccine.vaccineId}
+                                                        vaccine={vaccine}
+                                                        onEdit={setSelectedVaccine}
+                                                        onDelete={handleAdminDelete}
+                                                    />
+
+                                                ))}
+
+                                            </div>
+                                        )
+                            }
+
+                        </Panel>
+
+                        <AdminVaccineForm
+                            key={selectedVaccine?.vaccineId ?? "new-vaccine"}
+                            selectedVaccine={selectedVaccine}
+                            loading={loading}
+                            onSubmit={handleAdminSubmit}
+                            onCancelEdit={() =>
+                                setSelectedVaccine(null)
+                            }
+                        />
+
+                    </section>
+
+                </div>
+
+            </Layout>
         );
     }
 

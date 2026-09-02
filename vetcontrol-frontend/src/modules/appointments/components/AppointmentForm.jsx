@@ -38,7 +38,10 @@ const AppointmentForm = forwardRef(({
     veterinarians,
     loading,
     onSubmit,
-    onCancelEdit
+    onCancelEdit,
+    title,
+    subtitle,
+    disablePetSelection = false
 }, ref) => {
 
     const [formData, setFormData] = useState(
@@ -130,6 +133,20 @@ const AppointmentForm = forwardRef(({
             });
         }
     };
+
+    const isCurrentSelectedSlot = (slot) => {
+        if (!selectedAppointment) {
+            return false;
+        }
+
+        return slot.dateTime.substring(0, 16) ===
+            `${formData.date}T${formData.time}`;
+    };
+
+    const availableSlots = availability.filter(slot =>
+        slot.available || isCurrentSelectedSlot(slot)
+    );
+
     return (
         <div ref={ref}>
 
@@ -146,14 +163,15 @@ const AppointmentForm = forwardRef(({
 
                             <h2>
                                 {
-                                    selectedAppointment
+                                    title ??
+                                    (selectedAppointment
                                         ? "Editar turno"
-                                        : "Nuevo turno"
+                                        : "Nuevo turno")
                                 }
                             </h2>
 
                             <p>
-                                Complete los datos del turno
+                                {subtitle ?? "Complete los datos del turno"}
                             </p>
 
                         </div>
@@ -170,6 +188,7 @@ const AppointmentForm = forwardRef(({
                             name="petId"
                             value={formData.petId}
                             onChange={handleChange}
+                            disabled={disablePetSelection}
                             required
                         >
 
@@ -257,8 +276,7 @@ const AppointmentForm = forwardRef(({
                                 </option>
 
                                 {
-                                    availability
-                                        .filter(slot => slot.available)
+                                    availableSlots
                                         .map(slot => (
 
                                             <option

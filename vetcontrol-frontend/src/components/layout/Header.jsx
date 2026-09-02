@@ -47,7 +47,9 @@ function Header() {
 
         "/vaccines": {
             title: "Vacunas",
-            subtitle: "Consultá las vacunas aplicadas a tus mascotas."
+            subtitle: user?.role === "Admin"
+                ? "Administrá el catálogo y stock disponible."
+                : "Consultá las vacunas aplicadas a tus mascotas."
         },
 
         "/medical-records": {
