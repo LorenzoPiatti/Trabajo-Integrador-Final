@@ -1,37 +1,70 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { forgotPassword } from "../../../services/authService";
 
 function ForgotPasswordForm() {
 
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setEmail(e.target.value);
+
+        if (error) {
+            setError("");
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
+        const cleanEmail = email.trim();
 
-            await forgotPassword(email);
+        if (!cleanEmail) {
+            setError("Ingresá tu email.");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(cleanEmail)) {
+            setError("Ingresá un email válido.");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setError("");
+
+            await forgotPassword(cleanEmail);
 
             localStorage.setItem(
                 "verificationEmail",
-                email
+                cleanEmail
             );
 
             navigate("/reset-password");
-
         }
         catch (err) {
-            setError(err.message);
+            setError(
+                err.message ||
+                "No pudimos enviar el código. Intentá nuevamente."
+            );
+        }
+        finally {
+            setLoading(false);
         }
     };
 
     return (
-        <form className="login-form" onSubmit={handleSubmit}>
+        <form
+            className="login-form"
+            onSubmit={handleSubmit}
+            noValidate
+        >
 
             <h2>Recuperar contraseña</h2>
 
@@ -43,10 +76,11 @@ function ForgotPasswordForm() {
 
             <input
                 type="email"
-                placeholder="Ingrese su email"
+                placeholder="Ingresá tu email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                onChange={handleChange}
+                className={error ? "input-error" : ""}
+                disabled={loading}
             />
 
             {error && (
@@ -58,8 +92,9 @@ function ForgotPasswordForm() {
             <button
                 type="submit"
                 className="login-btn"
+                disabled={loading}
             >
-                Enviar código
+                {loading ? "Enviando..." : "Enviar código"}
             </button>
 
             <div className="login-contact">

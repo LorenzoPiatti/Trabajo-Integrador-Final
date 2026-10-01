@@ -16,51 +16,176 @@ function RegisterForm() {
         confirmPassword: ""
     });
 
-    const [error, setError] = useState("");
-
+    const [errors, setErrors] = useState({});
+    const [apiError, setApiError] = useState("");
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+
+        const { name, value } = e.target;
+
+        setFormData(currentData => ({
+            ...currentData,
+            [name]: value
+        }));
+
+        setErrors(currentErrors => ({
+            ...currentErrors,
+            [name]: "",
+            ...(name === "password"
+                ? { confirmPassword: "" }
+                : {})
+        }));
+
+        setApiError("");
+    };
+
+    const validate = () => {
+
+        const newErrors = {};
+
+        if (!formData.firstName.trim()) {
+            newErrors.firstName = "El nombre es obligatorio";
+        }
+
+        if (!formData.lastName.trim()) {
+            newErrors.lastName = "El apellido es obligatorio";
+        }
+
+        if (!formData.email.trim()) {
+            newErrors.email = "El email es obligatorio";
+        }
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = "El email no tiene un formato válido";
+        }
+
+        if (!formData.phone.trim()) {
+            newErrors.phone = "El teléfono es obligatorio";
+        }
+
+        if (!formData.address.trim()) {
+            newErrors.address = "La dirección es obligatoria";
+        }
+
+        if (!formData.password) {
+            newErrors.password = "La contraseña es obligatoria";
+        }
+        else if (formData.password.length < 6) {
+            newErrors.password =
+                "La contraseña debe tener al menos 6 caracteres";
+        }
+
+        if (!formData.confirmPassword) {
+            newErrors.confirmPassword =
+                "Confirmá tu contraseña";
+        }
+        else if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword =
+                "Las contraseñas no coinciden";
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
-        if (formData.password !== formData.confirmPassword) {
-            setError("Las contraseñas no coinciden");
+        setApiError("");
+
+        if (!validate()) {
             return;
         }
 
         try {
 
+            setLoading(true);
+
             await register({
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                phone: formData.phone,
-                address: formData.address,
+                firstName: formData.firstName.trim(),
+                lastName: formData.lastName.trim(),
+                email: formData.email.trim(),
+                phone: formData.phone.trim(),
+                address: formData.address.trim(),
                 password: formData.password
             });
 
             localStorage.setItem(
                 "verificationEmail",
-                formData.email
+                formData.email.trim()
             );
 
             navigate("/verify-email");
 
-        } catch (err) {
-            setError(err.message);
+        }
+        catch (err) {
+
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : "";
+
+            const normalizedMessage =
+                message.toLowerCase();
+
+            if (
+                normalizedMessage.includes(
+                    "email ya se encuentra registrado"
+                )
+            ) {
+
+                setErrors(currentErrors => ({
+                    ...currentErrors,
+                    email: "El email ya se encuentra registrado"
+                }));
+
+                return;
+            }
+
+            if (
+                normalizedMessage.includes("smtp") ||
+                normalizedMessage.includes("579") ||
+                normalizedMessage.includes("webloginrequired") ||
+                normalizedMessage.includes("verificación")
+            ) {
+
+                setApiError(
+                    "No pudimos enviar el código de verificación. Intentá nuevamente."
+                );
+
+                return;
+            }
+
+            if (
+                normalizedMessage.includes("failed to fetch")
+            ) {
+
+                setApiError(
+                    "No pudimos conectar con el servidor. Intentá nuevamente."
+                );
+
+                return;
+            }
+
+            setApiError(
+                "No pudimos completar el registro. Intentá nuevamente."
+            );
+        }
+        finally {
+            setLoading(false);
         }
     };
 
     return (
-        <form className="login-form" onSubmit={handleSubmit}>
+        <form
+            className="login-form"
+            onSubmit={handleSubmit}
+            noValidate
+        >
 
             <h2>Crear cuenta</h2>
 
@@ -71,25 +196,51 @@ function RegisterForm() {
             <div className="form-row">
 
                 <div className="form-group">
+
                     <label>Nombre</label>
+
                     <input
                         type="text"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleChange}
-                        required
+                        className={
+                            errors.firstName
+                                ? "input-error"
+                                : ""
+                        }
                     />
+
+                    {errors.firstName && (
+                        <span className="error">
+                            {errors.firstName}
+                        </span>
+                    )}
+
                 </div>
 
                 <div className="form-group">
+
                     <label>Apellido</label>
+
                     <input
                         type="text"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleChange}
-                        required
+                        className={
+                            errors.lastName
+                                ? "input-error"
+                                : ""
+                        }
                     />
+
+                    {errors.lastName && (
+                        <span className="error">
+                            {errors.lastName}
+                        </span>
+                    )}
+
                 </div>
 
             </div>
@@ -101,95 +252,168 @@ function RegisterForm() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                required
+                className={
+                    errors.email
+                        ? "input-error"
+                        : ""
+                }
             />
+
+            {errors.email && (
+                <span className="error">
+                    {errors.email}
+                </span>
+            )}
 
             <div className="form-row">
 
                 <div className="form-group">
+
                     <label>Teléfono</label>
+
                     <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        required
+                        className={
+                            errors.phone
+                                ? "input-error"
+                                : ""
+                        }
                     />
+
+                    {errors.phone && (
+                        <span className="error">
+                            {errors.phone}
+                        </span>
+                    )}
+
                 </div>
 
                 <div className="form-group">
+
                     <label>Dirección</label>
+
                     <input
                         type="text"
                         name="address"
                         value={formData.address}
                         onChange={handleChange}
-                        required
+                        className={
+                            errors.address
+                                ? "input-error"
+                                : ""
+                        }
                     />
+
+                    {errors.address && (
+                        <span className="error">
+                            {errors.address}
+                        </span>
+                    )}
+
                 </div>
 
             </div>
 
             <label>Contraseña</label>
 
-            <div className="input-password">
+            <div
+                className={
+                    `input-password ${errors.password
+                        ? "input-error"
+                        : ""
+                    }`
+                }
+            >
 
                 <input
                     type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    required
                 />
 
                 <button
                     type="button"
                     className="password-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() =>
+                        setShowPassword(
+                            currentValue => !currentValue
+                        )
+                    }
                 >
                     {showPassword ? "🙈" : "👁"}
                 </button>
 
             </div>
 
+            {errors.password && (
+                <span className="error">
+                    {errors.password}
+                </span>
+            )}
+
             <label>Confirmar contraseña</label>
 
-            <div className="input-password">
+            <div
+                className={
+                    `input-password ${errors.confirmPassword
+                        ? "input-error"
+                        : ""
+                    }`
+                }
+            >
 
                 <input
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={
+                        showConfirmPassword
+                            ? "text"
+                            : "password"
+                    }
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    required
                 />
 
                 <button
                     type="button"
                     className="password-toggle"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    onClick={() =>
+                        setShowConfirmPassword(
+                            currentValue => !currentValue
+                        )
+                    }
                 >
                     {showConfirmPassword ? "🙈" : "👁"}
                 </button>
 
             </div>
 
-            {error && (
+            {errors.confirmPassword && (
+                <span className="error">
+                    {errors.confirmPassword}
+                </span>
+            )}
+
+            {apiError && (
                 <p className="error">
-                    {error}
+                    {apiError}
                 </p>
             )}
 
             <button
                 type="submit"
                 className="login-btn"
+                disabled={loading}
             >
-                Registrarme
+                {loading ? "Registrando..." : "Registrarme"}
             </button>
 
             <div className="login-contact">
 
-                ¿Ya tienes cuenta?{" "}
+                ¿Ya tenés cuenta?{" "}
 
                 <Link to="/">
                     Iniciar sesión

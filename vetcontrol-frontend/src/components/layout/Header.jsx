@@ -32,7 +32,9 @@ function Header() {
 
         "/dashboard": {
             title: "Inicio",
-            subtitle: "Bienvenido nuevamente 👋"
+            subtitle: user?.firstName
+                ? `¡Hola, ${user.firstName}! 👋`
+                : "¡Hola! 👋"
         },
 
         "/appointments": {

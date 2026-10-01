@@ -17,9 +17,10 @@ function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [apiError, setApiError] = useState("");
+    const [credentialsError, setCredentialsError] = useState(false);
 
     const validate = () => {
 
@@ -54,15 +55,46 @@ function LoginForm() {
 
     };
 
+    const handleEmailChange = (event) => {
+
+        setEmail(event.target.value);
+
+        setErrors(currentErrors => ({
+            ...currentErrors,
+            email: ""
+        }));
+
+        setApiError("");
+        setCredentialsError(false);
+
+    };
+
+    const handlePasswordChange = (event) => {
+
+        setPassword(event.target.value);
+
+        setErrors(currentErrors => ({
+            ...currentErrors,
+            password: ""
+        }));
+
+        setApiError("");
+        setCredentialsError(false);
+
+    };
+
     const handleSubmit = async () => {
 
         setApiError("");
+        setCredentialsError(false);
 
         if (!validate()) {
             return;
         }
 
         try {
+
+            setLoading(true);
 
             const token = await login(
                 email,
@@ -87,12 +119,41 @@ function LoginForm() {
         }
         catch (error) {
 
-            setApiError(
+            const message =
                 error instanceof Error
                     ? error.message
-                    : "Error al iniciar sesión"
-            );
+                    : "";
 
+            const normalizedMessage =
+                message.toLowerCase();
+
+            const invalidCredentials =
+                normalizedMessage.includes("usuario no encontrado") ||
+                normalizedMessage.includes("contraseña incorrecta") ||
+                normalizedMessage.includes("credencial");
+
+            if (invalidCredentials) {
+
+                setApiError(
+                    "El email o la contraseña son incorrectos."
+                );
+
+                setCredentialsError(true);
+
+
+            }
+            else {
+
+                setApiError(
+                    message ||
+                    "No se pudo iniciar sesión. Intentá nuevamente."
+                );
+
+            }
+
+        }
+        finally {
+            setLoading(false);
         }
 
     };
@@ -115,11 +176,14 @@ function LoginForm() {
 
             <input
                 type="email"
-                placeholder="Ingrese mail"
+                placeholder="Ingresá tu email"
                 value={email}
-                onChange={(event) =>
-                    setEmail(event.target.value)
+                className={
+                    errors.email || credentialsError
+                        ? "input-error"
+                        : ""
                 }
+                onChange={handleEmailChange}
             />
 
             {errors.email && (
@@ -134,7 +198,14 @@ function LoginForm() {
 
             <label>Contraseña</label>
 
-            <div className="input-password">
+            <div
+                className={
+                    `input-password ${errors.password || credentialsError
+                        ? "input-error"
+                        : ""
+                    }`
+                }
+            >
 
                 <input
                     type={
@@ -142,11 +213,9 @@ function LoginForm() {
                             ? "text"
                             : "password"
                     }
-                    placeholder="Ingrese contraseña"
+                    placeholder="Ingresá tu contraseña"
                     value={password}
-                    onChange={(event) =>
-                        setPassword(event.target.value)
-                    }
+                    onChange={handlePasswordChange}
                 />
 
                 <button
@@ -207,10 +276,9 @@ function LoginForm() {
                 className="login-btn"
                 type="button"
                 onClick={handleSubmit}
+                disabled={loading}
             >
-
-                Iniciar sesión
-
+                {loading ? "Ingresando..." : "Iniciar sesión"}
             </button>
 
             <div className="login-contact">

@@ -57,12 +57,23 @@ public class AuthService : IAuthService
 
         await _userRepository.AddAsync(user);
 
-        await _userRepository.SaveChangesAsync();
+        try
+        {
+            await _emailService.SendEmailAsync(
+                user.Email,
+                "Verificación de cuenta VetControl",
+                $"Tu código de verificación es: {user.VerificationCode}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR EMAIL:");
+            Console.WriteLine(ex.ToString());
 
-        await _emailService.SendEmailAsync(
-            user.Email,
-            "Verificación de cuenta VetControl",
-            $"Tu código de verificación es: {user.VerificationCode}");
+            throw new Exception(
+                "No pudimos enviar el código de verificación. Intentá nuevamente.");
+        }
+
+        await _userRepository.SaveChangesAsync();
     }
 
     public async Task VerifyEmailAsync(

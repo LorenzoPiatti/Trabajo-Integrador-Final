@@ -11,45 +11,150 @@ function ResetPasswordForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({});
+    const [apiError, setApiError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+
+    const handleCodeChange = (e) => {
+        setCode(e.target.value);
+
+        setErrors((prev) => ({
+            ...prev,
+            code: ""
+        }));
+
+        setApiError("");
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+
+        setErrors((prev) => ({
+            ...prev,
+            password: "",
+            confirmPassword: ""
+        }));
+
+        setApiError("");
+    };
+
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmPassword(e.target.value);
+
+        setErrors((prev) => ({
+            ...prev,
+            password: "",
+            confirmPassword: ""
+        }));
+
+        setApiError("");
+    };
+
+    const validate = () => {
+        const newErrors = {};
+
+        if (!code.trim()) {
+            newErrors.code = "Ingresá el código de recuperación.";
+        }
+
+        if (!password) {
+            newErrors.password = "Ingresá una nueva contraseña.";
+        }
+        else if (password.length < 6) {
+            newErrors.password =
+                "La contraseña debe tener al menos 6 caracteres.";
+        }
+
+        if (!confirmPassword) {
+            newErrors.confirmPassword =
+                "Confirmá la nueva contraseña.";
+        }
+        else if (password !== confirmPassword) {
+            newErrors.password =
+                "Las contraseñas no coinciden.";
+            newErrors.confirmPassword =
+                "Las contraseñas no coinciden.";
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (password !== confirmPassword) {
-            setError("Las contraseñas no coinciden");
+        setApiError("");
+
+        if (!validate()) {
+            return;
+        }
+
+        const email =
+            localStorage.getItem("verificationEmail");
+
+        if (!email) {
+            setApiError(
+                "No se encontró el email asociado a la recuperación."
+            );
             return;
         }
 
         try {
-
-            const email =
-                localStorage.getItem(
-                    "verificationEmail"
-                );
+            setLoading(true);
 
             await resetPassword(
                 email,
-                code,
+                code.trim(),
                 password
             );
 
-            alert(
-                "Contraseña actualizada correctamente"
+            localStorage.removeItem("verificationEmail");
+
+            setSuccess(
+                "Contraseña actualizada correctamente."
             );
 
-            navigate("/");
-
+            setTimeout(() => {
+                navigate("/");
+            }, 1200);
         }
         catch (err) {
-            setError(err.message);
+
+            const message =
+                err.message ||
+                "No pudimos actualizar la contraseña. Intentá nuevamente.";
+
+            const normalizedMessage =
+                message.toLowerCase();
+
+            if (
+                normalizedMessage.includes("código") ||
+                normalizedMessage.includes("codigo")
+            ) {
+                setErrors((prev) => ({
+                    ...prev,
+                    code: message
+                }));
+            }
+            else {
+                setApiError(message);
+            }
+        }
+        finally {
+            setLoading(false);
         }
     };
 
     return (
-        <form className="login-form" onSubmit={handleSubmit}>
+        <form
+            className="login-form"
+            onSubmit={handleSubmit}
+            noValidate
+        >
 
             <h2>Nueva contraseña</h2>
 
@@ -61,14 +166,26 @@ function ResetPasswordForm() {
 
             <input
                 type="text"
+                placeholder="Ingresá el código"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
-                required
+                onChange={handleCodeChange}
+                className={errors.code ? "input-error" : ""}
+                maxLength={6}
+                disabled={loading || success}
             />
+
+            {errors.code && (
+                <p className="error">
+                    {errors.code}
+                </p>
+            )}
 
             <label>Nueva contraseña</label>
 
-            <div className="input-password">
+            <div
+                className={`input-password ${errors.password ? "input-error" : ""
+                    }`}
+            >
 
                 <input
                     type={
@@ -77,10 +194,8 @@ function ResetPasswordForm() {
                             : "password"
                     }
                     value={password}
-                    onChange={(e) =>
-                        setPassword(e.target.value)
-                    }
-                    required
+                    onChange={handlePasswordChange}
+                    disabled={loading || success}
                 />
 
                 <button
@@ -95,9 +210,18 @@ function ResetPasswordForm() {
 
             </div>
 
+            {errors.password && (
+                <p className="error">
+                    {errors.password}
+                </p>
+            )}
+
             <label>Confirmar contraseña</label>
 
-            <div className="input-password">
+            <div
+                className={`input-password ${errors.confirmPassword ? "input-error" : ""
+                    }`}
+            >
 
                 <input
                     type={
@@ -106,12 +230,8 @@ function ResetPasswordForm() {
                             : "password"
                     }
                     value={confirmPassword}
-                    onChange={(e) =>
-                        setConfirmPassword(
-                            e.target.value
-                        )
-                    }
-                    required
+                    onChange={handleConfirmPasswordChange}
+                    disabled={loading || success}
                 />
 
                 <button
@@ -130,25 +250,38 @@ function ResetPasswordForm() {
 
             </div>
 
-            {error && (
+            {errors.confirmPassword && (
                 <p className="error">
-                    {error}
+                    {errors.confirmPassword}
+                </p>
+            )}
+
+            {apiError && (
+                <p className="error">
+                    {apiError}
+                </p>
+            )}
+
+            {success && (
+                <p className="success">
+                    {success}
                 </p>
             )}
 
             <button
                 type="submit"
                 className="login-btn"
+                disabled={loading || success}
             >
-                Guardar contraseña
+                {loading
+                    ? "Guardando..."
+                    : "Guardar contraseña"}
             </button>
 
             <div className="login-contact">
-
                 <Link to="/">
                     Volver al inicio de sesión
                 </Link>
-
             </div>
 
         </form>

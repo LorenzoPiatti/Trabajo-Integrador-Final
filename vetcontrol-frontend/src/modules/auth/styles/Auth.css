@@ -99,6 +99,15 @@ body::after {
     gap: 10px;
 }
 
+.login-form input.input-error {
+    border-color: #e57373;
+    box-shadow: 0 0 0 3px rgba(229, 115, 115, .12);
+}
+
+.login-form input.input-error:focus {
+    border-color: #e57373;
+    box-shadow: 0 0 0 3px rgba(229, 115, 115, .12);
+}
 .login-form h2 {
     font-size: 52px;
     color: #737373;
@@ -148,6 +157,16 @@ body::after {
 
 .input-password:focus-within {
     border-color: #a3c1ad;
+}
+
+.input-password.input-error {
+    border-color: #e57373;
+    box-shadow: 0 0 0 3px rgba(229, 115, 115, .12);
+}
+
+.input-password.input-error:focus-within {
+    border-color: #e57373;
+    box-shadow: 0 0 0 3px rgba(229, 115, 115, .12);
 }
 
 .input-password input {
