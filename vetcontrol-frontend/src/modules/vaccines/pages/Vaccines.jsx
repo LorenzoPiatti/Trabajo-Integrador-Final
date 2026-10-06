@@ -14,37 +14,63 @@ import "../styles/Vaccines.css";
 const getToday = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
+    
     return today;
 };
 
+
 const isOverdue = (nextDueDate) => {
+
     const dueDate = new Date(nextDueDate);
+
     dueDate.setHours(0, 0, 0, 0);
 
     return dueDate < getToday();
 };
 
+
 function Vaccines() {
 
     const token = localStorage.getItem("token");
+
     const admin = isAdmin();
 
     const [administeredVaccines, setAdministeredVaccines] =
         useState([]);
+
     const [vaccines, setVaccines] = useState([]);
+
     const [selectedVaccine, setSelectedVaccine] = useState(null);
 
     const [initialLoading, setInitialLoading] =
         useState(Boolean(token));
+
     const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
+
     const [success, setSuccess] = useState("");
+
+
+    useEffect(() => {
+
+        if (!success) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setSuccess("");
+        }, 3000);
+
+        return () => window.clearTimeout(timeoutId);
+
+    }, [success]);
+
 
     const loadData = useCallback(async () => {
 
         setInitialLoading(true);
+
         setError("");
 
         try {
@@ -79,6 +105,7 @@ function Vaccines() {
 
     }, [admin]);
 
+
     useEffect(() => {
 
         if (!token) return;
@@ -91,13 +118,16 @@ function Vaccines() {
 
     }, [token, loadData]);
 
+
     const overdueCount =
         administeredVaccines.filter(vaccine =>
             isOverdue(vaccine.nextDueDate)
         ).length;
 
+
     const activeCount =
         administeredVaccines.length - overdueCount;
+
 
     const totalStock =
         vaccines.reduce(
@@ -105,20 +135,25 @@ function Vaccines() {
             0
         );
 
+
     const lowStockCount =
         vaccines.filter(vaccine =>
-            vaccine.stock <= 5
+            vaccine.stock <= 2
         ).length;
+
 
     const availableVaccinesCount =
         vaccines.filter(vaccine =>
             vaccine.stock > 0
         ).length;
 
+
     const handleAdminSubmit = async (formData) => {
 
         setLoading(true);
+
         setError("");
+
         setSuccess("");
 
         try {
@@ -161,6 +196,7 @@ function Vaccines() {
         }
     };
 
+
     const handleAdminDelete = async (vaccineId) => {
 
         if (!window.confirm(
@@ -170,6 +206,7 @@ function Vaccines() {
         }
 
         setError("");
+
         setSuccess("");
 
         try {
@@ -191,6 +228,7 @@ function Vaccines() {
             setError(err.message);
         }
     };
+
 
     if (!token) {
 
@@ -224,6 +262,7 @@ function Vaccines() {
             </main>
         );
     }
+
 
     if (admin) {
 
@@ -261,6 +300,7 @@ function Vaccines() {
 
                     </section>
 
+
                     {(error || success) && (
 
                         <section
@@ -274,6 +314,7 @@ function Vaccines() {
                         </section>
 
                     )}
+
 
                     <section className="vaccines-content-grid vaccines-content-grid--admin">
 
@@ -305,6 +346,7 @@ function Vaccines() {
                                 </button>
 
                             </div>
+
 
                             {
                                 initialLoading
@@ -349,6 +391,7 @@ function Vaccines() {
 
                         </Panel>
 
+
                         <AdminVaccineForm
                             key={selectedVaccine?.vaccineId ?? "new-vaccine"}
                             selectedVaccine={selectedVaccine}
@@ -366,6 +409,7 @@ function Vaccines() {
             </Layout>
         );
     }
+
 
     return (
 
@@ -401,6 +445,7 @@ function Vaccines() {
 
                 </section>
 
+
                 {error && (
 
                     <section className="vaccines-status vaccines-status--error">
@@ -408,6 +453,7 @@ function Vaccines() {
                     </section>
 
                 )}
+
 
                 <section className="vaccines-content-grid">
 
@@ -428,6 +474,7 @@ function Vaccines() {
                             </div>
 
                         </div>
+
 
                         {
                             initialLoading
@@ -483,5 +530,6 @@ function Vaccines() {
         </Layout>
     );
 }
+
 
 export default Vaccines;

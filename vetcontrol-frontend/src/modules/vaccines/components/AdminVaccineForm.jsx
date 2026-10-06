@@ -20,7 +20,7 @@ const getInitialFormData = (selectedVaccine) => {
         name: selectedVaccine.name,
         description: selectedVaccine.description ?? "",
         frequencyMonths: selectedVaccine.frequencyMonths,
-        stock: selectedVaccine.stock
+        stock: 0
     };
 };
 
@@ -30,10 +30,11 @@ function AdminVaccineForm({
     onSubmit,
     onCancelEdit
 }) {
-
     const [formData, setFormData] = useState(
         getInitialFormData(selectedVaccine)
     );
+
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const handleChange = (event) => {
         const {
@@ -45,10 +46,48 @@ function AdminVaccineForm({
             ...formData,
             [name]: value
         });
+
+        setFieldErrors((currentErrors) => ({
+            ...currentErrors,
+            [name]: ""
+        }));
+    };
+
+    const validateForm = () => {
+        const errors = {};
+
+        if (!formData.name.trim()) {
+            errors.name = "Ingresá el nombre de la vacuna.";
+        }
+
+        if (
+            formData.frequencyMonths === "" ||
+            Number(formData.frequencyMonths) <= 0
+        ) {
+            errors.frequencyMonths =
+                "Ingresá una frecuencia válida.";
+        }
+
+        if (
+            formData.stock === "" ||
+            Number(formData.stock) < 0
+        ) {
+            errors.stock = selectedVaccine
+                ? "Ingresá la cantidad a agregar."
+                : "Ingresá el stock inicial.";
+        }
+
+        setFieldErrors(errors);
+
+        return Object.keys(errors).length === 0;
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
 
         const saved = await onSubmit({
             name: formData.name,
@@ -61,16 +100,28 @@ function AdminVaccineForm({
             setFormData({
                 ...emptyForm
             });
+
+            setFieldErrors({});
         }
     };
 
-    return (
+    const errorStyle = {
+        color: "#C94C4C",
+        fontSize: "0.78rem",
+        marginTop: "4px"
+    };
 
+    const fieldErrorStyle = {
+        borderColor: "#C94C4C"
+    };
+
+    return (
         <Panel className="vaccine-form-panel">
 
             <form
                 className="vaccine-form"
                 onSubmit={handleSubmit}
+                noValidate
             >
 
                 <div className="vaccines-panel-header vaccine-form-header">
@@ -106,7 +157,19 @@ function AdminVaccineForm({
                         onChange={handleChange}
                         placeholder="Ej: Antirrábica"
                         required
+                        aria-invalid={Boolean(fieldErrors.name)}
+                        style={
+                            fieldErrors.name
+                                ? fieldErrorStyle
+                                : undefined
+                        }
                     />
+
+                    {fieldErrors.name && (
+                        <small style={errorStyle}>
+                            {fieldErrors.name}
+                        </small>
+                    )}
 
                 </label>
 
@@ -123,12 +186,30 @@ function AdminVaccineForm({
                             onChange={handleChange}
                             placeholder="Meses"
                             required
+                            aria-invalid={Boolean(
+                                fieldErrors.frequencyMonths
+                            )}
+                            style={
+                                fieldErrors.frequencyMonths
+                                    ? fieldErrorStyle
+                                    : undefined
+                            }
                         />
+
+                        {fieldErrors.frequencyMonths && (
+                            <small style={errorStyle}>
+                                {fieldErrors.frequencyMonths}
+                            </small>
+                        )}
 
                     </label>
 
                     <label>
-                        Stock
+                        {
+                            selectedVaccine
+                                ? "Cantidad a agregar"
+                                : "Stock inicial"
+                        }
 
                         <input
                             type="number"
@@ -136,9 +217,25 @@ function AdminVaccineForm({
                             name="stock"
                             value={formData.stock}
                             onChange={handleChange}
-                            placeholder="Cantidad"
+                            placeholder={
+                                selectedVaccine
+                                    ? "Cantidad"
+                                    : "Stock inicial"
+                            }
                             required
+                            aria-invalid={Boolean(fieldErrors.stock)}
+                            style={
+                                fieldErrors.stock
+                                    ? fieldErrorStyle
+                                    : undefined
+                            }
                         />
+
+                        {fieldErrors.stock && (
+                            <small style={errorStyle}>
+                                {fieldErrors.stock}
+                            </small>
+                        )}
 
                     </label>
 
@@ -178,6 +275,7 @@ function AdminVaccineForm({
                         disabled={loading}
                     >
                         <Save size={18} />
+
                         <span>
                             {
                                 loading

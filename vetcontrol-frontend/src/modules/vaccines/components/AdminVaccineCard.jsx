@@ -8,7 +8,7 @@ const getStockState = (stock) => {
         };
     }
 
-    if (stock <= 5) {
+    if (stock <= 2) {
         return {
             label: "Stock bajo",
             className: "vaccine-status vaccine-status--warning"

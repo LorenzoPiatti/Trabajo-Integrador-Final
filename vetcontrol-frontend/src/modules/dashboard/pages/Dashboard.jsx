@@ -75,7 +75,7 @@ const isVaccineDue = (nextDueDate) => {
     return dueDate <= today;
 };
 
-const LOW_STOCK_LIMIT = 5;
+const LOW_STOCK_LIMIT = 2;
 
 const getUpcomingAppointments = (appointments, limit = 3) => {
     return appointments
