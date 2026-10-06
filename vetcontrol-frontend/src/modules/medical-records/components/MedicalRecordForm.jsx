@@ -23,6 +23,7 @@ function MedicalRecordForm({
     const [selectedVaccine, setSelectedVaccine] = useState("");
     const [vaccineObservations, setVaccineObservations] = useState("");
     const [loadingVaccines, setLoadingVaccines] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState({});
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
@@ -30,6 +31,7 @@ function MedicalRecordForm({
             setAppliedVaccine(false);
             setSelectedVaccine("");
             setVaccineObservations("");
+            setFieldErrors({});
         }, 0);
 
         return () => window.clearTimeout(timeoutId);
@@ -65,6 +67,11 @@ function MedicalRecordForm({
             ...formData,
             [name]: value
         });
+
+        setFieldErrors((currentErrors) => ({
+            ...currentErrors,
+            [name]: ""
+        }));
     };
 
     const handleVaccineChange = (e) => {
@@ -75,7 +82,44 @@ function MedicalRecordForm({
         if (!value) {
             setSelectedVaccine("");
             setVaccineObservations("");
+
+            setFieldErrors((currentErrors) => ({
+                ...currentErrors,
+                vaccine: ""
+            }));
         }
+    };
+
+    const handleSelectedVaccineChange = (e) => {
+        setSelectedVaccine(e.target.value);
+
+        setFieldErrors((currentErrors) => ({
+            ...currentErrors,
+            vaccine: ""
+        }));
+    };
+
+    const validateForm = () => {
+        const errors = {};
+
+        if (!formData.description.trim()) {
+            errors.description =
+                "Ingresá la descripción de la atención.";
+        }
+
+        if (!formData.treatment.trim()) {
+            errors.treatment =
+                "Ingresá el tratamiento indicado.";
+        }
+
+        if (appliedVaccine && !selectedVaccine) {
+            errors.vaccine =
+                "Seleccioná la vacuna aplicada.";
+        }
+
+        setFieldErrors(errors);
+
+        return Object.keys(errors).length === 0;
     };
 
     const handleSubmit = async (e) => {
@@ -86,8 +130,7 @@ function MedicalRecordForm({
             return;
         }
 
-        if (appliedVaccine && !selectedVaccine) {
-            onError("Seleccione la vacuna aplicada.");
+        if (!validateForm()) {
             return;
         }
 
@@ -109,6 +152,7 @@ function MedicalRecordForm({
             setAppliedVaccine(false);
             setSelectedVaccine("");
             setVaccineObservations("");
+            setFieldErrors({});
 
             onSuccess(
                 "Atención médica registrada correctamente."
@@ -119,12 +163,23 @@ function MedicalRecordForm({
         }
     };
 
+    const errorStyle = {
+        color: "#C94C4C",
+        fontSize: "0.78rem",
+        marginTop: "4px"
+    };
+
+    const fieldErrorStyle = {
+        borderColor: "#C94C4C"
+    };
+
     return (
         <Panel className="medical-record-form-panel">
 
             <form
                 className="medical-record-form"
                 onSubmit={handleSubmit}
+                noValidate
             >
 
                 <div className="medical-record-panel-header">
@@ -160,7 +215,19 @@ function MedicalRecordForm({
                         value={formData.description}
                         onChange={handleChange}
                         required
+                        aria-invalid={Boolean(fieldErrors.description)}
+                        style={
+                            fieldErrors.description
+                                ? fieldErrorStyle
+                                : undefined
+                        }
                     />
+
+                    {fieldErrors.description && (
+                        <small style={errorStyle}>
+                            {fieldErrors.description}
+                        </small>
+                    )}
                 </label>
 
                 <label>
@@ -183,7 +250,19 @@ function MedicalRecordForm({
                         value={formData.treatment}
                         onChange={handleChange}
                         required
+                        aria-invalid={Boolean(fieldErrors.treatment)}
+                        style={
+                            fieldErrors.treatment
+                                ? fieldErrorStyle
+                                : undefined
+                        }
                     />
+
+                    {fieldErrors.treatment && (
+                        <small style={errorStyle}>
+                            {fieldErrors.treatment}
+                        </small>
+                    )}
                 </label>
 
                 <label>
@@ -204,19 +283,21 @@ function MedicalRecordForm({
                 </label>
 
                 {appliedVaccine && (
-
                     <>
                         <label>
                             Vacuna aplicada
 
                             <select
                                 value={selectedVaccine}
-                                onChange={(e) =>
-                                    setSelectedVaccine(e.target.value)
-                                }
+                                onChange={handleSelectedVaccineChange}
                                 required
+                                aria-invalid={Boolean(fieldErrors.vaccine)}
+                                style={
+                                    fieldErrors.vaccine
+                                        ? fieldErrorStyle
+                                        : undefined
+                                }
                             >
-
                                 <option value="">
                                     {
                                         loadingVaccines
@@ -226,7 +307,6 @@ function MedicalRecordForm({
                                 </option>
 
                                 {vaccines.map((vaccine) => (
-
                                     <option
                                         key={vaccine.vaccineId}
                                         value={vaccine.vaccineId}
@@ -238,11 +318,14 @@ function MedicalRecordForm({
                                             : ""
                                         }
                                     </option>
-
                                 ))}
-
                             </select>
 
+                            {fieldErrors.vaccine && (
+                                <small style={errorStyle}>
+                                    {fieldErrors.vaccine}
+                                </small>
+                            )}
                         </label>
 
                         <label>
@@ -257,7 +340,6 @@ function MedicalRecordForm({
                             />
                         </label>
                     </>
-
                 )}
 
                 <button
@@ -268,7 +350,6 @@ function MedicalRecordForm({
                         !selectedAppointment
                     }
                 >
-
                     <Save size={18} />
 
                     <span>
@@ -278,7 +359,6 @@ function MedicalRecordForm({
                                 : "Guardar atención"
                         }
                     </span>
-
                 </button>
 
             </form>

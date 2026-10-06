@@ -26,10 +26,16 @@ import {
 import { getUserId, isAdmin } from "../../../utils/authUtils";
 import "../styles/Users.css";
 
-const roleOptions = [
+const roleFilterOptions = [
     "Admin",
     "Veterinarian",
     "Owner",
+    "Reception"
+];
+
+const editableRoleOptions = [
+    "Admin",
+    "Veterinarian",
     "Reception"
 ];
 
@@ -101,6 +107,18 @@ function UsersPage() {
             setInitialLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+    if (!success) {
+        return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+        setSuccess("");
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+}, [success]);
 
     useEffect(() => {
         if (!token || !admin) {
@@ -377,7 +395,7 @@ function UsersPage() {
                             }
                         >
                             <option value="all">Todos los roles</option>
-                            {roleOptions.map((role) => (
+                            {roleFilterOptions.map((role) => (
                                 <option key={role} value={role}>
                                     {getRoleLabel(role)}
                                 </option>
@@ -423,12 +441,14 @@ function UsersPage() {
                                             user.userId === currentUserId;
                                         const roleLocked =
                                             isSelf ||
+                                            user.role === "Owner" ||
                                             user.hasAssociatedData ||
                                             (
                                                 user.role === "Admin" &&
                                                 user.active &&
                                                 stats.activeAdmins <= 1
                                             );
+
                                         const statusLocked =
                                             isSelf ||
                                             (
@@ -528,7 +548,13 @@ function UsersPage() {
                                                                 )
                                                             }
                                                         >
-                                                            {roleOptions.map((role) => (
+                                                            {user.role === "Owner" && (
+                                                                <option value="Owner">
+                                                                    Propietario
+                                                                </option>
+                                                            )}
+
+                                                            {editableRoleOptions.map((role) => (
                                                                 <option
                                                                     key={role}
                                                                     value={role}

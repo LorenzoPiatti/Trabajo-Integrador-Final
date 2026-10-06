@@ -22,17 +22,4 @@ public interface IVaccineService
     Task<AdministeredVaccineResponseDto?> GetByIdAsync(
         int administeredVaccineId,
         int userId);
-
-    Task<AdministeredVaccineResponseDto> CreateAsync(
-        int userId,
-        CreateAdministeredVaccineDto dto);
-
-    Task UpdateAsync(
-        int administeredVaccineId,
-        int userId,
-        UpdateAdministeredVaccineDto dto);
-
-    Task DeleteAsync(
-        int administeredVaccineId,
-        int userId);
 }

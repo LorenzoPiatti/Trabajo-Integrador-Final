@@ -8,14 +8,12 @@ namespace VetControl.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IOwnerRepository _ownerRepository;
+
 
     public UserService(
-        IUserRepository userRepository,
-        IOwnerRepository ownerRepository)
+        IUserRepository userRepository)
     {
         _userRepository = userRepository;
-        _ownerRepository = ownerRepository;
     }
 
     public async Task<IEnumerable<User>> GetVeterinariansAsync()
@@ -61,6 +59,11 @@ public class UserService : IUserService
         {
             return await MapToManagementDtoAsync(user);
         }
+        if (user.Role == UserRole.Owner || newRole == UserRole.Owner)
+        {
+            throw new InvalidOperationException(
+                "El rol Propietario se gestiona mediante el registro de propietarios.");
+        }
 
         if (user.UserId == currentAdminUserId &&
             user.Role == UserRole.Admin &&
@@ -88,20 +91,6 @@ public class UserService : IUserService
 
         user.Role = newRole;
 
-        if (newRole == UserRole.Owner &&
-            user.Owner == null)
-        {
-            var ownerName = SplitOwnerName(user.Name);
-
-            await _ownerRepository.AddAsync(new Owner
-            {
-                UserId = user.UserId,
-                FirstName = ownerName.firstName,
-                LastName = ownerName.lastName,
-                Phone = string.Empty,
-                Address = string.Empty
-            });
-        }
 
         await _userRepository.UpdateAsync(user);
         await _userRepository.SaveChangesAsync();
@@ -198,27 +187,6 @@ public class UserService : IUserService
         }
 
         return parsedRole;
-    }
-
-    private static (string firstName, string lastName) SplitOwnerName(
-        string name)
-    {
-        var parts = name.Trim().Split(
-            ' ',
-            2,
-            StringSplitOptions.RemoveEmptyEntries);
-
-        if (parts.Length == 0)
-        {
-            return ("Usuario", string.Empty);
-        }
-
-        if (parts.Length == 1)
-        {
-            return (parts[0], string.Empty);
-        }
-
-        return (parts[0], parts[1]);
     }
 
     private static string? GetOwnerFullName(Owner? owner)

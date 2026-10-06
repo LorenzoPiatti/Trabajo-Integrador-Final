@@ -38,6 +38,19 @@ function PetsPage() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
+    useEffect(() => {
+    if (!success) {
+        return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+        setSuccess("");
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+    
+}, [success]);
+
     const loadPets = useCallback(async () => {
         setInitialLoading(true);
         setError("");

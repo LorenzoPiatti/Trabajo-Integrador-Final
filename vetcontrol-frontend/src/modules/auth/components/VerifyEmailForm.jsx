@@ -9,6 +9,18 @@ function VerifyEmailForm() {
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        if (!success) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setSuccess("");
+        }, 3000);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [success]);
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {

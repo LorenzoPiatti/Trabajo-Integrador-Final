@@ -38,6 +38,18 @@ function Profile() {
     const [success, setSuccess] = useState("");
 
     useEffect(() => {
+        if (!success) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setSuccess("");
+        }, 3000);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [success]);
+
+    useEffect(() => {
 
         const loadProfile = async () => {
 
