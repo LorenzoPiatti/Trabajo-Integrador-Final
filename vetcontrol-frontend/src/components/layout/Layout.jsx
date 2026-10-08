@@ -5,8 +5,8 @@ import Header from "./Header";
 
 function Layout({
     children,
-    title = "Dashboard",
-    subtitle = "Bienvenido a VetControl"
+    title,
+    subtitle
 }) {
     const [collapsed, setCollapsed] = useState(false);
 
