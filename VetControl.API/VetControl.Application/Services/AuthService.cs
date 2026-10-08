@@ -37,7 +37,7 @@ public class AuthService : IAuthService
         {
             Name = $"{request.FirstName.Trim()} {request.LastName.Trim()}",
             Email = request.Email.Trim(),
-            Password = request.Password,
+            Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role = UserRole.Owner,
             Active = true,
             EmailVerified = false,
@@ -111,7 +111,7 @@ public class AuthService : IAuthService
             throw new Exception("Usuario no encontrado.");
         }
 
-        if (user.Password != request.Password)
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
         {
             throw new Exception("Contraseña incorrecta.");
         }
@@ -176,7 +176,7 @@ public class AuthService : IAuthService
                 "Código inválido.");
         }
 
-        user.Password = request.NewPassword;
+        user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         user.VerificationCode = null;
 
         await _userRepository.UpdateAsync(user);

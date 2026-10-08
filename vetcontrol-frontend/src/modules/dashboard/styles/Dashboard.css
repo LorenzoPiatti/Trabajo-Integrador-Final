@@ -22,6 +22,10 @@ CARDS SUPERIORES
 
 }
 
+.dashboard-cards--three{
+    grid-template-columns:repeat(3,1fr);
+}
+
 /* ==========================
 PRIMERA FILA
 ========================== */

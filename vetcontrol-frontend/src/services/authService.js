@@ -109,11 +109,11 @@ export const resetPassword = async (
             newPassword
         })
     });
-    
+
     return await handleResponse(response);
 };
 
-    export const getUserFromToken = (token) => {
+export const getUserFromToken = (token) => {
     if (!token) {
         return null;
     }
@@ -125,7 +125,16 @@ export const resetPassword = async (
             .replace(/-/g, "+")
             .replace(/_/g, "/");
 
-        const data = JSON.parse(atob(normalized));
+        const binary = atob(normalized);
+
+        const bytes = Uint8Array.from(
+            binary,
+            character => character.charCodeAt(0)
+        );
+
+        const data = JSON.parse(
+            new TextDecoder("utf-8").decode(bytes)
+        );
 
         const name =
             data.unique_name ||
