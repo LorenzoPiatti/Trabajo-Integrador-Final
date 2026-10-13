@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
     BadgeCheck,
     Bell,
@@ -15,15 +16,19 @@ import {
     Users,
     UserX
 } from "lucide-react";
+
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
+
 import {
     getUsers,
     updateUserRole,
     updateUserStatus
 } from "../../../services/userService";
+
 import { getUserId, isAdmin } from "../../../utils/authUtils";
+
 import "../styles/Users.css";
 
 const roleFilterOptions = [
@@ -86,11 +91,16 @@ function UsersPage() {
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
+
     const [initialLoading, setInitialLoading] =
         useState(Boolean(token && admin));
+
     const [savingUserId, setSavingUserId] = useState(null);
+
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    const [confirmation, setConfirmation] = useState(null);
 
     const loadUsers = useCallback(async () => {
         setInitialLoading(true);
@@ -109,16 +119,16 @@ function UsersPage() {
     }, []);
 
     useEffect(() => {
-    if (!success) {
-        return;
-    }
+        if (!success) {
+            return;
+        }
 
-    const timeoutId = window.setTimeout(() => {
-        setSuccess("");
-    }, 3000);
+        const timeoutId = window.setTimeout(() => {
+            setSuccess("");
+        }, 3000);
 
-    return () => window.clearTimeout(timeoutId);
-}, [success]);
+        return () => window.clearTimeout(timeoutId);
+    }, [success]);
 
     useEffect(() => {
         if (!token || !admin) {
@@ -135,28 +145,39 @@ function UsersPage() {
     const stats = useMemo(() => {
         const activeUsers =
             users.filter((user) => user.active).length;
-        const inactiveUsers = users.length - activeUsers;
+
+        const inactiveUsers =
+            users.length - activeUsers;
+
         const activeAdmins =
             users.filter(
-                (user) => user.active && user.role === "Admin"
+                (user) =>
+                    user.active &&
+                    user.role === "Admin"
             ).length;
 
         return {
             total: users.length,
             active: activeUsers,
             inactive: inactiveUsers,
+
             veterinarians: users.filter(
-                (user) => user.role === "Veterinarian"
+                (user) =>
+                    user.role === "Veterinarian"
             ).length,
+
             admins: users.filter(
-                (user) => user.role === "Admin"
+                (user) =>
+                    user.role === "Admin"
             ).length,
+
             activeAdmins
         };
     }, [users]);
 
     const filteredUsers = useMemo(() => {
-        const searchValue = search.trim().toLowerCase();
+        const searchValue =
+            search.trim().toLowerCase();
 
         return users.filter((user) => {
             const matchesSearch =
@@ -174,12 +195,27 @@ function UsersPage() {
 
             const matchesStatus =
                 statusFilter === "all" ||
-                (statusFilter === "active" && user.active) ||
-                (statusFilter === "inactive" && !user.active);
+                (
+                    statusFilter === "active" &&
+                    user.active
+                ) ||
+                (
+                    statusFilter === "inactive" &&
+                    !user.active
+                );
 
-            return matchesSearch && matchesRole && matchesStatus;
+            return (
+                matchesSearch &&
+                matchesRole &&
+                matchesStatus
+            );
         });
-    }, [users, search, roleFilter, statusFilter]);
+    }, [
+        users,
+        search,
+        roleFilter,
+        statusFilter
+    ]);
 
     const updateUserInList = (updatedUser) => {
         setUsers((currentUsers) =>
@@ -191,91 +227,111 @@ function UsersPage() {
         );
     };
 
-    const handleRoleChange = async (user, role) => {
+    const handleRoleChange = (user, role) => {
         if (user.role === role) {
             return;
         }
 
-        const confirmed = window.confirm(
-            `Cambiar el rol de ${user.name} a ${getRoleLabel(role)}?`
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        setSavingUserId(user.userId);
-        setError("");
-        setSuccess("");
-
-        try {
-            const updatedUser =
-                await updateUserRole(user.userId, role);
-
-            updateUserInList(updatedUser);
-            setSuccess("Rol actualizado correctamente.");
-        }
-        catch (err) {
-            setError(err.message);
-        }
-        finally {
-            setSavingUserId(null);
-        }
+        setConfirmation({
+            type: "role",
+            user,
+            role
+        });
     };
 
-    const handleStatusChange = async (user) => {
-        const nextStatus = !user.active;
-        const action = nextStatus ? "activar" : "desactivar";
+    const handleStatusChange = (user) => {
+        setConfirmation({
+            type: "status",
+            user,
+            nextStatus: !user.active
+        });
+    };
 
-        const confirmed = window.confirm(
-            `Querés ${action} la cuenta de ${user.name}?`
-        );
-
-        if (!confirmed) {
+    const handleCancelConfirmation = () => {
+        if (savingUserId !== null) {
             return;
         }
+
+        setConfirmation(null);
+    };
+
+    const handleConfirm = async () => {
+        if (!confirmation) {
+            return;
+        }
+
+        const user = confirmation.user;
 
         setSavingUserId(user.userId);
         setError("");
         setSuccess("");
 
         try {
-            const updatedUser =
-                await updateUserStatus(user.userId, nextStatus);
+            if (confirmation.type === "role") {
+                const updatedUser =
+                    await updateUserRole(
+                        user.userId,
+                        confirmation.role
+                    );
 
-            updateUserInList(updatedUser);
-            setSuccess(
-                nextStatus
-                    ? "Usuario activado correctamente."
-                    : "Usuario desactivado correctamente."
-            );
+                updateUserInList(updatedUser);
+
+                setSuccess(
+                    "Rol actualizado correctamente."
+                );
+            }
+            else {
+                const updatedUser =
+                    await updateUserStatus(
+                        user.userId,
+                        confirmation.nextStatus
+                    );
+
+                updateUserInList(updatedUser);
+
+                setSuccess(
+                    confirmation.nextStatus
+                        ? "Usuario activado correctamente."
+                        : "Usuario desactivado correctamente."
+                );
+            }
         }
         catch (err) {
             setError(err.message);
         }
         finally {
             setSavingUserId(null);
+            setConfirmation(null);
         }
     };
 
     if (!token) {
         return (
             <main className="users-auth-page">
+
                 <section className="users-auth-card">
+
                     <div className="users-auth-icon">
                         <Users size={30} />
                     </div>
 
-                    <h1>Usuarios y roles</h1>
+                    <h1>
+                        Usuarios y roles
+                    </h1>
 
                     <p>
                         Iniciá sesión para administrar usuarios.
                     </p>
 
-                    <Link className="users-primary-button" to="/">
+                    <Link
+                        className="users-primary-button"
+                        to="/"
+                    >
                         Ir al inicio
                     </Link>
+
                 </section>
+
             </main>
         );
     }
@@ -283,16 +339,26 @@ function UsersPage() {
     if (!admin) {
         return (
             <Layout>
+
                 <div className="users-dashboard">
+
                     <section className="users-denied">
+
                         <ShieldCheck size={38} />
-                        <h2>Acceso restringido</h2>
+
+                        <h2>
+                            Acceso restringido
+                        </h2>
+
                         <p>
                             Esta sección está disponible solo para
                             administradores.
                         </p>
+
                     </section>
+
                 </div>
+
             </Layout>
         );
     }
@@ -302,8 +368,11 @@ function UsersPage() {
             title="Usuarios y roles"
             subtitle="Administrá cuentas y permisos"
         >
+
             <div className="users-dashboard">
+
                 <section className="users-summary-grid">
+
                     <StatCard
                         title="Usuarios"
                         value={stats.total}
@@ -338,9 +407,11 @@ function UsersPage() {
                         color="#8E7CC3"
                         icon={<ShieldCheck />}
                     />
+
                 </section>
 
                 {(error || success) && (
+
                     <section
                         className={
                             error
@@ -350,17 +421,24 @@ function UsersPage() {
                     >
                         {error || success}
                     </section>
+
                 )}
 
                 <Panel className="users-list-panel">
+
                     <div className="users-panel-header">
+
                         <div>
-                            <h2>Usuarios y roles</h2>
+
+                            <h2>
+                                Usuarios y roles
+                            </h2>
 
                             <p>
                                 {filteredUsers.length} de {users.length}
                                 {" "}usuario(s)
                             </p>
+
                         </div>
 
                         <button
@@ -369,76 +447,144 @@ function UsersPage() {
                             onClick={loadUsers}
                             disabled={initialLoading}
                         >
+
                             <RefreshCw size={18} />
-                            <span>Actualizar</span>
+
+                            <span>
+                                Actualizar
+                            </span>
+
                         </button>
+
                     </div>
 
                     <div className="users-toolbar">
+
                         <label className="users-search">
+
                             <Search size={18} />
+
                             <input
                                 type="search"
                                 placeholder="Buscar usuario"
                                 value={search}
                                 onChange={(event) =>
-                                    setSearch(event.target.value)
+                                    setSearch(
+                                        event.target.value
+                                    )
                                 }
                             />
+
                         </label>
 
                         <select
                             className="users-filter"
                             value={roleFilter}
                             onChange={(event) =>
-                                setRoleFilter(event.target.value)
+                                setRoleFilter(
+                                    event.target.value
+                                )
                             }
                         >
-                            <option value="all">Todos los roles</option>
+
+                            <option value="all">
+                                Todos los roles
+                            </option>
+
                             {roleFilterOptions.map((role) => (
-                                <option key={role} value={role}>
+
+                                <option
+                                    key={role}
+                                    value={role}
+                                >
                                     {getRoleLabel(role)}
                                 </option>
+
                             ))}
+
                         </select>
 
                         <select
                             className="users-filter"
                             value={statusFilter}
                             onChange={(event) =>
-                                setStatusFilter(event.target.value)
+                                setStatusFilter(
+                                    event.target.value
+                                )
                             }
                         >
-                            <option value="all">Todos los estados</option>
-                            <option value="active">Activos</option>
-                            <option value="inactive">Inactivos</option>
+
+                            <option value="all">
+                                Todos los estados
+                            </option>
+
+                            <option value="active">
+                                Activos
+                            </option>
+
+                            <option value="inactive">
+                                Inactivos
+                            </option>
+
                         </select>
+
                     </div>
 
                     {initialLoading ? (
+
                         <p className="users-empty-state">
                             Cargando usuarios...
                         </p>
+
                     ) : filteredUsers.length === 0 ? (
+
                         <div className="users-empty-state users-empty-state--center">
+
                             <Users size={42} />
-                            <p>No hay usuarios para mostrar.</p>
+
+                            <p>
+                                No hay usuarios para mostrar.
+                            </p>
+
                         </div>
+
                     ) : (
+
                         <div className="users-list-shell">
+
                             <div className="users-table">
+
                                 <div className="users-table-header">
-                                    <span>Usuario</span>
-                                    <span>Rol actual</span>
-                                    <span>Actividad</span>
-                                    <span>Estado</span>
-                                    <span>Acciones</span>
+
+                                    <span>
+                                        Usuario
+                                    </span>
+
+                                    <span>
+                                        Rol actual
+                                    </span>
+
+                                    <span>
+                                        Actividad
+                                    </span>
+
+                                    <span>
+                                        Estado
+                                    </span>
+
+                                    <span>
+                                        Acciones
+                                    </span>
+
                                 </div>
 
                                 <div className="users-record-list">
+
                                     {filteredUsers.map((user) => {
+
                                         const isSelf =
                                             user.userId === currentUserId;
+
                                         const roleLocked =
                                             isSelf ||
                                             user.role === "Owner" ||
@@ -458,32 +604,46 @@ function UsersPage() {
                                             );
 
                                         return (
+
                                             <article
                                                 className="users-row"
                                                 key={user.userId}
                                             >
+
                                                 <div className="users-person">
+
                                                     <div className="users-avatar">
                                                         {getInitials(user.name)}
                                                     </div>
 
                                                     <div className="users-person-info">
+
                                                         <strong>
                                                             {user.name}
                                                         </strong>
 
                                                         <span>
+
                                                             <Mail size={14} />
+
                                                             {user.email}
+
                                                         </span>
 
                                                         {user.emailVerified && (
+
                                                             <small>
+
                                                                 <BadgeCheck size={13} />
+
                                                                 Email verificado
+
                                                             </small>
+
                                                         )}
+
                                                     </div>
+
                                                 </div>
 
                                                 <span
@@ -493,30 +653,47 @@ function UsersPage() {
                                                 </span>
 
                                                 <div className="users-activity">
+
                                                     <span>
+
                                                         <PawPrint size={14} />
+
                                                         {user.petsCount ?? 0}
+
                                                     </span>
 
                                                     <span>
+
                                                         <CalendarDays size={14} />
+
                                                         {user.appointmentsCount ?? 0}
+
                                                     </span>
 
                                                     <span>
+
                                                         <ClipboardList size={14} />
+
                                                         {user.medicalRecordsCount ?? 0}
+
                                                     </span>
 
                                                     <span>
+
                                                         <Syringe size={14} />
+
                                                         {user.administeredVaccinesCount ?? 0}
+
                                                     </span>
 
                                                     <span>
+
                                                         <Bell size={14} />
+
                                                         {user.remindersCount ?? 0}
+
                                                     </span>
+
                                                 </div>
 
                                                 <span
@@ -528,12 +705,17 @@ function UsersPage() {
                                                 >
                                                     {user.active
                                                         ? "Activo"
-                                                        : "Inactivo"}
+                                                        : "Inactivo"
+                                                    }
                                                 </span>
 
                                                 <div className="users-actions">
+
                                                     <label className="users-action-field">
-                                                        <span>Rol</span>
+
+                                                        <span>
+                                                            Rol
+                                                        </span>
 
                                                         <select
                                                             value={user.role}
@@ -548,21 +730,28 @@ function UsersPage() {
                                                                 )
                                                             }
                                                         >
+
                                                             {user.role === "Owner" && (
+
                                                                 <option value="Owner">
                                                                     Propietario
                                                                 </option>
+
                                                             )}
 
                                                             {editableRoleOptions.map((role) => (
+
                                                                 <option
                                                                     key={role}
                                                                     value={role}
                                                                 >
                                                                     {getRoleLabel(role)}
                                                                 </option>
+
                                                             ))}
+
                                                         </select>
+
                                                     </label>
 
                                                     <button
@@ -582,24 +771,153 @@ function UsersPage() {
                                                     >
                                                         {user.active
                                                             ? "Desactivar"
-                                                            : "Activar"}
+                                                            : "Activar"
+                                                        }
                                                     </button>
 
                                                     {user.hasAssociatedData && (
+
                                                         <small className="users-lock-hint">
+
                                                             {getActivityTotal(user)} dato(s) asociados
+
                                                         </small>
+
                                                     )}
+
                                                 </div>
+
                                             </article>
+
                                         );
+
                                     })}
+
                                 </div>
+
                             </div>
+
                         </div>
+
                     )}
+
                 </Panel>
+
+                {confirmation && (
+
+                    <div className="users-modal-backdrop">
+
+                        <div
+                            className="users-confirm-modal"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="users-confirm-title"
+                        >
+
+                            <div
+                                className={
+                                    confirmation.type === "status" &&
+                                    !confirmation.nextStatus
+                                        ? "users-confirm-icon users-confirm-icon--danger"
+                                        : "users-confirm-icon"
+                                }
+                            >
+
+                                {confirmation.type === "role" ? (
+
+                                    <ShieldCheck size={28} />
+
+                                ) : confirmation.nextStatus ? (
+
+                                    <UserCheck size={28} />
+
+                                ) : (
+
+                                    <UserX size={28} />
+
+                                )}
+
+                            </div>
+
+                            <h3 id="users-confirm-title">
+
+                                {confirmation.type === "role"
+                                    ? "Cambiar rol"
+                                    : confirmation.nextStatus
+                                        ? "Activar cuenta"
+                                        : "Desactivar cuenta"
+                                }
+
+                            </h3>
+
+                            <p>
+
+                                {confirmation.type === "role"
+                                    ? `¿Querés cambiar el rol de ${confirmation.user.name} a ${getRoleLabel(confirmation.role)}?`
+                                    : confirmation.nextStatus
+                                        ? `¿Querés activar la cuenta de ${confirmation.user.name}?`
+                                        : `¿Querés desactivar la cuenta de ${confirmation.user.name}?`
+                                }
+
+                            </p>
+
+                            {confirmation.type === "status" && (
+
+                                <small className="users-confirm-help">
+
+                                    {confirmation.nextStatus
+                                        ? "El usuario podrá volver a iniciar sesión."
+                                        : "El usuario no podrá iniciar sesión hasta que vuelvas a activar su cuenta."
+                                    }
+
+                                </small>
+
+                            )}
+
+                            <div className="users-confirm-actions">
+
+                                <button
+                                    type="button"
+                                    className="users-confirm-button users-confirm-button--cancel"
+                                    onClick={handleCancelConfirmation}
+                                    disabled={savingUserId !== null}
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className={
+                                        confirmation.type === "status" &&
+                                        !confirmation.nextStatus
+                                            ? "users-confirm-button users-confirm-button--danger"
+                                            : "users-confirm-button users-confirm-button--primary"
+                                    }
+                                    onClick={handleConfirm}
+                                    disabled={savingUserId !== null}
+                                >
+
+                                    {savingUserId !== null
+                                        ? "Guardando..."
+                                        : confirmation.type === "role"
+                                            ? "Cambiar rol"
+                                            : confirmation.nextStatus
+                                                ? "Activar"
+                                                : "Desactivar"
+                                    }
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                )}
+
             </div>
+
         </Layout>
     );
 }
