@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import { CalendarDays, Save, X } from "lucide-react";
+
 import Panel from "../../../components/ui/Panel";
 import { getAvailability } from "../../../services/appointmentService";
 
@@ -11,16 +12,22 @@ const emptyForm = {
     reason: ""
 };
 
+const getTodayString = () => {
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+};
+
 const getInitialFormData = (selectedAppointment) => {
     if (!selectedAppointment) {
-        return {
-            ...emptyForm
-        };
+        return { ...emptyForm };
     }
 
-    const date = new Date(
-        selectedAppointment.dateTime
-    );
+    const date = new Date(selectedAppointment.dateTime);
 
     return {
         petId: selectedAppointment.petId,
@@ -50,19 +57,16 @@ const AppointmentForm = forwardRef(({
     const [availability, setAvailability] = useState([]);
     const [fieldErrors, setFieldErrors] = useState({});
 
+    const today = getTodayString();
+
     useEffect(() => {
-        setFormData(
-            getInitialFormData(selectedAppointment)
-        );
+        setFormData(getInitialFormData(selectedAppointment));
         setFieldErrors({});
     }, [selectedAppointment]);
 
     useEffect(() => {
         const loadAvailability = async () => {
-            if (
-                !formData.veterinarianId ||
-                !formData.date
-            ) {
+            if (!formData.veterinarianId || !formData.date) {
                 setAvailability([]);
                 return;
             }
@@ -80,16 +84,10 @@ const AppointmentForm = forwardRef(({
         };
 
         loadAvailability();
-    }, [
-        formData.veterinarianId,
-        formData.date
-    ]);
+    }, [formData.veterinarianId, formData.date]);
 
     const handleChange = (e) => {
-        const {
-            name,
-            value
-        } = e.target;
+        const { name, value } = e.target;
 
         setFormData({
             ...formData,
@@ -99,14 +97,12 @@ const AppointmentForm = forwardRef(({
                 : {})
         });
 
-        setFieldErrors((currentErrors) => ({
+        setFieldErrors(currentErrors => ({
             ...currentErrors,
             [name]: "",
-            ...(
-                name === "veterinarianId" || name === "date"
-                    ? { time: "" }
-                    : {}
-            )
+            ...(name === "veterinarianId" || name === "date"
+                ? { time: "" }
+                : {})
         }));
     };
 
@@ -123,10 +119,20 @@ const AppointmentForm = forwardRef(({
 
         if (!formData.date) {
             errors.date = "Seleccioná una fecha.";
+        } else if (formData.date < today) {
+            errors.date = "La fecha del turno no puede ser anterior a hoy.";
         }
 
         if (!formData.time) {
             errors.time = "Seleccioná un horario.";
+        } else if (formData.date && formData.date >= today) {
+            const selectedDateTime = new Date(
+                `${formData.date}T${formData.time}:00`
+            );
+
+            if (selectedDateTime <= new Date()) {
+                errors.time = "Seleccioná un horario futuro.";
+            }
         }
 
         if (!formData.reason.trim()) {
@@ -141,9 +147,7 @@ const AppointmentForm = forwardRef(({
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
         const appointment = {
             petId: Number(formData.petId),
@@ -152,30 +156,29 @@ const AppointmentForm = forwardRef(({
             reason: formData.reason
         };
 
-        const saved = await onSubmit(
-            appointment
-        );
+        const saved = await onSubmit(appointment);
 
         if (saved && !selectedAppointment) {
-            setFormData({
-                ...emptyForm
-            });
+            setFormData({ ...emptyForm });
             setFieldErrors({});
         }
     };
 
     const isCurrentSelectedSlot = (slot) => {
-        if (!selectedAppointment) {
-            return false;
-        }
+        if (!selectedAppointment) return false;
 
-        return slot.dateTime.substring(0, 16) ===
-            `${formData.date}T${formData.time}`;
+        return (
+            slot.dateTime.substring(0, 16) ===
+            `${formData.date}T${formData.time}`
+        );
     };
 
-    const availableSlots = availability.filter(slot =>
-        slot.available || isCurrentSelectedSlot(slot)
-    );
+    const availableSlots = availability.filter(slot => {
+        const slotDate = new Date(slot.dateTime);
+        const isFuture = slotDate > new Date();
+
+        return isFuture && (slot.available || isCurrentSelectedSlot(slot));
+    });
 
     const errorStyle = {
         color: "#C94C4C",
@@ -198,12 +201,11 @@ const AppointmentForm = forwardRef(({
                     <div className="appointments-panel-header appointment-form-header">
                         <div>
                             <h2>
-                                {
-                                    title ??
-                                    (selectedAppointment
+                                {title ?? (
+                                    selectedAppointment
                                         ? "Editar turno"
-                                        : "Nuevo turno")
-                                }
+                                        : "Nuevo turno"
+                                )}
                             </h2>
 
                             <p>
@@ -226,26 +228,15 @@ const AppointmentForm = forwardRef(({
                             disabled={disablePetSelection}
                             required
                             aria-invalid={Boolean(fieldErrors.petId)}
-                            style={
-                                fieldErrors.petId
-                                    ? fieldErrorStyle
-                                    : undefined
-                            }
+                            style={fieldErrors.petId ? fieldErrorStyle : undefined}
                         >
-                            <option value="">
-                                Seleccionar mascota
-                            </option>
+                            <option value="">Seleccionar mascota</option>
 
-                            {
-                                pets.map(pet => (
-                                    <option
-                                        key={pet.petId}
-                                        value={pet.petId}
-                                    >
-                                        {pet.name}
-                                    </option>
-                                ))
-                            }
+                            {pets.map(pet => (
+                                <option key={pet.petId} value={pet.petId}>
+                                    {pet.name}
+                                </option>
+                            ))}
                         </select>
 
                         {fieldErrors.petId && (
@@ -270,20 +261,13 @@ const AppointmentForm = forwardRef(({
                                     : undefined
                             }
                         >
-                            <option value="">
-                                Seleccionar veterinario
-                            </option>
+                            <option value="">Seleccionar veterinario</option>
 
-                            {
-                                veterinarians.map(vet => (
-                                    <option
-                                        key={vet.id}
-                                        value={vet.id}
-                                    >
-                                        {vet.name}
-                                    </option>
-                                ))
-                            }
+                            {veterinarians.map(vet => (
+                                <option key={vet.id} value={vet.id}>
+                                    {vet.name}
+                                </option>
+                            ))}
                         </select>
 
                         {fieldErrors.veterinarianId && (
@@ -301,6 +285,7 @@ const AppointmentForm = forwardRef(({
                                 type="date"
                                 name="date"
                                 value={formData.date}
+                                min={today}
                                 onChange={handleChange}
                                 required
                                 aria-invalid={Boolean(fieldErrors.date)}
@@ -333,20 +318,16 @@ const AppointmentForm = forwardRef(({
                                         : undefined
                                 }
                             >
-                                <option value="">
-                                    Seleccionar horario
-                                </option>
+                                <option value="">Seleccionar horario</option>
 
-                                {
-                                    availableSlots.map(slot => (
-                                        <option
-                                            key={slot.dateTime}
-                                            value={slot.dateTime.substring(11, 16)}
-                                        >
-                                            {slot.dateTime.substring(11, 16)}
-                                        </option>
-                                    ))
-                                }
+                                {availableSlots.map(slot => (
+                                    <option
+                                        key={slot.dateTime}
+                                        value={slot.dateTime.substring(11, 16)}
+                                    >
+                                        {slot.dateTime.substring(11, 16)}
+                                    </option>
+                                ))}
                             </select>
 
                             {fieldErrors.time && (
@@ -383,21 +364,16 @@ const AppointmentForm = forwardRef(({
                     </label>
 
                     <div className="appointment-form-actions">
-                        {
-                            selectedAppointment && (
-                                <button
-                                    type="button"
-                                    className="appointments-secondary-button"
-                                    onClick={onCancelEdit}
-                                >
-                                    <X size={18} />
-
-                                    <span>
-                                        Cancelar
-                                    </span>
-                                </button>
-                            )
-                        }
+                        {selectedAppointment && (
+                            <button
+                                type="button"
+                                className="appointments-secondary-button"
+                                onClick={onCancelEdit}
+                            >
+                                <X size={18} />
+                                <span>Cancelar</span>
+                            </button>
+                        )}
 
                         <button
                             type="submit"
@@ -407,12 +383,11 @@ const AppointmentForm = forwardRef(({
                             <Save size={18} />
 
                             <span>
-                                {
-                                    loading
-                                        ? "Guardando..."
-                                        : selectedAppointment
-                                            ? "Actualizar"
-                                            : "Guardar"
+                                {loading
+                                    ? "Guardando..."
+                                    : selectedAppointment
+                                        ? "Actualizar"
+                                        : "Guardar"
                                 }
                             </span>
                         </button>
