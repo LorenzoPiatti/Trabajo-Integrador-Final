@@ -80,6 +80,30 @@ public class ReminderService : IReminderService
         await _reminderRepository.SaveChangesAsync();
     }
 
+    public async Task CreateAppointmentReminderAsync(
+        int ownerId,
+        Appointment appointment)
+    {
+        var reminderDate =
+            appointment.DateTime.AddDays(-1);
+
+        var reminder = new Reminder
+        {
+            OwnerId = ownerId,
+            ReminderDate = reminderDate,
+            Type = ReminderType.Appointment,
+            Sent = false,
+            AppointmentId = appointment.AppointmentId,
+            AdministeredVaccineId = null,
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _reminderRepository.AddAsync(reminder);
+
+        await _reminderRepository.SaveChangesAsync();
+    }
+
     private static ReminderResponseDto MapToResponseDto(
         Reminder reminder)
     {

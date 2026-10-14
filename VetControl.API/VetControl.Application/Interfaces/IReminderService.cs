@@ -1,4 +1,5 @@
 ﻿using VetControl.Application.DTOs.Reminders;
+using VetControl.Domain.Entities;
 
 namespace VetControl.Application.Interfaces;
 
@@ -15,4 +16,8 @@ public interface IReminderService
         int userId);
 
     Task MarkAllAsReadAsync(int userId);
+
+    Task CreateAppointmentReminderAsync(
+        int ownerId,
+        Appointment appointment);
 }

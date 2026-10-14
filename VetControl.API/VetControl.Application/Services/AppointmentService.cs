@@ -11,17 +11,23 @@ public class AppointmentService : IAppointmentService
     private readonly IPetRepository _petRepository;
     private readonly IUserRepository _userRepository;
     private readonly IOwnerRepository _ownerRepository;
+    private readonly IReminderService _reminderService;
+    private readonly IEmailService _emailService;
 
     public AppointmentService(
         IAppointmentRepository appointmentRepository,
         IPetRepository petRepository,
         IUserRepository userRepository,
-        IOwnerRepository ownerRepository)
+        IOwnerRepository ownerRepository,
+        IReminderService reminderService,
+        IEmailService emailService)
     {
         _appointmentRepository = appointmentRepository;
         _petRepository = petRepository;
         _userRepository = userRepository;
         _ownerRepository = ownerRepository;
+        _reminderService = reminderService;
+        _emailService = emailService;
     }
 
     public async Task<AppointmentResponseDto> CreateAsync(
@@ -36,6 +42,16 @@ public class AppointmentService : IAppointmentService
         {
             throw new Exception(
                 "El propietario no existe.");
+        }
+
+        var ownerUser =
+            await _userRepository
+                .GetByIdAsync(userId);
+
+        if (ownerUser is null)
+        {
+            throw new Exception(
+                "El usuario propietario no existe.");
         }
 
         var pet =
@@ -112,6 +128,29 @@ public class AppointmentService : IAppointmentService
 
         await _appointmentRepository.SaveChangesAsync();
 
+        await _reminderService.CreateAppointmentReminderAsync(
+            owner.OwnerId,
+            appointment);
+
+        var emailSubject =
+            "VetControl - Turno confirmado";
+
+        var emailBody =
+            $"Hola {owner.FirstName},\n\n" +
+            $"Tu turno fue confirmado correctamente.\n\n" +
+            $"Mascota: {pet.Name}\n" +
+            $"Veterinario: {veterinarian.Name}\n" +
+            $"Fecha: {appointment.DateTime:dd/MM/yyyy}\n" +
+            $"Hora: {appointment.DateTime:HH:mm}\n" +
+            $"Motivo: {appointment.Reason}\n\n" +
+            $"Número de turno: {appointment.AppointmentId}\n\n" +
+            "VetControl";
+
+        await _emailService.SendEmailAsync(
+            ownerUser.Email,
+            emailSubject,
+            emailBody);
+
         return MapToResponseDto(
             appointment,
             pet,
@@ -122,12 +161,14 @@ public class AppointmentService : IAppointmentService
         int veterinarianId,
         DateTime date)
     {
-        var veterinarian = await _userRepository.GetByIdAsync(
-            veterinarianId);
+        var veterinarian =
+            await _userRepository
+                .GetByIdAsync(veterinarianId);
 
         if (veterinarian is null)
         {
-            throw new Exception("El veterinario no existe.");
+            throw new Exception(
+                "El veterinario no existe.");
         }
 
         if (veterinarian.Role != UserRole.Veterinarian)
@@ -137,11 +178,13 @@ public class AppointmentService : IAppointmentService
         }
 
         var appointments =
-            await _appointmentRepository.GetByVeterinarianAndDateAsync(
-                veterinarianId,
-                date.Date);
+            await _appointmentRepository
+                .GetByVeterinarianAndDateAsync(
+                    veterinarianId,
+                    date.Date);
 
-        var availability = new List<AppointmentAvailabilityDto>();
+        var availability =
+            new List<AppointmentAvailabilityDto>();
 
         AddTimeSlots(
             availability,
@@ -162,7 +205,8 @@ public class AppointmentService : IAppointmentService
         int userId)
     {
         var owner =
-            await _ownerRepository.GetByUserIdAsync(userId);
+            await _ownerRepository
+                .GetByUserIdAsync(userId);
 
         if (owner is null)
         {
@@ -182,7 +226,8 @@ public class AppointmentService : IAppointmentService
             .ToList();
     }
 
-    public async Task<List<AppointmentResponseDto>> GetAllForReceptionAsync()
+    public async Task<List<AppointmentResponseDto>>
+        GetAllForReceptionAsync()
     {
         var appointments =
             await _appointmentRepository
@@ -201,7 +246,8 @@ public class AppointmentService : IAppointmentService
         int userId)
     {
         var owner =
-            await _ownerRepository.GetByUserIdAsync(userId);
+            await _ownerRepository
+                .GetByUserIdAsync(userId);
 
         if (owner is null)
         {
@@ -236,7 +282,8 @@ public class AppointmentService : IAppointmentService
         UpdateAppointmentDto dto)
     {
         var owner =
-            await _ownerRepository.GetByUserIdAsync(userId);
+            await _ownerRepository
+                .GetByUserIdAsync(userId);
 
         if (owner is null)
         {
@@ -340,13 +387,15 @@ public class AppointmentService : IAppointmentService
                 "El turno no existe.");
         }
 
-        if (appointment.Status == AppointmentStatus.Completed)
+        if (appointment.Status ==
+            AppointmentStatus.Completed)
         {
             throw new Exception(
                 "No se puede modificar un turno ya atendido.");
         }
 
-        if (appointment.Status == AppointmentStatus.Cancelled)
+        if (appointment.Status ==
+            AppointmentStatus.Cancelled)
         {
             throw new Exception(
                 "No se puede modificar un turno cancelado.");
@@ -372,7 +421,8 @@ public class AppointmentService : IAppointmentService
                 "El veterinario no existe.");
         }
 
-        if (veterinarian.Role != UserRole.Veterinarian)
+        if (veterinarian.Role !=
+            UserRole.Veterinarian)
         {
             throw new Exception(
                 "El usuario seleccionado no es un veterinario.");
@@ -402,7 +452,8 @@ public class AppointmentService : IAppointmentService
         }
 
         appointment.PetId = dto.PetId;
-        appointment.VeterinarianId = dto.VeterinarianId;
+        appointment.VeterinarianId =
+            dto.VeterinarianId;
         appointment.DateTime = dto.DateTime;
         appointment.Reason = dto.Reason;
 
@@ -447,12 +498,14 @@ public class AppointmentService : IAppointmentService
 
         await _appointmentRepository.SaveChangesAsync();
     }
+
     public async Task CancelAsync(
         int appointmentId,
         int userId)
     {
         var owner =
-            await _ownerRepository.GetByUserIdAsync(userId);
+            await _ownerRepository
+                .GetByUserIdAsync(userId);
 
         if (owner is null)
         {
@@ -492,12 +545,14 @@ public class AppointmentService : IAppointmentService
         await _appointmentRepository.SaveChangesAsync();
     }
 
-    public async Task<List<AppointmentResponseDto>> GetCompletedByVeterinarianAsync(
-    int veterinarianId)
+    public async Task<List<AppointmentResponseDto>>
+        GetCompletedByVeterinarianAsync(
+            int veterinarianId)
     {
         var appointments =
             await _appointmentRepository
-                .GetCompletedByVeterinarianAsync(veterinarianId);
+                .GetCompletedByVeterinarianAsync(
+                    veterinarianId);
 
         return appointments
             .Select(a => MapToResponseDto(
@@ -557,20 +612,24 @@ public class AppointmentService : IAppointmentService
         }
     }
 
-    public async Task<List<AppointmentResponseDto>> GetPendingByVeterinarianAsync(
-        int veterinarianId)
+    public async Task<List<AppointmentResponseDto>>
+        GetPendingByVeterinarianAsync(
+            int veterinarianId)
     {
         var veterinarian =
-            await _userRepository.GetByIdAsync(veterinarianId);
+            await _userRepository
+                .GetByIdAsync(veterinarianId);
 
         if (veterinarian is null)
         {
-            throw new Exception("El veterinario no existe.");
+            throw new Exception(
+                "El veterinario no existe.");
         }
 
         var appointments =
             await _appointmentRepository
-                .GetPendingByVeterinarianAsync(veterinarianId);
+                .GetPendingByVeterinarianAsync(
+                    veterinarianId);
 
         return appointments
             .Select(a => MapToResponseDto(
@@ -587,17 +646,39 @@ public class AppointmentService : IAppointmentService
     {
         return new AppointmentResponseDto
         {
-            AppointmentId = appointment.AppointmentId,
-            PetId = appointment.PetId,
-            PetName = pet.Name,
-            OwnerId = pet.OwnerId,
-            OwnerName = GetOwnerName(pet.Owner),
-            OwnerEmail = pet.Owner?.User?.Email ?? string.Empty,
-            VeterinarianId = appointment.VeterinarianId,
-            VeterinarianName = veterinarian.Name,
-            DateTime = appointment.DateTime,
-            Reason = appointment.Reason,
-            Status = appointment.Status.ToString()
+            AppointmentId =
+                appointment.AppointmentId,
+
+            PetId =
+                appointment.PetId,
+
+            PetName =
+                pet.Name,
+
+            OwnerId =
+                pet.OwnerId,
+
+            OwnerName =
+                GetOwnerName(pet.Owner),
+
+            OwnerEmail =
+                pet.Owner?.User?.Email
+                ?? string.Empty,
+
+            VeterinarianId =
+                appointment.VeterinarianId,
+
+            VeterinarianName =
+                veterinarian.Name,
+
+            DateTime =
+                appointment.DateTime,
+
+            Reason =
+                appointment.Reason,
+
+            Status =
+                appointment.Status.ToString()
         };
     }
 
@@ -609,11 +690,14 @@ public class AppointmentService : IAppointmentService
             return string.Empty;
         }
 
-        if (!string.IsNullOrWhiteSpace(owner.User?.Name))
+        if (!string.IsNullOrWhiteSpace(
+            owner.User?.Name))
         {
             return owner.User.Name;
         }
 
-        return $"{owner.FirstName} {owner.LastName}".Trim();
+        return
+            $"{owner.FirstName} {owner.LastName}"
+                .Trim();
     }
 }
