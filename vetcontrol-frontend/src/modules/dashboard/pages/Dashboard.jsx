@@ -10,8 +10,7 @@ import {
     Stethoscope,
     Syringe,
     UserCheck,
-    Users,
-    UserX
+    Users
 } from "lucide-react";
 
 import Layout from "../../../components/layout/Layout";
@@ -24,14 +23,12 @@ import {
     getPendingAppointments,
     getReceptionAppointments
 } from "../../../services/appointmentService";
+
 import { getMedicalRecordPets } from "../../../services/medicalRecordService";
 import { getPets } from "../../../services/petService";
 import { getUnreadReminderCount } from "../../../services/reminderService";
-import { getUsers } from "../../../services/userService";
-import {
-    getAdministeredVaccines,
-    getVaccines
-} from "../../../services/vaccineService";
+import { getUsers, getVeterinarians } from "../../../services/userService";
+import { getAdministeredVaccines, getVaccines } from "../../../services/vaccineService";
 import { getUserRole } from "../../../utils/authUtils";
 
 import "../styles/Dashboard.css";
@@ -79,12 +76,10 @@ const LOW_STOCK_LIMIT = 2;
 
 const getUpcomingAppointments = (appointments, limit = 3) => {
     return appointments
-        .filter((appointment) => {
-            return (
-                new Date(appointment.dateTime) >= new Date() &&
-                !isCancelled(appointment.status)
-            );
-        })
+        .filter(appointment =>
+            new Date(appointment.dateTime) >= new Date() &&
+            isConfirmed(appointment.status)
+        )
         .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))
         .slice(0, limit);
 };
@@ -113,7 +108,7 @@ function DashboardActions({ title = "Acciones rápidas", actions }) {
             <h3 className="dashboard-panel-title">{title}</h3>
 
             <div className="dashboard-actions-grid">
-                {actions.map((action) => (
+                {actions.map(action => (
                     <button
                         key={action.title}
                         type="button"
@@ -158,7 +153,7 @@ function AppointmentPreview({
                 <p className="dashboard-empty">{emptyText}</p>
             ) : (
                 <div className="dashboard-preview-list">
-                    {appointments.map((appointment) => (
+                    {appointments.map(appointment => (
                         <article
                             key={appointment.appointmentId}
                             className="dashboard-preview-row"
@@ -169,11 +164,11 @@ function AppointmentPreview({
 
                             <div>
                                 <strong>{appointment.petName}</strong>
+
                                 <span>
-                                    {
-                                        showOwner && appointment.ownerName
-                                            ? `${appointment.ownerName} · ${appointment.reason || "Sin motivo"}`
-                                            : appointment.reason
+                                    {showOwner && appointment.ownerName
+                                        ? `${appointment.ownerName} · ${appointment.reason || "Sin motivo"}`
+                                        : appointment.reason
                                     }
                                 </span>
                             </div>
@@ -196,6 +191,7 @@ function OwnerDashboard() {
         pendingVaccines: 0,
         reminders: 0
     });
+
     const [appointments, setAppointments] = useState([]);
     const [pets, setPets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -220,27 +216,28 @@ function OwnerDashboard() {
 
                 setStats({
                     pets: petsData?.length ?? 0,
+
                     appointmentsToday: (appointmentsData ?? [])
-                        .filter((appointment) =>
+                        .filter(appointment =>
                             isToday(appointment.dateTime) &&
                             !isCancelled(appointment.status)
                         ).length,
+
                     pendingVaccines: (vaccinesData ?? [])
-                        .filter((vaccine) =>
+                        .filter(vaccine =>
                             isVaccineDue(vaccine.nextDueDate)
                         ).length,
+
                     reminders:
                         typeof unreadReminders === "number"
                             ? unreadReminders
                             : unreadReminders?.unreadCount ??
-                            unreadReminders?.count ??
-                            0
+                              unreadReminders?.count ??
+                              0
                 });
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Error al cargar inicio owner:", error);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         };
@@ -248,11 +245,10 @@ function OwnerDashboard() {
         loadDashboard();
     }, []);
 
-    const upcomingAppointments =
-        useMemo(
-            () => getUpcomingAppointments(appointments, 3),
-            [appointments]
-        );
+    const upcomingAppointments = useMemo(
+        () => getUpcomingAppointments(appointments, 3),
+        [appointments]
+    );
 
     return (
         <>
@@ -286,12 +282,51 @@ function OwnerDashboard() {
                 />
             </section>
 
-            <section className="dashboard-grid">
-                <AppointmentPreview
-                    title="Próximos turnos"
-                    appointments={upcomingAppointments}
-                    emptyText="No tenés turnos programados."
-                />
+            <section className="owner-dashboard-grid">
+                <div className="owner-dashboard-left">
+                    <AppointmentPreview
+                        title="Próximos 3 turnos"
+                        appointments={upcomingAppointments}
+                        emptyText="No tenés turnos programados."
+                    />
+
+                    <Panel>
+                        <div className="dashboard-panel-header">
+                            <div>
+                                <h3>Mis mascotas</h3>
+                                <p>{pets.length} mascota(s)</p>
+                            </div>
+                        </div>
+
+                        {pets.length === 0 ? (
+                            <p className="dashboard-empty">
+                                No tenés mascotas registradas.
+                            </p>
+                        ) : (
+                            <div className="dashboard-preview-list dashboard-preview-list--grid">
+                                {pets.slice(0, 4).map(pet => (
+                                    <article
+                                        key={pet.petId}
+                                        className="dashboard-preview-row"
+                                    >
+                                        <div className="dashboard-preview-icon">
+                                            <PawPrint size={18} />
+                                        </div>
+
+                                        <div>
+                                            <strong>{pet.name}</strong>
+
+                                            <span>
+                                                {pet.species}
+                                                {pet.breed ? ` · ${pet.breed}` : ""}
+                                            </span>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        )}
+                    </Panel>
+                </div>
 
                 <DashboardActions
                     actions={[
@@ -318,42 +353,6 @@ function OwnerDashboard() {
                     ]}
                 />
             </section>
-
-            <Panel>
-                <div className="dashboard-panel-header">
-                    <div>
-                        <h3>Mis mascotas</h3>
-                        <p>{pets.length} mascota(s)</p>
-                    </div>
-                </div>
-
-                {pets.length === 0 ? (
-                    <p className="dashboard-empty">
-                        No tenés mascotas registradas.
-                    </p>
-                ) : (
-                    <div className="dashboard-preview-list dashboard-preview-list--grid">
-                        {pets.slice(0, 4).map((pet) => (
-                            <article
-                                key={pet.petId}
-                                className="dashboard-preview-row"
-                            >
-                                <div className="dashboard-preview-icon">
-                                    <PawPrint size={18} />
-                                </div>
-
-                                <div>
-                                    <strong>{pet.name}</strong>
-                                    <span>
-                                        {pet.species}
-                                        {pet.breed ? ` · ${pet.breed}` : ""}
-                                    </span>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                )}
-            </Panel>
         </>
     );
 }
@@ -380,11 +379,9 @@ function VeterinarianDashboard() {
                 setPendingAppointments(pendingData ?? []);
                 setCompletedAppointments(completedData ?? []);
                 setPatients(patientsData ?? []);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Error al cargar inicio veterinario:", error);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         };
@@ -392,10 +389,9 @@ function VeterinarianDashboard() {
         loadDashboard();
     }, []);
 
-    const appointmentsToday =
-        pendingAppointments.filter((appointment) =>
-            isToday(appointment.dateTime)
-        ).length;
+    const appointmentsToday = pendingAppointments.filter(
+        appointment => isToday(appointment.dateTime)
+    ).length;
 
     return (
         <>
@@ -460,20 +456,25 @@ function VeterinarianDashboard() {
 
 function ReceptionDashboard() {
     const [appointments, setAppointments] = useState([]);
+    const [veterinarians, setVeterinarians] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadDashboard = async () => {
             try {
-                const appointmentsData =
-                    await getReceptionAppointments();
+                const [
+                    appointmentsData,
+                    veterinariansData
+                ] = await Promise.all([
+                    getReceptionAppointments(),
+                    getVeterinarians()
+                ]);
 
                 setAppointments(appointmentsData ?? []);
-            }
-            catch (error) {
+                setVeterinarians(veterinariansData ?? []);
+            } catch (error) {
                 console.error("Error al cargar inicio recepción:", error);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         };
@@ -481,40 +482,32 @@ function ReceptionDashboard() {
         loadDashboard();
     }, []);
 
-    const confirmedTodayAppointments =
-        useMemo(
-            () => appointments
-                .filter((appointment) =>
-                    isToday(appointment.dateTime) &&
-                    isConfirmed(appointment.status)
-                )
-                .sort((a, b) =>
-                    new Date(a.dateTime) - new Date(b.dateTime)
-                ),
-            [appointments]
-        );
+    const confirmedTodayAppointments = useMemo(
+        () => appointments
+            .filter(appointment =>
+                isToday(appointment.dateTime) &&
+                isConfirmed(appointment.status)
+            )
+            .sort(
+                (a, b) =>
+                    new Date(a.dateTime) -
+                    new Date(b.dateTime)
+            ),
+        [appointments]
+    );
 
-    const upcomingTodayAppointments =
-        confirmedTodayAppointments.filter((appointment) =>
-            new Date(appointment.dateTime) >= new Date()
-        );
-
-    const nextAppointment =
-        upcomingTodayAppointments[0];
-
-    const veterinarianCount =
-        new Set(
-            confirmedTodayAppointments
-                .map((appointment) =>
-                    appointment.veterinarianId ??
-                    appointment.veterinarianName
-                )
-                .filter(Boolean)
-        ).size;
+    const upcomingAppointments = useMemo(
+        () => appointments.filter(
+            appointment =>
+                isConfirmed(appointment.status) &&
+                new Date(appointment.dateTime) >= new Date()
+        ),
+        [appointments]
+    );
 
     return (
         <>
-            <section className="dashboard-cards">
+            <section className="dashboard-cards dashboard-cards--three">
                 <StatCard
                     title="Confirmados hoy"
                     value={
@@ -527,29 +520,14 @@ function ReceptionDashboard() {
                 />
 
                 <StatCard
-                    title="Por atender"
+                    title="Próximos"
                     value={
                         loading
                             ? "..."
-                            : upcomingTodayAppointments.length
+                            : upcomingAppointments.length
                     }
                     color="#E8B86D"
                     icon={<ClipboardList />}
-                />
-
-                <StatCard
-                    title="Próximo turno"
-                    value={
-                        loading
-                            ? "..."
-                            : nextAppointment
-                                ? formatAppointmentTime(
-                                    nextAppointment.dateTime
-                                )
-                                : "--"
-                    }
-                    color="#A3C1AD"
-                    icon={<UserCheck />}
                 />
 
                 <StatCard
@@ -557,10 +535,10 @@ function ReceptionDashboard() {
                     value={
                         loading
                             ? "..."
-                            : veterinarianCount
+                            : veterinarians.length
                     }
-                    color="#E57373"
-                    icon={<UserX />}
+                    color="#A3C1AD"
+                    icon={<Stethoscope />}
                 />
             </section>
 
@@ -599,21 +577,16 @@ function AdminDashboard() {
     useEffect(() => {
         const loadDashboard = async () => {
             try {
-                const [
-                    usersData,
-                    vaccinesData
-                ] = await Promise.all([
+                const [usersData, vaccinesData] = await Promise.all([
                     getUsers(),
                     getVaccines()
                 ]);
 
                 setUsers(usersData ?? []);
                 setVaccines(vaccinesData ?? []);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Error al cargar inicio admin:", error);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         };
@@ -621,13 +594,13 @@ function AdminDashboard() {
         loadDashboard();
     }, []);
 
-    const activeUsers =
-        users.filter((user) => user.active).length;
-    const inactiveUsers = users.length - activeUsers;
-    const lowStockVaccines =
-        vaccines.filter((vaccine) =>
-            vaccine.stock <= LOW_STOCK_LIMIT
-        );
+    const veterinariansCount = users.filter(
+        user => user.role === "Veterinarian"
+    ).length;
+
+    const lowStockVaccines = vaccines.filter(
+        vaccine => vaccine.stock <= LOW_STOCK_LIMIT
+    );
 
     return (
         <>
@@ -640,17 +613,17 @@ function AdminDashboard() {
                 />
 
                 <StatCard
-                    title="Activos"
-                    value={loading ? "..." : activeUsers}
+                    title="Veterinarios"
+                    value={loading ? "..." : veterinariansCount}
                     color="#7FB3D5"
-                    icon={<UserCheck />}
+                    icon={<Stethoscope />}
                 />
 
                 <StatCard
-                    title="Inactivos"
-                    value={loading ? "..." : inactiveUsers}
-                    color="#E57373"
-                    icon={<UserX />}
+                    title="Vacunas"
+                    value={loading ? "..." : vaccines.length}
+                    color="#8E7CC3"
+                    icon={<Syringe />}
                 />
 
                 <StatCard
@@ -676,21 +649,26 @@ function AdminDashboard() {
                         </p>
                     ) : (
                         <div className="dashboard-preview-list">
-                            {lowStockVaccines.slice(0, 4).map((vaccine) => (
-                                <article
-                                    key={vaccine.vaccineId}
-                                    className="dashboard-preview-row"
-                                >
-                                    <div className="dashboard-preview-icon">
-                                        <Syringe size={18} />
-                                    </div>
+                            {lowStockVaccines
+                                .slice(0, 4)
+                                .map(vaccine => (
+                                    <article
+                                        key={vaccine.vaccineId}
+                                        className="dashboard-preview-row"
+                                    >
+                                        <div className="dashboard-preview-icon">
+                                            <Syringe size={18} />
+                                        </div>
 
-                                    <div>
-                                        <strong>{vaccine.name}</strong>
-                                        <span>Stock actual: {vaccine.stock}</span>
-                                    </div>
-                                </article>
-                            ))}
+                                        <div>
+                                            <strong>{vaccine.name}</strong>
+
+                                            <span>
+                                                Stock actual: {vaccine.stock}
+                                            </span>
+                                        </div>
+                                    </article>
+                                ))}
                         </div>
                     )}
                 </Panel>

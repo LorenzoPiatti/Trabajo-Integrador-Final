@@ -19,6 +19,8 @@ function ProfileInfoForm({
     onCancel
 }) {
 
+    const owner = profile?.role === "Owner";
+
     return (
 
         <form
@@ -46,10 +48,17 @@ function ProfileInfoForm({
 
             <div className="profile-info-fields">
 
-                <div className="profile-info-field">
+                <div
+                    className={`profile-info-field ${
+                        owner ? "" : "profile-info-full"
+                    }`}
+                >
 
                     <label>
-                        Nombre de usuario
+                        {owner
+                            ? "Nombre de usuario"
+                            : "Nombre"
+                        }
                     </label>
 
                     <input
@@ -63,85 +72,91 @@ function ProfileInfoForm({
 
                 </div>
 
-                <div className="profile-info-field">
+                {owner && (
+                    <>
 
-                    <label>
-                        Nombre
-                    </label>
+                        <div className="profile-info-field">
 
-                    <input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={onChange}
-                        disabled={!editing}
-                        maxLength={50}
-                    />
+                            <label>
+                                Nombre
+                            </label>
 
-                </div>
+                            <input
+                                type="text"
+                                name="firstName"
+                                value={formData.firstName}
+                                onChange={onChange}
+                                disabled={!editing}
+                                maxLength={50}
+                            />
 
-                <div className="profile-info-field">
+                        </div>
 
-                    <label>
-                        Apellido
-                    </label>
+                        <div className="profile-info-field">
 
-                    <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={onChange}
-                        disabled={!editing}
-                        maxLength={50}
-                    />
+                            <label>
+                                Apellido
+                            </label>
 
-                </div>
+                            <input
+                                type="text"
+                                name="lastName"
+                                value={formData.lastName}
+                                onChange={onChange}
+                                disabled={!editing}
+                                maxLength={50}
+                            />
 
-                <div className="profile-info-field">
+                        </div>
 
-                    <label>
-                        Teléfono
-                    </label>
+                        <div className="profile-info-field">
 
-                    <div className="profile-info-input-icon">
+                            <label>
+                                Teléfono
+                            </label>
 
-                        <Phone size={17} />
+                            <div className="profile-info-input-icon">
 
-                        <input
-                            type="text"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={onChange}
-                            disabled={!editing}
-                            maxLength={30}
-                        />
+                                <Phone size={17} />
 
-                    </div>
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={onChange}
+                                    disabled={!editing}
+                                    maxLength={30}
+                                />
 
-                </div>
+                            </div>
 
-                <div className="profile-info-field profile-info-full">
+                        </div>
 
-                    <label>
-                        Dirección
-                    </label>
+                        <div className="profile-info-field profile-info-full">
 
-                    <div className="profile-info-input-icon">
+                            <label>
+                                Dirección
+                            </label>
 
-                        <MapPin size={17} />
+                            <div className="profile-info-input-icon">
 
-                        <input
-                            type="text"
-                            name="address"
-                            value={formData.address}
-                            onChange={onChange}
-                            disabled={!editing}
-                            maxLength={150}
-                        />
+                                <MapPin size={17} />
 
-                    </div>
+                                <input
+                                    type="text"
+                                    name="address"
+                                    value={formData.address}
+                                    onChange={onChange}
+                                    disabled={!editing}
+                                    maxLength={150}
+                                />
 
-                </div>
+                            </div>
+
+                        </div>
+
+                    </>
+                )}
 
                 <div className="profile-info-field profile-info-full">
 

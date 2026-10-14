@@ -7,7 +7,7 @@ function LoginPage() {
         <div className="login-container">
             <div className="login-left">
                 <img src={petsImage} alt="gato y perro" className="login-image" />
-                <p className="login-workspace">Your Digital Workspace</p>
+                <p className="login-workspace">Tu veterinaria digital</p>
                 <h1 className="login-brand">VetControl</h1>
             </div>
             <div className="login-right">

@@ -21,6 +21,7 @@ function LoginForm() {
     const [errors, setErrors] = useState({});
     const [apiError, setApiError] = useState("");
     const [credentialsError, setCredentialsError] = useState(false);
+    const [needsVerification, setNeedsVerification] = useState(false); // NUEVO
 
     const validate = () => {
 
@@ -66,6 +67,7 @@ function LoginForm() {
 
         setApiError("");
         setCredentialsError(false);
+        setNeedsVerification(false); // NUEVO
 
     };
 
@@ -80,6 +82,7 @@ function LoginForm() {
 
         setApiError("");
         setCredentialsError(false);
+        setNeedsVerification(false); // NUEVO
 
     };
 
@@ -87,6 +90,7 @@ function LoginForm() {
 
         setApiError("");
         setCredentialsError(false);
+        setNeedsVerification(false); // NUEVO
 
         if (!validate()) {
             return;
@@ -127,12 +131,31 @@ function LoginForm() {
             const normalizedMessage =
                 message.toLowerCase();
 
+            // NUEVO: email sin verificar
+            const emailNotVerified =
+                normalizedMessage.includes("verificar su email");
+
             const invalidCredentials =
                 normalizedMessage.includes("usuario no encontrado") ||
                 normalizedMessage.includes("contraseña incorrecta") ||
                 normalizedMessage.includes("credencial");
 
-            if (invalidCredentials) {
+            if (emailNotVerified) {
+
+                // NUEVO: se avisa y se guarda el email, sin redirigir solo
+                setNeedsVerification(true);
+
+                setApiError(
+                    "Tu email todavía no está verificado. Hacé clic en el botón para ingresar el código que te enviamos."
+                );
+
+                localStorage.setItem(
+                    "verificationEmail",
+                    email
+                );
+
+            }
+            else if (invalidCredentials) {
 
                 setApiError(
                     "El email o la contraseña son incorrectos."
@@ -272,14 +295,29 @@ function LoginForm() {
 
             </div>
 
-            <button
-                className="login-btn"
-                type="button"
-                onClick={handleSubmit}
-                disabled={loading}
-            >
-                {loading ? "Ingresando..." : "Iniciar sesión"}
-            </button>
+            {/* NUEVO: el botón cambia si falta verificar el email */}
+            {needsVerification ? (
+
+                <button
+                    className="login-btn"
+                    type="button"
+                    onClick={() => navigate("/verify-email")}
+                >
+                    Verificar email
+                </button>
+
+            ) : (
+
+                <button
+                    className="login-btn"
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                >
+                    {loading ? "Ingresando..." : "Iniciar sesión"}
+                </button>
+
+            )}
 
             <div className="login-contact">
 

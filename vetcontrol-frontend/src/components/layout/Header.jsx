@@ -7,7 +7,10 @@ import ReminderBell from "../../modules/reminder/components/ReminderBell";
 import { useAuth } from "../../context/AuthContext";
 import { isOwner } from "../../utils/authUtils";
 
-function Header() {
+function Header({
+    title,
+    subtitle
+}) {
 
     const location = useLocation();
 
@@ -76,11 +79,16 @@ function Header() {
 
     };
 
-    const currentPage =
+    const routePage =
         pageInfo[location.pathname] || {
             title: "VetControl",
             subtitle: "Tu veterinaria digital."
         };
+
+    const currentPage = {
+        title: title || routePage.title,
+        subtitle: subtitle || routePage.subtitle
+    };
 
     const date = currentDate.toLocaleDateString("es-AR", {
         weekday: "long",

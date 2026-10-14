@@ -92,6 +92,12 @@ public class AppointmentService : IAppointmentService
                 "El usuario seleccionado no es un veterinario.");
         }
 
+        if (dto.DateTime <= DateTime.Now)
+        {
+            throw new Exception(
+                "La fecha y hora del turno deben ser futuras.");
+        }
+
         if (!IsWithinBusinessHours(dto.DateTime))
         {
             throw new Exception(
@@ -307,6 +313,18 @@ public class AppointmentService : IAppointmentService
                 "No puede modificar un turno que no le pertenece.");
         }
 
+        if (appointment.Status == AppointmentStatus.Completed)
+        {
+            throw new Exception(
+                "No se puede modificar un turno ya atendido.");
+        }
+
+        if (appointment.Status == AppointmentStatus.Cancelled)
+        {
+            throw new Exception(
+                "No se puede modificar un turno cancelado.");
+        }
+
         var pet =
             await _petRepository
                 .GetByIdAsync(dto.PetId);
@@ -337,6 +355,12 @@ public class AppointmentService : IAppointmentService
         {
             throw new Exception(
                 "El usuario seleccionado no es un veterinario.");
+        }
+
+        if (dto.DateTime <= DateTime.Now)
+        {
+            throw new Exception(
+                "La fecha y hora del turno deben ser futuras.");
         }
 
         if (!IsWithinBusinessHours(dto.DateTime))
@@ -387,15 +411,13 @@ public class AppointmentService : IAppointmentService
                 "El turno no existe.");
         }
 
-        if (appointment.Status ==
-            AppointmentStatus.Completed)
+        if (appointment.Status == AppointmentStatus.Completed)
         {
             throw new Exception(
                 "No se puede modificar un turno ya atendido.");
         }
 
-        if (appointment.Status ==
-            AppointmentStatus.Cancelled)
+        if (appointment.Status == AppointmentStatus.Cancelled)
         {
             throw new Exception(
                 "No se puede modificar un turno cancelado.");
@@ -421,11 +443,16 @@ public class AppointmentService : IAppointmentService
                 "El veterinario no existe.");
         }
 
-        if (veterinarian.Role !=
-            UserRole.Veterinarian)
+        if (veterinarian.Role != UserRole.Veterinarian)
         {
             throw new Exception(
                 "El usuario seleccionado no es un veterinario.");
+        }
+
+        if (dto.DateTime <= DateTime.Now)
+        {
+            throw new Exception(
+                "La fecha y hora del turno deben ser futuras.");
         }
 
         if (!IsWithinBusinessHours(dto.DateTime))
@@ -452,8 +479,7 @@ public class AppointmentService : IAppointmentService
         }
 
         appointment.PetId = dto.PetId;
-        appointment.VeterinarianId =
-            dto.VeterinarianId;
+        appointment.VeterinarianId = dto.VeterinarianId;
         appointment.DateTime = dto.DateTime;
         appointment.Reason = dto.Reason;
 
@@ -476,15 +502,13 @@ public class AppointmentService : IAppointmentService
                 "El turno no existe.");
         }
 
-        if (appointment.Status ==
-            AppointmentStatus.Cancelled)
+        if (appointment.Status == AppointmentStatus.Cancelled)
         {
             throw new Exception(
                 "El turno ya está cancelado.");
         }
 
-        if (appointment.Status ==
-            AppointmentStatus.Completed)
+        if (appointment.Status == AppointmentStatus.Completed)
         {
             throw new Exception(
                 "No se puede cancelar un turno ya atendido.");
@@ -529,11 +553,16 @@ public class AppointmentService : IAppointmentService
                 "No puede cancelar un turno que no le pertenece.");
         }
 
-        if (appointment.Status ==
-            AppointmentStatus.Cancelled)
+        if (appointment.Status == AppointmentStatus.Cancelled)
         {
             throw new Exception(
                 "El turno ya está cancelado.");
+        }
+
+        if (appointment.Status == AppointmentStatus.Completed)
+        {
+            throw new Exception(
+                "No se puede cancelar un turno ya atendido.");
         }
 
         appointment.Status =
@@ -601,11 +630,16 @@ public class AppointmentService : IAppointmentService
                 a.DateTime == current &&
                 a.Status != AppointmentStatus.Cancelled);
 
+            var isPast =
+                current <= DateTime.Now;
+
             availability.Add(
                 new AppointmentAvailabilityDto
                 {
                     DateTime = current,
-                    Available = !isOccupied
+                    Available =
+                        !isOccupied &&
+                        !isPast
                 });
 
             current = current.AddMinutes(30);

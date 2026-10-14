@@ -25,7 +25,7 @@ const handleResponse = async (response) => {
             typeof data === "string"
                 ? data
                 : data?.message ??
-                  "Ocurrió un error inesperado";
+                "Ocurrió un error inesperado";
 
         throw new Error(message);
     }

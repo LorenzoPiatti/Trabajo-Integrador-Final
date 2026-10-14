@@ -3,25 +3,12 @@ import { useState } from "react";
 import { verifyEmail } from "../../../services/authService";
 
 function VerifyEmailForm() {
+    const navigate = useNavigate();
 
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (!success) {
-            return;
-        }
-
-        const timeoutId = window.setTimeout(() => {
-            setSuccess("");
-        }, 3000);
-
-        return () => window.clearTimeout(timeoutId);
-    }, [success]);
-
-    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setCode(e.target.value);
@@ -55,36 +42,24 @@ function VerifyEmailForm() {
             await verifyEmail(email, cleanCode);
 
             localStorage.removeItem("verificationEmail");
-
             setSuccess("Email verificado correctamente.");
 
-            setTimeout(() => {
-                navigate("/");
-            }, 1200);
-
-        }
-        catch (err) {
+            // Mostramos el mensaje un momento y redirigimos al login
+            setTimeout(() => navigate("/"), 1200);
+        } catch (err) {
             setError(
                 err.message || "No pudimos verificar el código. Intentá nuevamente."
             );
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
     };
 
     return (
-        <form
-            className="login-form"
-            onSubmit={handleSubmit}
-            noValidate
-        >
-
+        <form className="login-form" onSubmit={handleSubmit} noValidate>
             <h2>Verificar Email</h2>
 
-            <p className="login-subtitle">
-                Ingresá el código recibido.
-            </p>
+            <p className="login-subtitle">Ingresá el código recibido.</p>
 
             <label>Código de verificación</label>
 
@@ -95,35 +70,23 @@ function VerifyEmailForm() {
                 onChange={handleChange}
                 className={error ? "input-error" : ""}
                 maxLength={6}
-                disabled={loading || success}
+                disabled={loading || !!success}
             />
 
-            {error && (
-                <p className="error">
-                    {error}
-                </p>
-            )}
-
-            {success && (
-                <p className="success">
-                    {success}
-                </p>
-            )}
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
 
             <button
                 type="submit"
                 className="login-btn"
-                disabled={loading || success}
+                disabled={loading || !!success}
             >
                 {loading ? "Verificando..." : "Validar código"}
             </button>
 
             <div className="login-contact">
-                <Link to="/">
-                    Volver al inicio de sesión
-                </Link>
+                <Link to="/">Volver al inicio de sesión</Link>
             </div>
-
         </form>
     );
 }
