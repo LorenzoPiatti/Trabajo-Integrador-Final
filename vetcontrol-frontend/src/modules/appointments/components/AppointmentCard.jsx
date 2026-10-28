@@ -27,6 +27,10 @@ function AppointmentCard({
 
     const canEdit =
         appointment.status === "Confirmed" &&
+        canManage;
+
+    const canCancel =
+        appointment.status === "Confirmed" &&
         (owner || canManage);
 
     const statusClass =
@@ -84,15 +88,17 @@ function AppointmentCard({
                     )}
                 </div>
 
-                {canEdit && (
+                {canCancel && (
                     <div className="appointment-actions">
-                        <button
-                            className="appointment-icon-button"
-                            onClick={() => onEdit?.(appointment)}
-                            title="Editar turno"
-                        >
-                            <Edit3 size={18} />
-                        </button>
+                        {canEdit && (
+                            <button
+                                className="appointment-icon-button"
+                                onClick={() => onEdit?.(appointment)}
+                                title="Editar turno"
+                            >
+                                <Edit3 size={18} />
+                            </button>
+                        )}
 
                         <button
                             className="appointment-icon-button appointment-icon-button--danger"

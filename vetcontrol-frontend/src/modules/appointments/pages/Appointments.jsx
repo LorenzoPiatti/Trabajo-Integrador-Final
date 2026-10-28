@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, Clock3, Plus, Stethoscope } from "lucide-react";
+
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
+
 import {
     createAppointment,
     deleteAppointment,
@@ -12,7 +14,6 @@ import {
     getCompletedAppointments,
     getPendingAppointments,
     getReceptionAppointments,
-    updateAppointment,
     updateReceptionAppointment
 } from "../../../services/appointmentService";
 
@@ -132,18 +133,11 @@ function AppointmentsPage() {
         setSuccess("");
 
         try {
-            if (selectedAppointment) {
-                if (reception) {
-                    await updateReceptionAppointment(
-                        selectedAppointment.appointmentId,
-                        formData
-                    );
-                } else {
-                    await updateAppointment(
-                        selectedAppointment.appointmentId,
-                        formData
-                    );
-                }
+            if (selectedAppointment && reception) {
+                await updateReceptionAppointment(
+                    selectedAppointment.appointmentId,
+                    formData
+                );
 
                 setSuccess("Turno actualizado correctamente.");
             } else {
@@ -312,7 +306,6 @@ function AppointmentsPage() {
             }
         >
             <div className="appointments-dashboard">
-
                 <section className="appointments-summary-grid">
                     <StatCard
                         title="Turnos"
@@ -498,10 +491,6 @@ function AppointmentsPage() {
                                                         key={appointment.appointmentId}
                                                         appointment={appointment}
                                                         owner
-                                                        onEdit={() => {
-                                                            setSelectedAppointment(appointment);
-                                                            scrollToForm();
-                                                        }}
                                                         onDelete={handleDelete}
                                                     />
                                                 ))}
