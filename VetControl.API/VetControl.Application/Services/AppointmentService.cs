@@ -11,17 +11,23 @@ public class AppointmentService : IAppointmentService
     private readonly IPetRepository _petRepository;
     private readonly IUserRepository _userRepository;
     private readonly IOwnerRepository _ownerRepository;
+    private readonly IReminderService _reminderService;
+    private readonly IEmailService _emailService;
 
     public AppointmentService(
         IAppointmentRepository appointmentRepository,
         IPetRepository petRepository,
         IUserRepository userRepository,
-        IOwnerRepository ownerRepository)
+        IOwnerRepository ownerRepository,
+        IReminderService reminderService,
+        IEmailService emailService)
     {
         _appointmentRepository = appointmentRepository;
         _petRepository = petRepository;
         _userRepository = userRepository;
         _ownerRepository = ownerRepository;
+        _reminderService = reminderService;
+        _emailService = emailService;
     }
 
     public async Task<AppointmentResponseDto> CreateAsync(
@@ -32,6 +38,11 @@ public class AppointmentService : IAppointmentService
 
         if (owner is null)
             throw new Exception("El propietario no existe.");
+
+        var ownerUser = await _userRepository.GetByIdAsync(userId);
+
+        if (ownerUser is null)
+            throw new Exception("El usuario propietario no existe.");
 
         var pet = await _petRepository.GetByIdAsync(dto.PetId);
 
@@ -87,6 +98,30 @@ public class AppointmentService : IAppointmentService
 
         await _appointmentRepository.AddAsync(appointment);
         await _appointmentRepository.SaveChangesAsync();
+
+        await _reminderService.CreateAppointmentReminderAsync(
+            owner.OwnerId,
+            appointment
+        );
+
+        var emailSubject = "VetControl - Turno confirmado";
+
+        var emailBody =
+            $"Hola {owner.FirstName},\n\n" +
+            $"Tu turno fue confirmado correctamente.\n\n" +
+            $"Mascota: {pet.Name}\n" +
+            $"Veterinario: {veterinarian.Name}\n" +
+            $"Fecha: {appointment.DateTime:dd/MM/yyyy}\n" +
+            $"Hora: {appointment.DateTime:HH:mm}\n" +
+            $"Motivo: {appointment.Reason}\n\n" +
+            $"Número de turno: {appointment.AppointmentId}\n\n" +
+            "VetControl";
+
+        await _emailService.SendEmailAsync(
+            ownerUser.Email,
+            emailSubject,
+            emailBody
+        );
 
         return MapToResponseDto(
             appointment,
@@ -266,7 +301,8 @@ public class AppointmentService : IAppointmentService
         await _appointmentRepository.SaveChangesAsync();
     }
 
-    public async Task CancelByReceptionAsync(int appointmentId)
+    public async Task CancelByReceptionAsync(
+        int appointmentId)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(
             appointmentId
@@ -333,7 +369,8 @@ public class AppointmentService : IAppointmentService
             .ToList();
     }
 
-    private static bool IsWithinBusinessHours(DateTime dateTime)
+    private static bool IsWithinBusinessHours(
+        DateTime dateTime)
     {
         var time = dateTime.TimeOfDay;
 
@@ -418,7 +455,8 @@ public class AppointmentService : IAppointmentService
         };
     }
 
-    private static string GetOwnerName(Owner? owner)
+    private static string GetOwnerName(
+        Owner? owner)
     {
         if (owner is null)
             return string.Empty;

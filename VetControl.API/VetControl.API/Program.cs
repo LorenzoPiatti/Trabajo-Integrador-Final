@@ -10,6 +10,7 @@ using VetControl.Domain.Enums;
 using VetControl.Infrastructure.Data;
 using VetControl.Infrastructure.Repositories;
 using VetControl.Infrastructure.Services;
+using VetControl.API.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -235,7 +236,7 @@ builder.Services.AddScoped<
     IReminderService,
     ReminderService
 >();
-
+builder.Services.AddHostedService<ReminderBackgroundService>();
 
 // ======================================================
 // SWAGGER

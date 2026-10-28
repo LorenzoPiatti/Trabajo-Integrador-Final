@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VetControl.Application.Interfaces;
 using VetControl.Domain.Entities;
+using VetControl.Domain.Enums;
 using VetControl.Infrastructure.Data;
 
 namespace VetControl.Infrastructure.Repositories;
@@ -9,7 +10,8 @@ public class ReminderRepository : IReminderRepository
 {
     private readonly VetControlDbContext _context;
 
-    public ReminderRepository(VetControlDbContext context)
+    public ReminderRepository(
+        VetControlDbContext context)
     {
         _context = context;
     }
@@ -62,7 +64,8 @@ public class ReminderRepository : IReminderRepository
             .ToListAsync();
     }
 
-    public async Task<int> GetUnreadCountAsync(int userId)
+    public async Task<int> GetUnreadCountAsync(
+        int userId)
     {
         return await _context.Reminders
             .CountAsync(r =>
@@ -70,9 +73,35 @@ public class ReminderRepository : IReminderRepository
                 !r.IsRead);
     }
 
-    public async Task AddAsync(Reminder reminder)
+    public async Task<List<Reminder>>
+        GetPendingAppointmentRemindersAsync(
+            DateTime currentDateTime)
     {
-        await _context.Reminders.AddAsync(reminder);
+        return await _context.Reminders
+            .Include(r => r.Owner)
+                .ThenInclude(o => o.User)
+            .Include(r => r.Appointment)
+                .ThenInclude(a => a!.Pet)
+            .Include(r => r.Appointment)
+                .ThenInclude(a => a!.Veterinarian)
+            .Where(r =>
+                r.Type == ReminderType.Appointment &&
+                !r.Sent &&
+                r.ReminderDate <= currentDateTime &&
+                r.AppointmentId != null &&
+                r.Appointment != null &&
+                r.Appointment.Status ==
+                    AppointmentStatus.Confirmed &&
+                r.Appointment.DateTime > currentDateTime)
+            .OrderBy(r => r.ReminderDate)
+            .ToListAsync();
+    }
+
+    public async Task AddAsync(
+        Reminder reminder)
+    {
+        await _context.Reminders
+            .AddAsync(reminder);
     }
 
     public async Task SaveChangesAsync()
