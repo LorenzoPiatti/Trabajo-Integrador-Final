@@ -9,15 +9,19 @@ public interface IReminderService
         int userId,
         bool unreadOnly = false);
 
-    Task<int> GetUnreadCountAsync(int userId);
+    Task<int> GetUnreadCountAsync(
+        int userId);
 
     Task MarkAsReadAsync(
         int reminderId,
         int userId);
 
-    Task MarkAllAsReadAsync(int userId);
+    Task MarkAllAsReadAsync(
+        int userId);
 
     Task CreateAppointmentReminderAsync(
         int ownerId,
         Appointment appointment);
+
+    Task ProcessPendingAppointmentRemindersAsync();
 }

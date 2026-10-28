@@ -8,11 +8,14 @@ namespace VetControl.Application.Services;
 public class ReminderService : IReminderService
 {
     private readonly IReminderRepository _reminderRepository;
+    private readonly IEmailService _emailService;
 
     public ReminderService(
-        IReminderRepository reminderRepository)
+        IReminderRepository reminderRepository,
+        IEmailService emailService)
     {
         _reminderRepository = reminderRepository;
+        _emailService = emailService;
     }
 
     public async Task<List<ReminderResponseDto>>
@@ -31,7 +34,8 @@ public class ReminderService : IReminderService
             .ToList();
     }
 
-    public async Task<int> GetUnreadCountAsync(int userId)
+    public async Task<int> GetUnreadCountAsync(
+        int userId)
     {
         return await _reminderRepository
             .GetUnreadCountAsync(userId);
@@ -59,10 +63,12 @@ public class ReminderService : IReminderService
 
         reminder.IsRead = true;
 
-        await _reminderRepository.SaveChangesAsync();
+        await _reminderRepository
+            .SaveChangesAsync();
     }
 
-    public async Task MarkAllAsReadAsync(int userId)
+    public async Task MarkAllAsReadAsync(
+        int userId)
     {
         var reminders = await _reminderRepository
             .GetUnreadByOwnerUserIdAsync(userId);
@@ -77,7 +83,8 @@ public class ReminderService : IReminderService
             reminder.IsRead = true;
         }
 
-        await _reminderRepository.SaveChangesAsync();
+        await _reminderRepository
+            .SaveChangesAsync();
     }
 
     public async Task CreateAppointmentReminderAsync(
@@ -85,23 +92,109 @@ public class ReminderService : IReminderService
         Appointment appointment)
     {
         var reminderDate =
-            appointment.DateTime.AddDays(-1);
+            appointment.DateTime.AddHours(-2);
+
+        // Si faltan 2 horas o menos para el turno,
+        // no se genera un segundo recordatorio.
+        // El dueño ya recibe el mail inmediato
+        // de confirmación al reservar.
+        if (reminderDate <= DateTime.Now)
+        {
+            return;
+        }
 
         var reminder = new Reminder
         {
             OwnerId = ownerId,
+
+            // Se calcula usando la fecha/hora REAL del turno.
             ReminderDate = reminderDate,
+
             Type = ReminderType.Appointment,
             Sent = false,
             AppointmentId = appointment.AppointmentId,
             AdministeredVaccineId = null,
             IsRead = false,
-            CreatedAt = DateTime.UtcNow
+
+            // Este sí representa cuándo se creó el reminder.
+            CreatedAt = DateTime.Now
         };
 
-        await _reminderRepository.AddAsync(reminder);
+        await _reminderRepository
+            .AddAsync(reminder);
 
-        await _reminderRepository.SaveChangesAsync();
+        await _reminderRepository
+            .SaveChangesAsync();
+    }
+
+    public async Task ProcessPendingAppointmentRemindersAsync()
+    {
+        var currentDateTime =
+            DateTime.Now;
+
+        var reminders =
+            await _reminderRepository
+                .GetPendingAppointmentRemindersAsync(
+                    currentDateTime);
+
+        if (reminders.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var reminder in reminders)
+        {
+            var owner =
+                reminder.Owner;
+
+            var appointment =
+                reminder.Appointment;
+
+            if (appointment is null)
+            {
+                continue;
+            }
+
+            var ownerEmail =
+                owner.User?.Email;
+
+            if (string.IsNullOrWhiteSpace(
+                ownerEmail))
+            {
+                continue;
+            }
+
+            var petName =
+                appointment.Pet?.Name
+                ?? "tu mascota";
+
+            var veterinarianName =
+                appointment.Veterinarian?.Name
+                ?? "el veterinario";
+
+            var subject =
+                "VetControl - Recordatorio de turno";
+
+            var body =
+                $"Hola {owner.FirstName},\n\n" +
+                $"Te recordamos que {petName} tiene un turno dentro de 2 horas.\n\n" +
+                $"Fecha: {appointment.DateTime:dd/MM/yyyy}\n" +
+                $"Hora: {appointment.DateTime:HH:mm}\n" +
+                $"Veterinario: {veterinarianName}\n" +
+                $"Motivo: {appointment.Reason}\n\n" +
+                "Te esperamos.\n\n" +
+                "VetControl";
+
+            await _emailService.SendEmailAsync(
+                ownerEmail,
+                subject,
+                body);
+
+            reminder.Sent = true;
+        }
+
+        await _reminderRepository
+            .SaveChangesAsync();
     }
 
     private static ReminderResponseDto MapToResponseDto(
@@ -131,14 +224,30 @@ public class ReminderService : IReminderService
 
         return new ReminderResponseDto
         {
-            ReminderId = reminder.ReminderId,
-            ReminderDate = reminder.ReminderDate,
-            Type = reminder.Type.ToString(),
-            Title = title,
-            Message = message,
-            IsRead = reminder.IsRead,
-            CreatedAt = reminder.CreatedAt,
-            AppointmentId = reminder.AppointmentId,
+            ReminderId =
+                reminder.ReminderId,
+
+            ReminderDate =
+                reminder.ReminderDate,
+
+            Type =
+                reminder.Type.ToString(),
+
+            Title =
+                title,
+
+            Message =
+                message,
+
+            IsRead =
+                reminder.IsRead,
+
+            CreatedAt =
+                reminder.CreatedAt,
+
+            AppointmentId =
+                reminder.AppointmentId,
+
             AdministeredVaccineId =
                 reminder.AdministeredVaccineId
         };
@@ -151,9 +260,14 @@ public class ReminderService : IReminderService
             reminder.Appointment?.Pet?.Name
             ?? "tu mascota";
 
-        return $"Recordá que {petName} tiene un turno " +
-               $"el {reminder.ReminderDate:dd/MM/yyyy} " +
-               $"a las {reminder.ReminderDate:HH:mm}.";
+        var appointmentDate =
+            reminder.Appointment?.DateTime
+            ?? reminder.ReminderDate;
+
+        return
+            $"Recordá que {petName} tiene un turno " +
+            $"el {appointmentDate:dd/MM/yyyy} " +
+            $"a las {appointmentDate:HH:mm}.";
     }
 
     private static string BuildVaccineMessage(
@@ -167,7 +281,8 @@ public class ReminderService : IReminderService
             reminder.AdministeredVaccine?.Vaccine?.Name
             ?? "una vacuna";
 
-        return $"A {petName} le corresponde {vaccineName} " +
-               $"el {reminder.ReminderDate:dd/MM/yyyy}.";
+        return
+            $"A {petName} le corresponde {vaccineName} " +
+            $"el {reminder.ReminderDate:dd/MM/yyyy}.";
     }
 }
