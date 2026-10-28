@@ -194,78 +194,14 @@ public class AppointmentService : IAppointmentService
         );
     }
 
-    public async Task UpdateAsync(
+    public Task UpdateAsync(
         int appointmentId,
         int userId,
         UpdateAppointmentDto dto)
     {
-        var owner = await _ownerRepository.GetByUserIdAsync(userId);
-
-        if (owner is null)
-            throw new Exception("El propietario no existe.");
-
-        var appointment = await _appointmentRepository.GetByIdAsync(
-            appointmentId
+        throw new Exception(
+            "El propietario no puede modificar un turno. Para reprogramarlo, debe comunicarse con recepción."
         );
-
-        if (appointment is null)
-            throw new Exception("El turno no existe.");
-
-        if (appointment.Pet.OwnerId != owner.OwnerId)
-            throw new Exception("No puede modificar un turno que no le pertenece.");
-
-        if (appointment.Status == AppointmentStatus.Completed)
-            throw new Exception("No se puede modificar un turno ya atendido.");
-
-        if (appointment.Status == AppointmentStatus.Cancelled)
-            throw new Exception("No se puede modificar un turno cancelado.");
-
-        var pet = await _petRepository.GetByIdAsync(dto.PetId);
-
-        if (pet is null)
-            throw new Exception("La mascota no existe.");
-
-        if (pet.OwnerId != owner.OwnerId)
-            throw new Exception("La mascota no pertenece al propietario.");
-
-        var veterinarian = await _userRepository.GetByIdAsync(
-            dto.VeterinarianId
-        );
-
-        if (veterinarian is null)
-            throw new Exception("El veterinario no existe.");
-
-        if (veterinarian.Role != UserRole.Veterinarian)
-            throw new Exception("El usuario seleccionado no es un veterinario.");
-
-        if (dto.DateTime <= DateTime.Now)
-            throw new Exception("La fecha y hora del turno deben ser futuras.");
-
-        if (!IsWithinBusinessHours(dto.DateTime))
-            throw new Exception("El horario seleccionado está fuera del horario de atención.");
-
-        var appointments = await _appointmentRepository
-            .GetByVeterinarianAndDateAsync(
-                dto.VeterinarianId,
-                dto.DateTime.Date
-            );
-
-        var isOccupied = appointments.Any(a =>
-            a.AppointmentId != appointmentId &&
-            a.DateTime == dto.DateTime &&
-            a.Status != AppointmentStatus.Cancelled
-        );
-
-        if (isOccupied)
-            throw new Exception("El horario seleccionado no está disponible.");
-
-        appointment.PetId = dto.PetId;
-        appointment.VeterinarianId = dto.VeterinarianId;
-        appointment.DateTime = dto.DateTime;
-        appointment.Reason = dto.Reason;
-
-        await _appointmentRepository.UpdateAsync(appointment);
-        await _appointmentRepository.SaveChangesAsync();
     }
 
     public async Task UpdateByReceptionAsync(
