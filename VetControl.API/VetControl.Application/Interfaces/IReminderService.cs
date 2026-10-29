@@ -24,4 +24,6 @@ public interface IReminderService
         Appointment appointment);
 
     Task ProcessPendingAppointmentRemindersAsync();
+
+    Task ProcessPendingVaccineRemindersAsync();
 }

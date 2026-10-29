@@ -20,6 +20,9 @@ public interface IReminderRepository
     Task<List<Reminder>> GetPendingAppointmentRemindersAsync(
         DateTime currentDateTime);
 
+    Task<List<Reminder>> GetPendingVaccineRemindersAsync(
+        DateTime currentDateTime);
+
     Task AddAsync(
         Reminder reminder);
 

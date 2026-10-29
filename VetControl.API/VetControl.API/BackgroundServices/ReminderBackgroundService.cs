@@ -23,15 +23,15 @@ public class ReminderBackgroundService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var scope =
+                _scopeFactory.CreateScope();
+
+            var reminderService =
+                scope.ServiceProvider
+                    .GetRequiredService<IReminderService>();
+
             try
             {
-                using var scope =
-                    _scopeFactory.CreateScope();
-
-                var reminderService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IReminderService>();
-
                 await reminderService
                     .ProcessPendingAppointmentRemindersAsync();
             }
@@ -40,6 +40,18 @@ public class ReminderBackgroundService : BackgroundService
                 _logger.LogError(
                     ex,
                     "Ocurrió un error al procesar los recordatorios de turnos.");
+            }
+
+            try
+            {
+                await reminderService
+                    .ProcessPendingVaccineRemindersAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Ocurrió un error al procesar los recordatorios de vacunas.");
             }
 
             await Task.Delay(
