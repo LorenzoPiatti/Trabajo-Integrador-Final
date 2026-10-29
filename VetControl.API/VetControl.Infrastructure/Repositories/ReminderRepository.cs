@@ -97,6 +97,27 @@ public class ReminderRepository : IReminderRepository
             .ToListAsync();
     }
 
+    public async Task<List<Reminder>>
+        GetPendingVaccineRemindersAsync(
+            DateTime currentDateTime)
+    {
+        return await _context.Reminders
+            .Include(r => r.Owner)
+                .ThenInclude(o => o.User)
+            .Include(r => r.AdministeredVaccine)
+                .ThenInclude(av => av!.Pet)
+            .Include(r => r.AdministeredVaccine)
+                .ThenInclude(av => av!.Vaccine)
+            .Where(r =>
+                r.Type == ReminderType.Vaccine &&
+                !r.Sent &&
+                r.ReminderDate <= currentDateTime &&
+                r.AdministeredVaccineId != null &&
+                r.AdministeredVaccine != null)
+            .OrderBy(r => r.ReminderDate)
+            .ToListAsync();
+    }
+
     public async Task AddAsync(
         Reminder reminder)
     {

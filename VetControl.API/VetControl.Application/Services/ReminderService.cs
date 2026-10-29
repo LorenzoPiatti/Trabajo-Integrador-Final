@@ -197,6 +197,74 @@ public class ReminderService : IReminderService
             .SaveChangesAsync();
     }
 
+    public async Task ProcessPendingVaccineRemindersAsync()
+    {
+        var currentDateTime =
+            DateTime.Now;
+
+        var reminders =
+            await _reminderRepository
+                .GetPendingVaccineRemindersAsync(
+                    currentDateTime);
+
+        if (reminders.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var reminder in reminders)
+        {
+            var owner =
+                reminder.Owner;
+
+            var administeredVaccine =
+                reminder.AdministeredVaccine;
+
+            if (administeredVaccine is null)
+            {
+                continue;
+            }
+
+            var ownerEmail =
+                owner.User?.Email;
+
+            if (string.IsNullOrWhiteSpace(
+                ownerEmail))
+            {
+                continue;
+            }
+
+            var petName =
+                administeredVaccine.Pet?.Name
+                ?? "tu mascota";
+
+            var vaccineName =
+                administeredVaccine.Vaccine?.Name
+                ?? "la vacuna correspondiente";
+
+            var subject =
+                "VetControl - Recordatorio de vacunación";
+
+            var body =
+                $"Hola {owner.FirstName},\n\n" +
+                $"Te recordamos que a {petName} le corresponde una nueva aplicación de vacuna.\n\n" +
+                $"Vacuna: {vaccineName}\n" +
+                $"Fecha correspondiente: {administeredVaccine.NextDueDate:dd/MM/yyyy}\n\n" +
+                "Te recomendamos comunicarte con la veterinaria para coordinar la próxima aplicación.\n\n" +
+                "VetControl";
+
+            await _emailService.SendEmailAsync(
+                ownerEmail,
+                subject,
+                body);
+
+            reminder.Sent = true;
+        }
+
+        await _reminderRepository
+            .SaveChangesAsync();
+    }
+
     private static ReminderResponseDto MapToResponseDto(
         Reminder reminder)
     {
@@ -281,8 +349,12 @@ public class ReminderService : IReminderService
             reminder.AdministeredVaccine?.Vaccine?.Name
             ?? "una vacuna";
 
+        var dueDate =
+            reminder.AdministeredVaccine?.NextDueDate
+            ?? reminder.ReminderDate;
+
         return
             $"A {petName} le corresponde {vaccineName} " +
-            $"el {reminder.ReminderDate:dd/MM/yyyy}.";
+            $"el {dueDate:dd/MM/yyyy}.";
     }
 }
