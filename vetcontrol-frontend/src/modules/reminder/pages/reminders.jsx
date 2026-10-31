@@ -1,11 +1,8 @@
 import "./Reminders.css";
-
 import { useEffect, useState } from "react";
 import { Bell, CheckCheck } from "lucide-react";
-
 import Layout from "../../../components/layout/Layout";
 import ReminderItem from "../components/ReminderItem";
-
 import {
     getReminders,
     markReminderAsRead,

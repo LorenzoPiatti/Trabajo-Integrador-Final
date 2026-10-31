@@ -240,12 +240,10 @@ public class AppointmentService : IAppointmentService
     }
 
     public async Task UpdateByReceptionAsync(
-        int appointmentId,
-        UpdateAppointmentDto dto)
+    int appointmentId,
+    UpdateAppointmentDto dto)
     {
-        var appointment = await _appointmentRepository.GetByIdAsync(
-            appointmentId
-        );
+        var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
         if (appointment is null)
             throw new Exception("El turno no existe.");
@@ -261,9 +259,7 @@ public class AppointmentService : IAppointmentService
         if (pet is null)
             throw new Exception("La mascota no existe.");
 
-        var veterinarian = await _userRepository.GetByIdAsync(
-            dto.VeterinarianId
-        );
+        var veterinarian = await _userRepository.GetByIdAsync(dto.VeterinarianId);
 
         if (veterinarian is null)
             throw new Exception("El veterinario no existe.");
@@ -278,10 +274,7 @@ public class AppointmentService : IAppointmentService
             throw new Exception("El horario seleccionado está fuera del horario de atención.");
 
         var appointments = await _appointmentRepository
-            .GetByVeterinarianAndDateAsync(
-                dto.VeterinarianId,
-                dto.DateTime.Date
-            );
+            .GetByVeterinarianAndDateAsync(dto.VeterinarianId, dto.DateTime.Date);
 
         var isOccupied = appointments.Any(a =>
             a.AppointmentId != appointmentId &&
@@ -299,14 +292,32 @@ public class AppointmentService : IAppointmentService
 
         await _appointmentRepository.UpdateAsync(appointment);
         await _appointmentRepository.SaveChangesAsync();
-    }
+        await _reminderService.CreateAppointmentReminderAsync(appointment.Pet.OwnerId,appointment);
 
-    public async Task CancelByReceptionAsync(
-        int appointmentId)
-    {
-        var appointment = await _appointmentRepository.GetByIdAsync(
-            appointmentId
+        var ownerEmail = appointment.Pet.Owner.User.Email;
+        var ownerName = appointment.Pet.Owner.FirstName;
+
+        var emailSubject = "VetControl - Turno modificado";
+
+        var emailBody =
+            $"Hola {ownerName},\n\n" +
+            $"Te informamos que el turno de {pet.Name} fue modificado por recepción.\n\n" +
+            $"Nueva fecha: {appointment.DateTime:dd/MM/yyyy}\n" +
+            $"Nuevo horario: {appointment.DateTime:HH:mm}\n" +
+            $"Veterinario: {veterinarian.Name}\n" +
+            $"Motivo: {appointment.Reason}\n\n" +
+            "Si no podés asistir en el nuevo horario, podés cancelar el turno desde VetControl y solicitar uno nuevo en otro horario disponible.\n\n" +
+            "VetControl";
+
+        await _emailService.SendEmailAsync(
+            ownerEmail,
+            emailSubject,
+            emailBody
         );
+    }
+    public async Task CancelByReceptionAsync(int appointmentId)
+    {
+        var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
         if (appointment is null)
             throw new Exception("El turno no existe.");
@@ -316,11 +327,31 @@ public class AppointmentService : IAppointmentService
 
         if (appointment.Status == AppointmentStatus.Completed)
             throw new Exception("No se puede cancelar un turno ya atendido.");
-
+        var ownerEmail = appointment.Pet.Owner.User.Email;
+        var ownerName = appointment.Pet.Owner.FirstName;
+        var petName = appointment.Pet.Name;
+        var veterinarianName = appointment.Veterinarian.Name;
+        var appointmentDate = appointment.DateTime;
         appointment.Status = AppointmentStatus.Cancelled;
 
         await _appointmentRepository.UpdateAsync(appointment);
         await _appointmentRepository.SaveChangesAsync();
+        var emailSubject = "VetControl - Turno cancelado";
+
+        var emailBody =
+            $"Hola {ownerName},\n\n" +
+            $"Te informamos que el turno de {petName} fue cancelado por recepción.\n\n" +
+            $"Fecha: {appointmentDate:dd/MM/yyyy}\n" +
+            $"Hora: {appointmentDate:HH:mm}\n" +
+            $"Veterinario: {veterinarianName}\n\n" +
+            "Si necesitás una nueva atención, podés solicitar otro turno desde VetControl en un horario disponible.\n\n" +
+            "VetControl";
+
+        await _emailService.SendEmailAsync(
+            ownerEmail,
+            emailSubject,
+            emailBody
+        );
     }
 
     public async Task CancelAsync(
