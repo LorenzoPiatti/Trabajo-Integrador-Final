@@ -118,6 +118,14 @@ public class ReminderRepository : IReminderRepository
             .ToListAsync();
     }
 
+    public async Task<Reminder?> GetByAppointmentIdAsync(
+        int appointmentId)
+    {
+        return await _context.Reminders
+            .FirstOrDefaultAsync(r =>
+                r.Type == ReminderType.Appointment &&
+                r.AppointmentId == appointmentId);
+    }
     public async Task AddAsync(
         Reminder reminder)
     {

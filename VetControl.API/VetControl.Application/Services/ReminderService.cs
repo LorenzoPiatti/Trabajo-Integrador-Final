@@ -88,45 +88,42 @@ public class ReminderService : IReminderService
     }
 
     public async Task CreateAppointmentReminderAsync(
-        int ownerId,
-        Appointment appointment)
+    int ownerId,
+    Appointment appointment)
     {
-        var reminderDate =
-            appointment.DateTime.AddHours(-2);
+        var reminderDate = appointment.DateTime.AddHours(-2);
 
-        // Si faltan 2 horas o menos para el turno,
-        // no se genera un segundo recordatorio.
-        // El dueño ya recibe el mail inmediato
-        // de confirmación al reservar.
-        if (reminderDate <= DateTime.Now)
+        var existingReminder =
+            await _reminderRepository.GetByAppointmentIdAsync(
+                appointment.AppointmentId);
+
+        if (existingReminder is not null)
         {
+            existingReminder.ReminderDate = reminderDate;
+            existingReminder.Sent = reminderDate <= DateTime.Now;
+
+            await _reminderRepository.SaveChangesAsync();
             return;
         }
+
+        if (reminderDate <= DateTime.Now)
+            return;
 
         var reminder = new Reminder
         {
             OwnerId = ownerId,
-
-            // Se calcula usando la fecha/hora REAL del turno.
             ReminderDate = reminderDate,
-
             Type = ReminderType.Appointment,
             Sent = false,
             AppointmentId = appointment.AppointmentId,
             AdministeredVaccineId = null,
             IsRead = false,
-
-            // Este sí representa cuándo se creó el reminder.
             CreatedAt = DateTime.Now
         };
 
-        await _reminderRepository
-            .AddAsync(reminder);
-
-        await _reminderRepository
-            .SaveChangesAsync();
+        await _reminderRepository.AddAsync(reminder);
+        await _reminderRepository.SaveChangesAsync();
     }
-
     public async Task ProcessPendingAppointmentRemindersAsync()
     {
         var currentDateTime =
