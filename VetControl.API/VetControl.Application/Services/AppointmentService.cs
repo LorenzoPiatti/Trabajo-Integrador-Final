@@ -73,15 +73,9 @@ public class AppointmentService : IAppointmentService
         if (!IsWithinBusinessHours(dto.DateTime))
             throw new Exception("El horario seleccionado está fuera del horario de atención.");
 
-        var appointments = await _appointmentRepository
-            .GetByVeterinarianAndDateAsync(
-                dto.VeterinarianId,
-                dto.DateTime.Date
-            );
-
-        var isOccupied = appointments.Any(a =>
-            a.DateTime == dto.DateTime &&
-            a.Status != AppointmentStatus.Cancelled
+        var isOccupied = await _appointmentRepository.IsSlotOccupiedAsync(
+            dto.VeterinarianId,
+            dto.DateTime
         );
 
         if (isOccupied)
@@ -108,7 +102,7 @@ public class AppointmentService : IAppointmentService
 
         var emailBody =
             $"Hola {owner.FirstName},\n\n" +
-            $"Tu turno fue confirmado correctamente.\n\n" +
+            "Tu turno fue confirmado correctamente.\n\n" +
             $"Mascota: {pet.Name}\n" +
             $"Veterinario: {veterinarian.Name}\n" +
             $"Fecha: {appointment.DateTime:dd/MM/yyyy}\n" +
@@ -240,8 +234,8 @@ public class AppointmentService : IAppointmentService
     }
 
     public async Task UpdateByReceptionAsync(
-    int appointmentId,
-    UpdateAppointmentDto dto)
+        int appointmentId,
+        UpdateAppointmentDto dto)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
@@ -254,10 +248,8 @@ public class AppointmentService : IAppointmentService
         if (appointment.Status == AppointmentStatus.Cancelled)
             throw new Exception("No se puede modificar un turno cancelado.");
 
-        var pet = await _petRepository.GetByIdAsync(dto.PetId);
-
-        if (pet is null)
-            throw new Exception("La mascota no existe.");
+        if (appointment.DateTime <= DateTime.Now)
+            throw new Exception("No se puede reprogramar un turno cuya fecha y hora ya pasaron.");
 
         var veterinarian = await _userRepository.GetByIdAsync(dto.VeterinarianId);
 
@@ -268,31 +260,30 @@ public class AppointmentService : IAppointmentService
             throw new Exception("El usuario seleccionado no es un veterinario.");
 
         if (dto.DateTime <= DateTime.Now)
-            throw new Exception("La fecha y hora del turno deben ser futuras.");
+            throw new Exception("La nueva fecha y hora del turno deben ser futuras.");
 
         if (!IsWithinBusinessHours(dto.DateTime))
             throw new Exception("El horario seleccionado está fuera del horario de atención.");
 
-        var appointments = await _appointmentRepository
-            .GetByVeterinarianAndDateAsync(dto.VeterinarianId, dto.DateTime.Date);
-
-        var isOccupied = appointments.Any(a =>
-            a.AppointmentId != appointmentId &&
-            a.DateTime == dto.DateTime &&
-            a.Status != AppointmentStatus.Cancelled
+        var isOccupied = await _appointmentRepository.IsSlotOccupiedAsync(
+            dto.VeterinarianId,
+            dto.DateTime,
+            appointmentId
         );
 
         if (isOccupied)
             throw new Exception("El horario seleccionado no está disponible.");
 
-        appointment.PetId = dto.PetId;
         appointment.VeterinarianId = dto.VeterinarianId;
         appointment.DateTime = dto.DateTime;
-        appointment.Reason = dto.Reason;
 
         await _appointmentRepository.UpdateAsync(appointment);
         await _appointmentRepository.SaveChangesAsync();
-        await _reminderService.CreateAppointmentReminderAsync(appointment.Pet.OwnerId,appointment);
+
+        await _reminderService.CreateAppointmentReminderAsync(
+            appointment.Pet.OwnerId,
+            appointment
+        );
 
         var ownerEmail = appointment.Pet.Owner.User.Email;
         var ownerName = appointment.Pet.Owner.FirstName;
@@ -301,7 +292,7 @@ public class AppointmentService : IAppointmentService
 
         var emailBody =
             $"Hola {ownerName},\n\n" +
-            $"Te informamos que el turno de {pet.Name} fue modificado por recepción.\n\n" +
+            $"Te informamos que el turno de {appointment.Pet.Name} fue modificado por recepción.\n\n" +
             $"Nueva fecha: {appointment.DateTime:dd/MM/yyyy}\n" +
             $"Nuevo horario: {appointment.DateTime:HH:mm}\n" +
             $"Veterinario: {veterinarian.Name}\n" +
@@ -315,6 +306,7 @@ public class AppointmentService : IAppointmentService
             emailBody
         );
     }
+
     public async Task CancelByReceptionAsync(int appointmentId)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
@@ -327,15 +319,18 @@ public class AppointmentService : IAppointmentService
 
         if (appointment.Status == AppointmentStatus.Completed)
             throw new Exception("No se puede cancelar un turno ya atendido.");
+
         var ownerEmail = appointment.Pet.Owner.User.Email;
         var ownerName = appointment.Pet.Owner.FirstName;
         var petName = appointment.Pet.Name;
         var veterinarianName = appointment.Veterinarian.Name;
         var appointmentDate = appointment.DateTime;
+
         appointment.Status = AppointmentStatus.Cancelled;
 
         await _appointmentRepository.UpdateAsync(appointment);
         await _appointmentRepository.SaveChangesAsync();
+
         var emailSubject = "VetControl - Turno cancelado";
 
         var emailBody =
@@ -486,8 +481,7 @@ public class AppointmentService : IAppointmentService
         };
     }
 
-    private static string GetOwnerName(
-        Owner? owner)
+    private static string GetOwnerName(Owner? owner)
     {
         if (owner is null)
             return string.Empty;

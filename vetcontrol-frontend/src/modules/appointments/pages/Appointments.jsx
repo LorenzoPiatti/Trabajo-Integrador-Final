@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, Clock3, Plus, Stethoscope } from "lucide-react";
-
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
-
 import {
     createAppointment,
     deleteAppointment,
@@ -16,14 +14,12 @@ import {
     getReceptionAppointments,
     updateReceptionAppointment
 } from "../../../services/appointmentService";
-
 import { getPets } from "../../../services/petService";
 import { getVeterinarians } from "../../../services/userService";
 import AppointmentCard from "../components/AppointmentCard";
 import AppointmentForm from "../components/AppointmentForm";
 import MedicalRecordList from "../../medical-records/components/MedicalRecordList";
 import MedicalRecordForm from "../../medical-records/components/MedicalRecordForm";
-
 import { isOwner, isReception, isVeterinarian } from "../../../utils/authUtils";
 
 import "../styles/Appointments.css";
@@ -134,6 +130,19 @@ function AppointmentsPage() {
 
         try {
             if (selectedAppointment && reception) {
+                const sameVeterinarian =
+                    Number(formData.veterinarianId) ===
+                    Number(selectedAppointment.veterinarianId);
+
+                const sameDateTime =
+                    formData.dateTime.substring(0, 16) ===
+                    selectedAppointment.dateTime.substring(0, 16);
+
+                if (sameVeterinarian && sameDateTime) {
+                    setError("No realizaste cambios en el turno.");
+                    return false;
+                }
+
                 await updateReceptionAppointment(
                     selectedAppointment.appointmentId,
                     formData
@@ -219,17 +228,36 @@ function AppointmentsPage() {
     };
 
     const visibleReceptionAppointments = useMemo(() => {
-        return appointments.filter(appointment => {
-            const matchesDate =
-                !receptionDateFilter ||
-                appointment.dateTime.substring(0, 10) === receptionDateFilter;
+        const now = new Date();
 
-            const matchesStatus =
-                !receptionStatusFilter ||
-                appointment.status === receptionStatusFilter;
+        return appointments
+            .filter(appointment => {
+                const matchesDate =
+                    !receptionDateFilter ||
+                    appointment.dateTime.substring(0, 10) === receptionDateFilter;
 
-            return matchesDate && matchesStatus;
-        });
+                const matchesStatus =
+                    !receptionStatusFilter ||
+                    appointment.status === receptionStatusFilter;
+
+                return matchesDate && matchesStatus;
+            })
+            .sort((a, b) => {
+                const dateA = new Date(a.dateTime);
+                const dateB = new Date(b.dateTime);
+
+                const aIsFuture = dateA >= now;
+                const bIsFuture = dateB >= now;
+
+                if (aIsFuture && !bIsFuture) return -1;
+                if (!aIsFuture && bIsFuture) return 1;
+
+                if (aIsFuture && bIsFuture) {
+                    return dateA - dateB;
+                }
+
+                return dateB - dateA;
+            });
     }, [appointments, receptionDateFilter, receptionStatusFilter]);
 
     const now = new Date();
@@ -358,7 +386,7 @@ function AppointmentsPage() {
                         <Panel className="appointments-list-panel">
                             <div className="appointments-panel-header appointments-panel-header--filters">
                                 <div>
-                                    <h2>Agenda general</h2>
+                                    <h2>Agenda de turnos</h2>
                                     <p>
                                         {visibleReceptionAppointments.length} de {appointments.length} turno(s)
                                     </p>
@@ -421,8 +449,9 @@ function AppointmentsPage() {
                                 veterinarians={veterinarians}
                                 loading={loading}
                                 title="Reprogramar turno"
-                                subtitle="Modificá fecha, horario, veterinario o motivo"
+                                subtitle="Modificá fecha, horario o veterinario"
                                 disablePetSelection
+                                disableReason
                                 onSubmit={handleSubmit}
                                 onCancelEdit={() => setSelectedAppointment(null)}
                             />

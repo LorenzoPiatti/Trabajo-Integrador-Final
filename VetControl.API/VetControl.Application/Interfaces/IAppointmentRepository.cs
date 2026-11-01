@@ -13,13 +13,18 @@ public interface IAppointmentRepository
     Task<List<Appointment>> GetByOwnerAsync(
         int ownerId);
 
+    Task<bool> IsSlotOccupiedAsync(
+        int veterinarianId,
+        DateTime dateTime,
+        int? excludeAppointmentId = null);
+
     Task<List<Appointment>> GetAllForReceptionAsync();
 
     Task<List<Appointment>> GetCompletedByVeterinarianAsync(
-    int veterinarianId);
+        int veterinarianId);
 
     Task<List<Appointment>> GetPendingByVeterinarianAsync(
-    int veterinarianId);
+        int veterinarianId);
 
     Task AddAsync(
         Appointment appointment);

@@ -47,7 +47,8 @@ const AppointmentForm = forwardRef(({
     onCancelEdit,
     title,
     subtitle,
-    disablePetSelection = false
+    disablePetSelection = false,
+    disableReason = false
 }, ref) => {
 
     const [formData, setFormData] = useState(
@@ -169,7 +170,7 @@ const AppointmentForm = forwardRef(({
 
         return (
             slot.dateTime.substring(0, 16) ===
-            `${formData.date}T${formData.time}`
+            selectedAppointment.dateTime.substring(0, 16)
         );
     };
 
@@ -347,6 +348,7 @@ const AppointmentForm = forwardRef(({
                             value={formData.reason}
                             onChange={handleChange}
                             placeholder="Describa el motivo de la consulta"
+                            disabled={disableReason}
                             required
                             aria-invalid={Boolean(fieldErrors.reason)}
                             style={

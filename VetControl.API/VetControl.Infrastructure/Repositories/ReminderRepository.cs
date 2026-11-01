@@ -26,8 +26,10 @@ public class ReminderRepository : IReminderRepository
                 .ThenInclude(av => av!.Pet)
             .Include(r => r.AdministeredVaccine)
                 .ThenInclude(av => av!.Vaccine)
-            .Where(r => r.Owner.UserId == userId)
-            .OrderByDescending(r => r.CreatedAt)
+            .Where(r =>
+                r.Owner.UserId == userId &&
+                r.Sent)
+            .OrderByDescending(r => r.ReminderDate)
             .ToListAsync();
     }
 
@@ -59,8 +61,9 @@ public class ReminderRepository : IReminderRepository
                 .ThenInclude(av => av!.Vaccine)
             .Where(r =>
                 r.Owner.UserId == userId &&
+                r.Sent &&
                 !r.IsRead)
-            .OrderByDescending(r => r.CreatedAt)
+            .OrderByDescending(r => r.ReminderDate)
             .ToListAsync();
     }
 
@@ -70,6 +73,7 @@ public class ReminderRepository : IReminderRepository
         return await _context.Reminders
             .CountAsync(r =>
                 r.Owner.UserId == userId &&
+                r.Sent &&
                 !r.IsRead);
     }
 
@@ -126,11 +130,11 @@ public class ReminderRepository : IReminderRepository
                 r.Type == ReminderType.Appointment &&
                 r.AppointmentId == appointmentId);
     }
+
     public async Task AddAsync(
         Reminder reminder)
     {
-        await _context.Reminders
-            .AddAsync(reminder);
+        await _context.Reminders.AddAsync(reminder);
     }
 
     public async Task SaveChangesAsync()

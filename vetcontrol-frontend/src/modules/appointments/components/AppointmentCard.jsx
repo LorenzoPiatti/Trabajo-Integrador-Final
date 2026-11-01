@@ -25,9 +25,13 @@ function AppointmentCard({
         minute: "2-digit"
     }).format(new Date(appointment.dateTime));
 
+    const appointmentIsFuture =
+        new Date(appointment.dateTime) > new Date();
+
     const canEdit =
         appointment.status === "Confirmed" &&
-        canManage;
+        canManage &&
+        appointmentIsFuture;
 
     const canCancel =
         appointment.status === "Confirmed" &&
@@ -39,7 +43,6 @@ function AppointmentCard({
     return (
         <article className="appointment-row">
             <div className="appointment-row-main">
-
                 <div className="appointment-avatar">
                     <CalendarDays size={24} />
                 </div>
@@ -109,7 +112,6 @@ function AppointmentCard({
                         </button>
                     </div>
                 )}
-
             </div>
         </article>
     );
