@@ -40,6 +40,49 @@ public class AppointmentRepository : IAppointmentRepository
             .ToListAsync();
     }
 
+    public async Task<List<Appointment>> GetByOwnerAsync(
+        int ownerId)
+    {
+        return await _context.Appointments
+            .Include(a => a.Pet)
+                .ThenInclude(p => p.Owner)
+                    .ThenInclude(o => o.User)
+            .Include(a => a.Veterinarian)
+            .Where(a =>
+                a.Pet.OwnerId == ownerId)
+            .OrderByDescending(a => a.DateTime)
+            .ToListAsync();
+    }
+
+    public async Task<bool> IsSlotOccupiedAsync(
+        int veterinarianId,
+        DateTime dateTime,
+        int? excludeAppointmentId = null)
+    {
+        return await _context.Appointments.AnyAsync(a =>
+            a.VeterinarianId == veterinarianId &&
+            a.DateTime.Year == dateTime.Year &&
+            a.DateTime.Month == dateTime.Month &&
+            a.DateTime.Day == dateTime.Day &&
+            a.DateTime.Hour == dateTime.Hour &&
+            a.DateTime.Minute == dateTime.Minute &&
+            a.Status != AppointmentStatus.Cancelled &&
+            (!excludeAppointmentId.HasValue ||
+            a.AppointmentId != excludeAppointmentId.Value)
+        );
+    }
+
+    public async Task<List<Appointment>> GetAllForReceptionAsync()
+    {
+        return await _context.Appointments
+            .Include(a => a.Pet)
+                .ThenInclude(p => p.Owner)
+                    .ThenInclude(o => o.User)
+            .Include(a => a.Veterinarian)
+            .OrderByDescending(a => a.DateTime)
+            .ToListAsync();
+    }
+
     public async Task<List<Appointment>> GetCompletedByVeterinarianAsync(
         int veterinarianId)
     {
@@ -56,33 +99,8 @@ public class AppointmentRepository : IAppointmentRepository
             .ToListAsync();
     }
 
-    public async Task<List<Appointment>> GetByOwnerAsync(
-        int ownerId)
-    {
-        return await _context.Appointments
-            .Include(a => a.Pet)
-                .ThenInclude(p => p.Owner)
-                    .ThenInclude(o => o.User)
-            .Include(a => a.Veterinarian)
-            .Where(a =>
-                a.Pet.OwnerId == ownerId)
-            .OrderByDescending(a => a.DateTime)
-            .ToListAsync();
-    }
-
-    public async Task<List<Appointment>> GetAllForReceptionAsync()
-    {
-        return await _context.Appointments
-            .Include(a => a.Pet)
-                .ThenInclude(p => p.Owner)
-                    .ThenInclude(o => o.User)
-            .Include(a => a.Veterinarian)
-            .OrderByDescending(a => a.DateTime)
-            .ToListAsync();
-    }
-
     public async Task<List<Appointment>> GetPendingByVeterinarianAsync(
-    int veterinarianId)
+        int veterinarianId)
     {
         return await _context.Appointments
             .Include(a => a.Pet)
@@ -95,6 +113,7 @@ public class AppointmentRepository : IAppointmentRepository
             .OrderBy(a => a.DateTime)
             .ToListAsync();
     }
+
     public async Task AddAsync(
         Appointment appointment)
     {

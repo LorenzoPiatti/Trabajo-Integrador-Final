@@ -15,8 +15,20 @@ const request = async (url, options = {}) => {
     });
 
     if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "Ocurrió un error.");
+        const responseText = await response.text();
+        let message = responseText || "Ocurrió un error.";
+
+        try {
+            const data = JSON.parse(responseText);
+
+            if (data.message) {
+                message = data.message;
+            }
+        } catch {
+            // Si la respuesta no es JSON, usamos el texto original.
+        }
+
+        throw new Error(message);
     }
 
     if (response.status === 204) {

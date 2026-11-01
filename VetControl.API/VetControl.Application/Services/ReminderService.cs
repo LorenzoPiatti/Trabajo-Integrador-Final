@@ -88,26 +88,35 @@ public class ReminderService : IReminderService
     }
 
     public async Task CreateAppointmentReminderAsync(
-    int ownerId,
-    Appointment appointment)
+        int ownerId,
+        Appointment appointment)
     {
-        var reminderDate = appointment.DateTime.AddHours(-2);
+        var reminderDate =
+            appointment.DateTime.AddHours(-2);
 
         var existingReminder =
-            await _reminderRepository.GetByAppointmentIdAsync(
-                appointment.AppointmentId);
+            await _reminderRepository
+                .GetByAppointmentIdAsync(
+                    appointment.AppointmentId);
 
         if (existingReminder is not null)
         {
-            existingReminder.ReminderDate = reminderDate;
-            existingReminder.Sent = reminderDate <= DateTime.Now;
+            existingReminder.ReminderDate =
+                reminderDate;
 
-            await _reminderRepository.SaveChangesAsync();
+            existingReminder.Sent = false;
+            existingReminder.IsRead = false;
+
+            await _reminderRepository
+                .SaveChangesAsync();
+
             return;
         }
 
         if (reminderDate <= DateTime.Now)
+        {
             return;
+        }
 
         var reminder = new Reminder
         {
@@ -115,15 +124,20 @@ public class ReminderService : IReminderService
             ReminderDate = reminderDate,
             Type = ReminderType.Appointment,
             Sent = false,
-            AppointmentId = appointment.AppointmentId,
+            AppointmentId =
+                appointment.AppointmentId,
             AdministeredVaccineId = null,
             IsRead = false,
             CreatedAt = DateTime.Now
         };
 
-        await _reminderRepository.AddAsync(reminder);
-        await _reminderRepository.SaveChangesAsync();
+        await _reminderRepository
+            .AddAsync(reminder);
+
+        await _reminderRepository
+            .SaveChangesAsync();
     }
+
     public async Task ProcessPendingAppointmentRemindersAsync()
     {
         var currentDateTime =
@@ -330,8 +344,8 @@ public class ReminderService : IReminderService
             ?? reminder.ReminderDate;
 
         return
-            $"Recordá que {petName} tiene un turno " +
-            $"el {appointmentDate:dd/MM/yyyy} " +
+            $"Se acerca el turno de {petName}. " +
+            $"Es el {appointmentDate:dd/MM/yyyy} " +
             $"a las {appointmentDate:HH:mm}.";
     }
 
@@ -351,7 +365,7 @@ public class ReminderService : IReminderService
             ?? reminder.ReminderDate;
 
         return
-            $"A {petName} le corresponde {vaccineName} " +
-            $"el {dueDate:dd/MM/yyyy}.";
+            $"A {petName} le corresponde aplicarse " +
+            $"{vaccineName} el {dueDate:dd/MM/yyyy}.";
     }
 }
