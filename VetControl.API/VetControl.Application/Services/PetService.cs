@@ -93,17 +93,6 @@ public class PetService : IPetService
         return MapToDto(pet);
     }
 
-    public async Task DeleteAsync(
-        int userId,
-        int petId)
-    {
-        var pet = await GetPetForOwnerAsync(userId, petId);
-
-        await _petRepository.DeleteAsync(pet);
-
-        await _petRepository.SaveChangesAsync();
-    }
-
     private async Task<Pet> GetPetForOwnerAsync(
         int userId,
         int petId)

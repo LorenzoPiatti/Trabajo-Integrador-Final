@@ -18,8 +18,4 @@ public interface IPetService
         int userId,
         int petId,
         UpdatePetRequestDto request);
-
-    Task DeleteAsync(
-        int userId,
-        int petId);
 }
