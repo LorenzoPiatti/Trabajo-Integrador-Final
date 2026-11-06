@@ -72,12 +72,3 @@ export const updatePet = async (petId, pet) => {
 
     return await handleResponse(response);
 };
-
-export const deletePet = async (petId) => {
-    const response = await fetch(`${PETS_URL}/${petId}`, {
-        method: "DELETE",
-        headers: getHeaders()
-    });
-
-    return await handleResponse(response);
-};

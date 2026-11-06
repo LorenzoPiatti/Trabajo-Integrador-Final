@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarDays, ClipboardList, Edit3, PawPrint, Plus, Trash2 } from "lucide-react";
+import { CalendarDays, ClipboardList, Edit3, PawPrint, Plus } from "lucide-react";
 
 import Layout from "../../../components/layout/Layout";
 import Panel from "../../../components/ui/Panel";
 import StatCard from "../../../components/ui/StatCard";
 
-import { createPet, deletePet, getPets, updatePet } from "../../../services/petService";
+import { createPet, getPets, updatePet } from "../../../services/petService";
 import { getAppointments } from "../../../services/appointmentService";
 import { getPetHistory } from "../../../services/medicalRecordService";
 
@@ -41,7 +41,6 @@ function PetsPage() {
     });
 
     const [selectedPet, setSelectedPet] = useState(null);
-    const [petToDelete, setPetToDelete] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(Boolean(token));
@@ -144,34 +143,6 @@ function PetsPage() {
         setError("");
         setSuccess("");
         setSelectedPet(pet);
-    };
-
-    const handleDelete = (pet) => {
-        setError("");
-        setSuccess("");
-        setPetToDelete(pet);
-    };
-
-    const handleConfirmDelete = async () => {
-        if (!petToDelete) return;
-
-        setError("");
-        setSuccess("");
-
-        try {
-            await deletePet(petToDelete.petId);
-            setSuccess("Mascota eliminada correctamente.");
-
-            if (selectedPet?.petId === petToDelete.petId) {
-                setSelectedPet(null);
-            }
-
-            setPetToDelete(null);
-            await loadPets();
-        } catch (err) {
-            setPetToDelete(null);
-            setError(err.message);
-        }
     };
 
     if (!token) {
@@ -313,15 +284,6 @@ function PetsPage() {
                                                 >
                                                     <Edit3 size={18} />
                                                 </button>
-
-                                                <button
-                                                    type="button"
-                                                    className="pet-icon-button pet-icon-button--danger"
-                                                    title="Eliminar mascota"
-                                                    onClick={() => handleDelete(pet)}
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
                                             </div>
                                         </div>
 
@@ -347,50 +309,6 @@ function PetsPage() {
                     />
                 </section>
             </div>
-
-            {petToDelete && (
-                <div
-                    className="pets-modal-backdrop"
-                    onClick={() => setPetToDelete(null)}
-                >
-                    <div
-                        className="pets-confirm-modal"
-                        onClick={event => event.stopPropagation()}
-                    >
-                        <div className="pets-confirm-icon">
-                            <Trash2 size={26} />
-                        </div>
-
-                        <h3>Eliminar mascota</h3>
-
-                        <p>
-                            ¿Querés eliminar a <strong>{petToDelete.name}</strong>?
-                        </p>
-
-                        <span>
-                            Esta acción no se puede deshacer.
-                        </span>
-
-                        <div className="pets-confirm-actions">
-                            <button
-                                type="button"
-                                className="pets-secondary-button"
-                                onClick={() => setPetToDelete(null)}
-                            >
-                                Cancelar
-                            </button>
-
-                            <button
-                                type="button"
-                                className="pets-danger-button"
-                                onClick={handleConfirmDelete}
-                            >
-                                Eliminar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </Layout>
     );
 }
