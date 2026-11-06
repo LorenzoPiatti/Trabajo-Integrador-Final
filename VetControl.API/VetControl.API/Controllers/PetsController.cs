@@ -124,33 +124,6 @@ public class PetsController : ControllerBase
         }
     }
 
-    [HttpDelete("{petId:int}")]
-    public async Task<IActionResult> Delete(int petId)
-    {
-        var userId = GetCurrentUserId();
-
-        if (userId == null)
-        {
-            return Unauthorized("Usuario no autenticado.");
-        }
-
-        try
-        {
-            await _petService
-                .DeleteAsync(userId.Value, petId);
-
-            return NoContent();
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
     private int? GetCurrentUserId()
     {
         var userId = User.FindFirst(
