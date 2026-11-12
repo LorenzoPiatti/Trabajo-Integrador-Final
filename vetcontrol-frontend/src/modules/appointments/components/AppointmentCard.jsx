@@ -35,6 +35,7 @@ function AppointmentCard({
 
     const canCancel =
         appointment.status === "Confirmed" &&
+        appointmentIsFuture &&
         (owner || canManage);
 
     const statusClass =

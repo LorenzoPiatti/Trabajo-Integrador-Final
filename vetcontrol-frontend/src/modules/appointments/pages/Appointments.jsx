@@ -274,6 +274,7 @@ function AppointmentsPage() {
     const ownerPastAppointments = owner
         ? appointments
             .filter(appointment =>
+                new Date(appointment.dateTime) < now ||
                 appointment.status === "Completed" ||
                 appointment.status === "Cancelled"
             )

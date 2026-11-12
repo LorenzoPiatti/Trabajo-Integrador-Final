@@ -307,47 +307,42 @@ public class AppointmentService : IAppointmentService
         );
     }
 
-    public async Task CancelByReceptionAsync(int appointmentId)
-    {
-        var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
+public async Task CancelByReceptionAsync(int appointmentId)
+{
+    var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
-        if (appointment is null)
-            throw new Exception("El turno no existe.");
+    if (appointment is null)
+        throw new Exception("El turno no existe.");
+    if (appointment.Status == AppointmentStatus.Cancelled)
+        throw new Exception("El turno ya está cancelado.");
+    if (appointment.Status == AppointmentStatus.Completed)
+        throw new Exception("No se puede cancelar un turno ya atendido.");
+    if (appointment.DateTime <= DateTime.Now)
+        throw new Exception("No se puede cancelar un turno cuya fecha y hora ya pasaron.");
+    var ownerEmail = appointment.Pet.Owner.User.Email;
+    var ownerName = appointment.Pet.Owner.FirstName;
+    var petName = appointment.Pet.Name;
+    var veterinarianName = appointment.Veterinarian.Name;
+    var appointmentDate = appointment.DateTime;
+    appointment.Status = AppointmentStatus.Cancelled;
 
-        if (appointment.Status == AppointmentStatus.Cancelled)
-            throw new Exception("El turno ya está cancelado.");
-
-        if (appointment.Status == AppointmentStatus.Completed)
-            throw new Exception("No se puede cancelar un turno ya atendido.");
-
-        var ownerEmail = appointment.Pet.Owner.User.Email;
-        var ownerName = appointment.Pet.Owner.FirstName;
-        var petName = appointment.Pet.Name;
-        var veterinarianName = appointment.Veterinarian.Name;
-        var appointmentDate = appointment.DateTime;
-
-        appointment.Status = AppointmentStatus.Cancelled;
-
-        await _appointmentRepository.UpdateAsync(appointment);
-        await _appointmentRepository.SaveChangesAsync();
-
-        var emailSubject = "VetControl - Turno cancelado";
-
-        var emailBody =
-            $"Hola {ownerName},\n\n" +
-            $"Te informamos que el turno de {petName} fue cancelado por recepción.\n\n" +
-            $"Fecha: {appointmentDate:dd/MM/yyyy}\n" +
-            $"Hora: {appointmentDate:HH:mm}\n" +
-            $"Veterinario: {veterinarianName}\n\n" +
-            "Si necesitás una nueva atención, podés solicitar otro turno desde VetControl en un horario disponible.\n\n" +
-            "VetControl";
-
-        await _emailService.SendEmailAsync(
-            ownerEmail,
-            emailSubject,
-            emailBody
-        );
-    }
+    await _appointmentRepository.UpdateAsync(appointment);
+    await _appointmentRepository.SaveChangesAsync();
+    var emailSubject = "VetControl - Turno cancelado";
+    var emailBody =
+        $"Hola {ownerName},\n\n" +
+        $"Te informamos que el turno de {petName} fue cancelado por recepción.\n\n" +
+        $"Fecha: {appointmentDate:dd/MM/yyyy}\n" +
+        $"Hora: {appointmentDate:HH:mm}\n" +
+        $"Veterinario: {veterinarianName}\n\n" +
+        "Si necesitás una nueva atención, podés solicitar otro turno desde VetControl en un horario disponible.\n\n" +
+        "VetControl";
+    await _emailService.SendEmailAsync(
+        ownerEmail,
+        emailSubject,
+        emailBody
+    );
+}
 
     public async Task CancelAsync(
         int appointmentId,
@@ -373,9 +368,10 @@ public class AppointmentService : IAppointmentService
 
         if (appointment.Status == AppointmentStatus.Completed)
             throw new Exception("No se puede cancelar un turno ya atendido.");
-
+        if (appointment.DateTime <= DateTime.Now)
+    throw new Exception("No se puede cancelar un turno cuya fecha y hora ya pasaron.");
+            
         appointment.Status = AppointmentStatus.Cancelled;
-
         await _appointmentRepository.UpdateAsync(appointment);
         await _appointmentRepository.SaveChangesAsync();
     }
